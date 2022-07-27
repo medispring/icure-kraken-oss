@@ -5,7 +5,7 @@ import org.springframework.core.io.buffer.DataBuffer
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.entities.embed.DataAttachment
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 
 /**
  * Shared logic for the modification of entities which have [DataAttachment]s.
@@ -42,7 +42,7 @@ interface DataAttachmentModificationLogic<T : HasDataAttachments<T>> {
 	 * @param currEntity the current value of the entity which needs to be updated.
 	 * @param changes the changes to apply to the entity attachments.
 	 * @return the updated entity
-	 * @throws ObjectStoreException if one or more attachments must be stored using the object
+	 * @throws ObjectStorageException if one or more attachments must be stored using the object
 	 * storage service but this is not possible at the moment.
 	 */
 	suspend fun updateAttachments(currEntity: T, changes: Map<String, DataAttachmentChange>): T?
@@ -61,8 +61,7 @@ interface DataAttachmentModificationLogic<T : HasDataAttachments<T>> {
 		/**
 		 * Represents a request to create or update an attachment.
 		 * @param data the content of the attachment.
-		 * @param size the size of the attachment content, if known.
-		 * This value can help to decide the most appropriate storage location for the attachment.
+		 * @param size the size of the attachment content. This value can help to decide the most appropriate storage location for the attachment.
 		 * @param utis used differently depending on whether this [DataAttachmentChange] triggers
 		 * the creation of a new [DataAttachment] or updates an existing one:
 		 * - `Update`: if not null specifies a new value for [DataAttachment.utis].
@@ -71,7 +70,7 @@ interface DataAttachmentModificationLogic<T : HasDataAttachments<T>> {
 		 */
 		data class CreateOrUpdate(
 			val data: Flow<DataBuffer>,
-			val size: Long?,
+			val size: Long,
 			val utis: List<String>?
 		) : DataAttachmentChange()
 	}

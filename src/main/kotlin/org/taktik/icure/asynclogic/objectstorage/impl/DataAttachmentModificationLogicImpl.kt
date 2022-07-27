@@ -138,11 +138,7 @@ private abstract class DataAttachmentModificationLogicImpl<T : HasDataAttachment
 		change: DataAttachmentChange.CreateOrUpdate,
 		utis: List<String>
 	): Pair<DataAttachment, AttachmentTask> =
-		if (change.size == null || change.size >= objectStorageProperties.sizeLimit)
-			/*TODO
-			 * if size is null we could actually buffer until we reach size limit or the end of the flow. If we reach size limit
-			 * we go to object storage, passing all the buffered data and the rest of the flow, else we create the couchdb attachment.
-			 */
+		if (change.size >= objectStorageProperties.sizeLimit)
 			createObjectStorageAttachment(entity, change, utis)
 		else
 			createCouchDbAttachment(change, utis)
@@ -152,7 +148,7 @@ private abstract class DataAttachmentModificationLogicImpl<T : HasDataAttachment
 		change: DataAttachmentChange.CreateOrUpdate,
 		utis: List<String>
 	): Pair<DataAttachment, AttachmentTask> = UUID.randomUUID().toString().let { attachmentId ->
-		icureObjectStorage.preStore(entity, attachmentId, change.data)
+		icureObjectStorage.preStore(entity, attachmentId, change.data, change.size)
 		Pair(
 			DataAttachment(couchDbAttachmentId = null, objectStoreAttachmentId = attachmentId, utis = utis),
 			AttachmentTask.UploadObjectStorage(attachmentId)
