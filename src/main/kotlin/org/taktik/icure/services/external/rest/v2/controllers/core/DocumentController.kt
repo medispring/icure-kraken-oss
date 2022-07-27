@@ -60,7 +60,7 @@ import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.asynclogic.objectstorage.contentFlowOfNullable
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DocumentType
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.services.external.rest.v2.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v2.dto.IcureStubDto
 import org.taktik.icure.services.external.rest.v2.dto.ListOfIdsDto
@@ -144,7 +144,7 @@ class DocumentController(
 		).let { documentV2Mapper.map(checkNotNull(it) { "Failed to update attachment" }) }
 	}
 
-	@Operation(summary = "Creates a document's attachment")
+	@Operation(summary = "Creates or updates the main attachment of a document")
 	@PutMapping("/{documentId}/attachment", consumes = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
 	fun setDocumentAttachment(
 		@PathVariable
@@ -438,7 +438,7 @@ class DocumentController(
 	): Document? =
 		try {
 			updateAttachments(currentDocument, mainAttachmentChange, secondaryAttachmentsChanges)
-		} catch (e: ObjectStoreException) {
+		} catch (e: ObjectStorageException) {
 			throw ResponseStatusException(
 				HttpStatus.SERVICE_UNAVAILABLE,
 				"One or more attachments must be stored using the object storage service, but the service is currently unavailable."

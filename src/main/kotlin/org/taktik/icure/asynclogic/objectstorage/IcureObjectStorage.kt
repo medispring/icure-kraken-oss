@@ -5,7 +5,7 @@ import org.springframework.core.io.buffer.DataBuffer
 import java.io.IOException
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 
 /**
  * Handles object storage for attachments. Depending on the implementation this may include caching,
@@ -13,26 +13,16 @@ import org.taktik.icure.exceptions.ObjectStoreException
  */
 interface IcureObjectStorage<T : HasDataAttachments<T>> {
 	/**
-	 * Performs the pre-storage task for the attachment.
-	 * @param entity entity which owns the attachment.
-	 * @param attachmentId id of the attachment.
-	 * @param content content of the attachment.
-	 * @throws ObjectStoreException if the task failed. This means that at the moment the attachment can't be stored to the
-	 * object storage service, but depending on the cause of the error it may be possible for this operation to succeed if
-	 * re-attempted in the future.
-	 */
-	suspend fun preStore(entity: T, attachmentId: String, content: ByteArray)
-
-	/**
 	 * Performs the pre-storage task for an attachment.
 	 * @param entity entity which owns the attachment.
 	 * @param attachmentId id of the attachment.
 	 * @param content content of the attachment.
-	 * @throws ObjectStoreException if the task failed. This means that at the moment the attachment can't be stored to the
+	 * @param size size of the attachment.
+	 * @throws ObjectStorageException if the task failed. This means that at the moment the attachment can't be stored to the
 	 * object storage service, but depending on the cause of the error it may be possible for this operation to succeed if
 	 * re-attempted in the future.
 	 */
-	suspend fun preStore(entity: T, attachmentId: String, content: Flow<DataBuffer>)
+	suspend fun preStore(entity: T, attachmentId: String, content: Flow<DataBuffer>, size: Long)
 
 	/**
 	 * TODO support mime type?

@@ -76,9 +76,11 @@ private abstract class IcureObjectStorageMigrationImpl<T : HasDataAttachments<T>
 	}
 
 	private suspend fun tryPreStore(entity: T, attachmentId: String) =
-		loadAttachment(entity, attachmentId)
-			?.let { runCatching { objectStorage.preStore(entity, attachmentId, it) } }
-			?.isSuccess == true
+		entity.attachments?.get(attachmentId)?.let { attachmentInfo ->
+			loadAttachment(entity, attachmentId)
+				?.let { runCatching { objectStorage.preStore(entity, attachmentId, it, attachmentInfo.contentLength) } }
+				?.isSuccess
+		} == true
 
 	// Attempts to execute migration task returns if the task completed (successfully performed migration or there is no need for it anymore) or should be retried later
 	private suspend fun tryMigration(task: ObjectStorageMigrationTask): Boolean = (

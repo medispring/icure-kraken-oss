@@ -1,6 +1,5 @@
 package org.taktik.icure.asynclogic.objectstorage
 
-import java.io.IOException
 import java.util.UUID
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -10,8 +9,10 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withTimeout
+import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentLocalObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageImpl
@@ -29,6 +30,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirec
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.objectstorage.ObjectStorageTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTaskType
+import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.testutils.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
@@ -61,7 +63,7 @@ class IcureObjectStorageTest : StringSpec({
 	}
 
 	suspend fun store(document: Document, attachmentId: String, bytes: ByteArray) {
-		icureObjectStorage.preStore(document, attachmentId, bytes)
+		icureObjectStorage.preStore(document, attachmentId, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(bytes)), bytes.size.toLong())
 		icureObjectStorage.scheduleStoreAttachment(document, attachmentId)
 	}
 
@@ -71,7 +73,7 @@ class IcureObjectStorageTest : StringSpec({
 	}
 
 	"Object storage should be able to store, read, and delete attachments in the service" {
-		sampleAttachments.forEach { icureObjectStorage.preStore(it.first, it.second, it.third) }
+		sampleAttachments.forEach { icureObjectStorage.preStore(it.first, it.second, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(it.third)), it.third.size.toLong()) }
 		shouldThrow<TimeoutCancellationException> { withTimeout(20) { objectStorageClient.eventsChannel.receive() } }
 		sampleAttachments.forEach { icureObjectStorage.scheduleStoreAttachment(it.first, it.second) }
 		withTimeout(STORAGE_TASK_TIMEOUT * sampleAttachments.size) {
@@ -95,7 +97,7 @@ class IcureObjectStorageTest : StringSpec({
 		storeAndWait(document1, attachment1, bytes1)
 		resetTestLocalStorageDirectory()
 		objectStorageClient.available = false
-		shouldThrow<IOException> { icureObjectStorage.readAttachment(document1, attachment1) }
+		shouldThrow<ObjectStorageException> { icureObjectStorage.readAttachment(document1, attachment1) }
 		objectStorageClient.available = true
 		icureObjectStorage.readAttachment(document1, attachment1).toByteArray(true) shouldContainExactly bytes1
 		objectStorageClient.available = false
@@ -145,7 +147,7 @@ class IcureObjectStorageTest : StringSpec({
 				requestTime = 100L + (it * 100)
 			)
 		}
-		icureObjectStorage.preStore(document1, attachment1, bytes1)
+		icureObjectStorage.preStore(document1, attachment1, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(bytes1)), bytes1.size.toLong())
 		tasks.shuffled().forEach { storageTasksDAO.save(it) }
 		icureObjectStorage.rescheduleFailedStorageTasks()
 		while (icureObjectStorage.hasScheduledStorageTasks) {

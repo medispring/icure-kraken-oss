@@ -28,7 +28,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -62,7 +61,7 @@ import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.asynclogic.objectstorage.contentFlowOfNullable
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DocumentType
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.security.CryptoUtils
 import org.taktik.icure.security.CryptoUtils.isValidAesKey
 import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
@@ -73,6 +72,7 @@ import org.taktik.icure.services.external.rest.v1.mapper.DocumentMapper
 import org.taktik.icure.services.external.rest.v1.mapper.StubMapper
 import org.taktik.icure.services.external.rest.v1.mapper.embed.DelegationMapper
 import org.taktik.icure.utils.injectReactorContext
+import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -264,9 +264,20 @@ class DocumentController(
 				payload
 		val document = documentLogic.getOr404(documentId)
 		checkRevision(rev, document)
+		val mainAttachmentChange =
+			if (size != null)
+				DataAttachmentChange.CreateOrUpdate(newPayload, size, utis)
+			else
+				newPayload.toByteArray(true).let { payloadBytes ->
+					DataAttachmentChange.CreateOrUpdate(
+						flowOf(DefaultDataBufferFactory.sharedInstance.wrap(payloadBytes)),
+						payloadBytes.size.toLong(),
+						utis
+					)
+				}
 		documentLogic.updateAttachmentsWrappingExceptions(
 			document,
-			mainAttachmentChange = DataAttachmentChange.CreateOrUpdate(newPayload, size, utis)
+			mainAttachmentChange = mainAttachmentChange
 		)?.let { documentMapper.map(it) }
 	}
 
@@ -552,7 +563,7 @@ class DocumentController(
 	): Document? =
 		try {
 			updateAttachments(currentDocument, mainAttachmentChange, secondaryAttachmentsChanges)
-		} catch (e: ObjectStoreException) {
+		} catch (e: ObjectStorageException) {
 			throw ResponseStatusException(
 				HttpStatus.SERVICE_UNAVAILABLE,
 				"One or more attachments must be stored using the object storage service, but the service is currently unavailable."

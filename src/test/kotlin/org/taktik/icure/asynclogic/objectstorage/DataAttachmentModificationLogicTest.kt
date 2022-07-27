@@ -39,7 +39,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.smallAttachment
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.entities.embed.DeletedAttachment
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.testutils.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
@@ -83,12 +83,12 @@ class DataAttachmentModificationLogicTest : StringSpec({
 				dao.deleteAttachment(initialDocument.id, any(), attachmentId)
 			} answers { nextRev(secondArg()) }
 		}
-		val objectStoreData = mutableMapOf<String, Flow<DataBuffer>>()
+		val objectStoreData = mutableMapOf<String, Pair<Flow<DataBuffer>, Long>>()
 		if (expectedObjectStorageCreations.isNotEmpty()) {
 			coEvery { icureObjectStorage.scheduleStoreAttachment(any(), any()) } just Runs
-			coEvery { icureObjectStorage.preStore(any(), any(), any<Flow<DataBuffer>>()) } answers {
-				firstArg<Document>().id shouldBe initialDocument.id
-				objectStoreData[secondArg()] = thirdArg()
+			coEvery { icureObjectStorage.preStore(any(), any(), any(), any()) } answers {
+				arg<Document>(0).id shouldBe initialDocument.id
+				objectStoreData[arg(1)] = Pair(arg(2), arg(3))
 			}
 		}
 		expectedObjectStorageDeletions.forEach { (_, attachmentId) ->
@@ -140,8 +140,11 @@ class DataAttachmentModificationLogicTest : StringSpec({
 				val (expectedContent, expectedUtis) = expected
 				savedDocument.captured.dataAttachments[attachmentKey].shouldNotBeNull().apply {
 					couchDbAttachmentId shouldBe null
-					objectStoreData.getValue(objectStoreAttachmentId.shouldNotBeNull()).let {
-						it.toByteArray(true) shouldContainExactly expectedContent
+					objectStoreData.getValue(objectStoreAttachmentId.shouldNotBeNull()).let { (contentFlow, declaredSize) ->
+						contentFlow.toByteArray(true).also {
+							it shouldContainExactly expectedContent
+							declaredSize shouldBe it.size.toLong()
+						}
 					}
 					utis shouldBe expectedUtis
 					coVerify(exactly = 1) {
@@ -202,8 +205,8 @@ class DataAttachmentModificationLogicTest : StringSpec({
 	}
 
 	"If a big attachment could not be pre-stored the update operation should fail without any changes" {
-		coEvery { icureObjectStorage.preStore(any(), any(), any<Flow<DataBuffer>>()) } throws ObjectStoreException("Could not pre-store")
-		shouldThrow<ObjectStoreException> {
+		coEvery { icureObjectStorage.preStore(any(), any(), any(), any()) } throws ObjectStorageException("Could not pre-store")
+		shouldThrow<ObjectStorageException> {
 			dataAttachmentModificationLogic.updateAttachments(
 				sampleDocument,
 				mapOf(
@@ -215,7 +218,7 @@ class DataAttachmentModificationLogicTest : StringSpec({
 				)
 			)
 		}
-		coVerify(exactly = 1) { icureObjectStorage.preStore(any(), any(), any<Flow<DataBuffer>>())}
+		coVerify(exactly = 1) { icureObjectStorage.preStore(any(), any(), any(), any())}
 	}
 
 	"Updating attachments should support deletion of existing attachments" {

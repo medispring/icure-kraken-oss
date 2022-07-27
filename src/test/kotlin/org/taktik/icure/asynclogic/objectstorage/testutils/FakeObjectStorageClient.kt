@@ -6,10 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpServerErrorException
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
 import org.taktik.icure.entities.base.HasDataAttachments
+import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.utils.toByteArray
 
 class FakeObjectStorageClient<T : HasDataAttachments<T>>(override val entityGroupName: String) : ObjectStorageClient<T> {
@@ -41,7 +40,7 @@ class FakeObjectStorageClient<T : HasDataAttachments<T>>(override val entityGrou
 		if (available) {
 			entityToAttachments[entity.id]?.get(attachmentId)?.let { flowOf(DefaultDataBufferFactory.sharedInstance.wrap(it)) }
 				?: throw IllegalStateException("Document does not exist. Available attachments: $attachmentsKeys")
-		} else throw HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE)
+		} else throw ObjectStorageException("Storage service is unavailable", null)
 
 	override suspend fun checkAvailable(entity: T, attachmentId: String): Boolean =
 		entityToAttachments[entity.id]?.let { attachmentId in it } == true

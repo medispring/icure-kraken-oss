@@ -1,6 +1,5 @@
 package org.taktik.icure.asynclogic.objectstorage.impl
 
-import java.io.IOException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import org.slf4j.LoggerFactory
@@ -28,7 +27,7 @@ import org.taktik.icure.asynclogic.objectstorage.LocalObjectStorage
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
-import org.taktik.icure.exceptions.ObjectStoreException
+import org.taktik.icure.exceptions.ObjectStorageException
 
 interface ScheduledIcureObjectStorage<T : HasDataAttachments<T>> : IcureObjectStorage<T>, InitializingBean, DisposableBean {
 	val hasScheduledStorageTasks: Boolean
@@ -62,31 +61,19 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 		taskExecutorScope.cancel()
 	}
 
-	override suspend fun preStore(entity: T, attachmentId: String, content: ByteArray) =
+	override suspend fun preStore(entity: T, attachmentId: String, content: Flow<DataBuffer>, size: Long) =
 		try {
 			localObjectStorage.store(entity, attachmentId, content)
 		} catch (e: Exception) {
-			throw ObjectStoreException("Could not store attachment to local cache", e)
-		}
-
-	override suspend fun preStore(entity: T, attachmentId: String, content: Flow<DataBuffer>) =
-		try {
-			localObjectStorage.store(entity, attachmentId, content)
-		} catch (e: Exception) {
-			throw ObjectStoreException("Could not store attachment to local cache", e)
+			throw ObjectStorageException("Could not store attachment to local cache", e)
 		}
 
 	override suspend fun scheduleStoreAttachment(entity: T, attachmentId: String) =
 		scheduleNewStorageTask(entity, attachmentId, ObjectStorageTaskType.UPLOAD)
 
 	override fun readAttachment(entity: T, attachmentId: String): Flow<DataBuffer> =
-		runCatching {
 			tryReadCachedAttachment(entity, attachmentId)
 				?: objectStorageClient.get(entity, attachmentId).let { localObjectStorage.storing(entity, attachmentId, it) }
-		}.fold(
-			onSuccess = { it },
-			onFailure = { throw IOException("Failed to access object storage service", it) }
-		)
 
 	override fun tryReadCachedAttachment(entity: T, attachmentId: String): Flow<DataBuffer>? =
 		localObjectStorage.read(entity, attachmentId)
