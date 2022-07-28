@@ -16,9 +16,9 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key2
 import org.taktik.icure.asynclogic.objectstorage.testutils.key3
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.*
-import org.taktik.icure.testutils.authorizationString
-import org.taktik.icure.testutils.shouldContainExactly
-import org.taktik.icure.testutils.shouldRespondErrorStatus
+import org.taktik.icure.test.authorizationString
+import org.taktik.icure.test.shouldContainExactly
+import org.taktik.icure.test.shouldRespondErrorStatus
 import org.taktik.icure.utils.toByteArray
 
 val client = WebClient.builder()

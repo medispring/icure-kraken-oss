@@ -1,4 +1,4 @@
-package org.taktik.icure.testutils
+package org.taktik.icure.test
 
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.flow.Flow

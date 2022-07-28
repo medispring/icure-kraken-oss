@@ -41,7 +41,7 @@ import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.properties.ObjectStorageProperties
-import org.taktik.icure.testutils.shouldContainExactly
+import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
 
 @FlowPreview

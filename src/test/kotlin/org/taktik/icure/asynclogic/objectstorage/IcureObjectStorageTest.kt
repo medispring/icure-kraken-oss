@@ -32,7 +32,7 @@ import org.taktik.icure.entities.objectstorage.ObjectStorageTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTaskType
 import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.properties.ObjectStorageProperties
-import org.taktik.icure.testutils.shouldContainExactly
+import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
 
 private const val STORAGE_TASK_TIMEOUT = 300L

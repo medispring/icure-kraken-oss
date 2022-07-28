@@ -17,7 +17,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
-import org.taktik.icure.testutils.shouldContainExactly
+import org.taktik.icure.test.shouldContainExactly
 
 private const val AES_BLOCK_SIZE = 128
 private const val SMALLER_THAN_AES_BLOCK_SIZE = 100

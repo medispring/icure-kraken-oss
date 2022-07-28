@@ -1,4 +1,4 @@
-package org.taktik.icure.testutils
+package org.taktik.icure.test
 
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainExactly
