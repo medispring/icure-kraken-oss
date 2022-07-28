@@ -32,7 +32,7 @@ import org.taktik.icure.services.external.rest.v2.dto.embed.DeletedAttachmentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.DocumentTypeDto
 import org.taktik.icure.services.external.rest.v2.mapper.DocumentV2Mapper
 import org.taktik.icure.test.ICureTestApplication
-import org.taktik.icure.testutils.shouldRespondErrorStatus
+import org.taktik.icure.test.shouldRespondErrorStatus
 import reactor.core.publisher.Mono
 
 private const val CONTROLLER_ROOT = "rest/v2/document"
@@ -155,7 +155,7 @@ class DocumentControllerEndToEndTest(
 	}
 }
 
-// Test legacy behaviour to ensure retro-compatibility
+// Test v2 only behaviours
 private fun StringSpec.v2EndToEndTests(
 	context: DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>
 ): Unit = with (context) {

@@ -20,9 +20,6 @@ class FakeObjectStorageClient<T : HasDataAttachments<T>>(override val entityGrou
 
 	val attachmentsKeys get() = entityToAttachments.flatMap { (docId, attachments) -> attachments.keys.map { docId to it } }
 
-	override suspend fun upload(entity: T, attachmentId: String, content: ByteArray): Boolean =
-		upload(entity, attachmentId, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(content)))
-
 	override suspend fun upload(entity: T, attachmentId: String, content: Flow<DataBuffer>): Boolean =
 		unsafeUpload(entity.id, attachmentId, content)
 

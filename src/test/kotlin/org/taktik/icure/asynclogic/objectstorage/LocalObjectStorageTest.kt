@@ -22,7 +22,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleAttachments
 import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
 import org.taktik.icure.entities.Document
 import org.taktik.icure.properties.ObjectStorageProperties
-import org.taktik.icure.testutils.shouldContainExactly
+import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
 
 private const val SLOW_BYTES_DELAY = 100L

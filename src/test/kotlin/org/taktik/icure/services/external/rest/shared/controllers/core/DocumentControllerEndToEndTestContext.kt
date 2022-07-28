@@ -23,10 +23,10 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.properties.ObjectStorageProperties
-import org.taktik.icure.testutils.bytesContent
-import org.taktik.icure.testutils.jsonContent
-import org.taktik.icure.testutils.multipartContent
-import org.taktik.icure.testutils.uriWithVars
+import org.taktik.icure.test.bytesContent
+import org.taktik.icure.test.jsonContent
+import org.taktik.icure.test.multipartContent
+import org.taktik.icure.test.uriWithVars
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 

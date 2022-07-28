@@ -33,7 +33,6 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.javascriptUti
 import org.taktik.icure.asynclogic.objectstorage.testutils.jsonUti
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.asynclogic.objectstorage.testutils.xmlUti
-import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext
 import org.taktik.icure.services.external.rest.shared.controllers.core.client
@@ -44,11 +43,11 @@ import org.taktik.icure.services.external.rest.v1.dto.embed.DeletedAttachmentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DocumentTypeDto
 import org.taktik.icure.services.external.rest.v1.mapper.DocumentMapper
 import org.taktik.icure.test.ICureTestApplication
-import org.taktik.icure.testutils.multipartContent
-import org.taktik.icure.testutils.shouldContainExactly
-import org.taktik.icure.testutils.shouldNotContainExactly
-import org.taktik.icure.testutils.shouldRespondErrorStatus
-import org.taktik.icure.testutils.uriWithVars
+import org.taktik.icure.test.multipartContent
+import org.taktik.icure.test.shouldContainExactly
+import org.taktik.icure.test.shouldNotContainExactly
+import org.taktik.icure.test.shouldRespondErrorStatus
+import org.taktik.icure.test.uriWithVars
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 
