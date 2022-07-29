@@ -7,6 +7,7 @@ import java.util.Queue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
@@ -17,6 +18,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
+import org.taktik.icure.test.random
 import org.taktik.icure.test.shouldContainExactly
 
 private const val AES_BLOCK_SIZE = 128
@@ -129,5 +131,16 @@ class CryptoUtilsTest : StringSpec({
 		"014abd20d5b944f48e02cb45b8afb783".tryKeyFromHexString() shouldContainExactly byteArrayOf(
 			1, 74, -67, 32, -43, -71, 68, -12, -114, 2, -53, 69, -72, -81, -73, -125
 		)
+	}
+
+
+
+	"AES size prediction should work properly" {
+		(listOf(1, 8, 10, 16, 32, 64, 100, 128, 1000) + (0..1000).map { random.nextInt(0, 10_000) }).forAll { dataSize ->
+			CryptoUtils.predictAESEncryptedSize(dataSize.toLong()) shouldBe CryptoUtils.encryptAES(
+				randomArray(dataSize),
+				keys.first()
+			).size.toLong()
+		}
 	}
 })

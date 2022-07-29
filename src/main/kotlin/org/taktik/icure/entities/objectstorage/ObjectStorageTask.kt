@@ -19,17 +19,19 @@ data class ObjectStorageTask(
 	val entityClassName: String,
 	val entityId: String,
 	val attachmentId: String,
+	val user: String,
 	val requestTime: Long = System.currentTimeMillis()
 ) : StoredDocument {
 	companion object {
-		fun <T : HasDataAttachments<T>> of(entity: T, attachmentId: String, type: ObjectStorageTaskType) = ObjectStorageTask(
+		fun <T : HasDataAttachments<T>> of(entity: T, attachmentId: String, type: ObjectStorageTaskType, user: String) = ObjectStorageTask(
 			UUID.randomUUID().toString(),
 			type = type,
 			entityClassName = entity::class.java.simpleName.also {
 				require(it.isNotBlank()) { "Entity with attachments must have a unique class name." }
 			},
 			entityId = entity.id,
-			attachmentId = attachmentId
+			attachmentId = attachmentId,
+			user = user
 		)
 	}
 

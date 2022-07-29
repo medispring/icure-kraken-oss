@@ -249,9 +249,21 @@ abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
 				e.statusCode shouldBe 404
 			}
 		} else {
-			if (objectStorageClient.checkAvailable(doc, dataAttachment.objectStoreAttachmentId!!)) { // If it was not deleted yet wait a bit to ensure all storage jobs are completed.
+			if (
+				objectStorageClient.checkAvailable(
+					doc,
+					dataAttachment.objectStoreAttachmentId!!,
+					System.getenv("ICURE_TEST_USER_NAME"),
+					System.getenv("ICURE_TEST_USER_PASSWORD")
+				)
+			) { // If it was not deleted yet wait a bit to ensure all storage jobs are completed.
 				delay(500)
-				objectStorageClient.checkAvailable(doc, dataAttachment.objectStoreAttachmentId!!) shouldBe false
+				objectStorageClient.checkAvailable(
+					doc,
+					dataAttachment.objectStoreAttachmentId!!,
+					System.getenv("ICURE_TEST_USER_NAME"),
+					System.getenv("ICURE_TEST_USER_PASSWORD")
+				) shouldBe false
 			}
 		}
 	}

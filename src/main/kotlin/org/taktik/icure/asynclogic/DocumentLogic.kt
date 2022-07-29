@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import org.taktik.icure.asyncdao.DocumentDAO
 import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic.DataAttachmentChange
 import org.taktik.icure.entities.Document
-import org.taktik.icure.exceptions.ObjectStorageException
+import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
 
 interface DocumentLogic : EntityPersister<Document, String> {
 	/**

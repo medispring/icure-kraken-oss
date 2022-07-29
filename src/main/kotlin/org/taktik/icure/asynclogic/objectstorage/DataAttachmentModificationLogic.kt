@@ -5,7 +5,6 @@ import org.springframework.core.io.buffer.DataBuffer
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.entities.embed.DataAttachment
-import org.taktik.icure.exceptions.ObjectStorageException
 
 /**
  * Shared logic for the modification of entities which have [DataAttachment]s.

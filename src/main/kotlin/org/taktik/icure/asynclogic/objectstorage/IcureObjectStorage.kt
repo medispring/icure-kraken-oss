@@ -5,7 +5,6 @@ import org.springframework.core.io.buffer.DataBuffer
 import java.io.IOException
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
-import org.taktik.icure.exceptions.ObjectStorageException
 
 /**
  * Handles object storage for attachments. Depending on the implementation this may include caching,

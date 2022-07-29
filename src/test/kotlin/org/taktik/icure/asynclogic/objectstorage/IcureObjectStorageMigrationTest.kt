@@ -24,6 +24,7 @@ import org.taktik.couchdb.exception.CouchDbConflictException
 import org.taktik.icure.asyncdao.DocumentDAO
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageMigrationTasksDAO
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
+import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentLocalObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageMigrationImpl
@@ -41,6 +42,8 @@ import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.entities.objectstorage.ObjectStorageMigrationTask
 import org.taktik.icure.properties.ObjectStorageProperties
+import org.taktik.icure.test.newId
+import org.taktik.icure.test.setCurrentUserData
 
 private const val TEST_MIGRATION_DELAY = 300L
 
@@ -51,23 +54,30 @@ class IcureObjectStorageMigrationTest : StringSpec({
 		migrationDelayMs = TEST_MIGRATION_DELAY
 	)
 	val localStorage = DocumentLocalObjectStorageImpl(objectStorageProperties)
+	val sessionLogic = mockk<AsyncSessionLogic>()
 	lateinit var documentDAO: DocumentDAO
 	lateinit var storageTasksDAO: ObjectStorageTasksDAO
 	lateinit var migrationTasksDAO: ObjectStorageMigrationTasksDAO
 	lateinit var objectStorageClient: FakeObjectStorageClient<Document>
 	lateinit var icureObjectStorage: DocumentObjectStorageImpl
 	lateinit var icureObjectStorageMigration: DocumentObjectStorageMigrationImpl
+	lateinit var user: String
+	lateinit var password: String
 
 	beforeEach {
+		user = newId()
+		password = newId()
+		sessionLogic.setCurrentUserData(user, password)
 		resetTestLocalStorageDirectory()
 		documentDAO = mockk()
-		objectStorageClient = FakeObjectStorageClient("documents")
+		objectStorageClient = FakeObjectStorageClient("documents", mapOf(user to password))
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		migrationTasksDAO = FakeObjectStorageMigrationTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(
 			storageTasksDAO,
 			object : DocumentObjectStorageClient, ObjectStorageClient<Document> by objectStorageClient {},
-			localStorage
+			localStorage,
+			sessionLogic
 		).also { it.afterPropertiesSet() }
 		icureObjectStorageMigration = DocumentObjectStorageMigrationImpl(
 			documentDAO,
