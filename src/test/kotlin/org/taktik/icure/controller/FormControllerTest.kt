@@ -46,7 +46,7 @@ class FormControllerTest {
 		runBlocking {
 			val res = client.delete()
 				.uri(
-					"http://127.0.0.1:$port/rest/v1/form/${
+					"https://127.0.0.1:$port/rest/v1/form/${
 					flow {
 						(1..100).map {
 							UUID.randomUUID().toString().also {
@@ -54,7 +54,7 @@ class FormControllerTest {
 								log.info(
 									"${
 									client.post()
-										.uri("http://127.0.0.1:$port/rest/v1/form")
+										.uri("https://127.0.0.1:$port/rest/v1/form")
 										.send(ByteBufFlux.fromString(Mono.just(form)))
 										.response()
 										.awaitFirstOrNull()?.status() ?: "000"

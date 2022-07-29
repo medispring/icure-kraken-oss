@@ -10,8 +10,6 @@ import org.taktik.icure.properties.ObjectStorageProperties
 @Configuration
 class ObjectStorageConfig {
 	@Bean
-	fun documentObjectStorageClient(
-		sessionLogic: AsyncSessionLogic,
-		properties: ObjectStorageProperties
-	): DocumentObjectStorageClient = DocumentObjectStorageClientImpl(sessionLogic, properties)
+	fun documentObjectStorageClient(properties: ObjectStorageProperties): DocumentObjectStorageClient =
+		DocumentObjectStorageClientImpl(properties)
 }

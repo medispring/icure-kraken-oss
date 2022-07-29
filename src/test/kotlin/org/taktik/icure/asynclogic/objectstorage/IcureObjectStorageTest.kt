@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withTimeout
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
+import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentLocalObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient
@@ -30,8 +32,9 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirec
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.objectstorage.ObjectStorageTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTaskType
-import org.taktik.icure.exceptions.ObjectStorageException
 import org.taktik.icure.properties.ObjectStorageProperties
+import org.taktik.icure.test.newId
+import org.taktik.icure.test.setCurrentUserData
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.utils.toByteArray
 
@@ -43,18 +46,25 @@ class IcureObjectStorageTest : StringSpec({
 		cacheLocation = testLocalStorageDirectory
 	)
 	val localStorage = DocumentLocalObjectStorageImpl(objectStorageProperties)
+	val sessionLogic = mockk<AsyncSessionLogic>()
 	lateinit var storageTasksDAO: ObjectStorageTasksDAO
 	lateinit var objectStorageClient: FakeObjectStorageClient<Document>
 	lateinit var icureObjectStorage: DocumentObjectStorageImpl
+	lateinit var user: String
+	lateinit var password: String
 
 	beforeEach {
+		user = newId()
+		password = newId()
+		sessionLogic.setCurrentUserData(user, password)
 		resetTestLocalStorageDirectory()
-		objectStorageClient = FakeObjectStorageClient("documents")
+		objectStorageClient = FakeObjectStorageClient("documents", mapOf(user to password))
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(
 			storageTasksDAO,
 			object : DocumentObjectStorageClient, ObjectStorageClient<Document> by objectStorageClient {},
-			localStorage
+			localStorage,
+			sessionLogic
 		).also { it.afterPropertiesSet() }
 	}
 
@@ -97,7 +107,7 @@ class IcureObjectStorageTest : StringSpec({
 		storeAndWait(document1, attachment1, bytes1)
 		resetTestLocalStorageDirectory()
 		objectStorageClient.available = false
-		shouldThrow<ObjectStorageException> { icureObjectStorage.readAttachment(document1, attachment1) }
+		shouldThrow<ObjectStorageException> { icureObjectStorage.readAttachment(document1, attachment1).toByteArray(true) }
 		objectStorageClient.available = true
 		icureObjectStorage.readAttachment(document1, attachment1).toByteArray(true) shouldContainExactly bytes1
 		objectStorageClient.available = false
@@ -144,7 +154,8 @@ class IcureObjectStorageTest : StringSpec({
 				entityId = document1.id,
 				attachmentId = attachment1,
 				type = if (it % 2 == 0) ObjectStorageTaskType.UPLOAD else ObjectStorageTaskType.DELETE,
-				requestTime = 100L + (it * 100)
+				requestTime = 100L + (it * 100),
+				user = user
 			)
 		}
 		icureObjectStorage.preStore(document1, attachment1, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(bytes1)), bytes1.size.toLong())

@@ -231,6 +231,9 @@ object CryptoUtils {
 		return aesKeyGenerator.generateKey()
 	}
 
+	fun predictAESEncryptedSize(originalSize: Long): Long =
+		((originalSize + IV_BYTE_LENGTH) / 16 + 1) * 16
+
 	@Throws(Exception::class)
 	fun generateIV(ivSize: Int): ByteArray {
 		val ivBytes = ByteArray(ivSize)

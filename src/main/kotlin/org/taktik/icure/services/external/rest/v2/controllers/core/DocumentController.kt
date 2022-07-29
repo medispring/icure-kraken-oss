@@ -60,7 +60,7 @@ import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.asynclogic.objectstorage.contentFlowOfNullable
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DocumentType
-import org.taktik.icure.exceptions.ObjectStorageException
+import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
 import org.taktik.icure.services.external.rest.v2.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v2.dto.IcureStubDto
 import org.taktik.icure.services.external.rest.v2.dto.ListOfIdsDto

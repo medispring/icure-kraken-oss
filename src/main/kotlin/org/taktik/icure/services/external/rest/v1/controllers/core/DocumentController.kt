@@ -61,7 +61,7 @@ import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.asynclogic.objectstorage.contentFlowOfNullable
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DocumentType
-import org.taktik.icure.exceptions.ObjectStorageException
+import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
 import org.taktik.icure.security.CryptoUtils
 import org.taktik.icure.security.CryptoUtils.isValidAesKey
 import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
@@ -255,18 +255,18 @@ class DocumentController(
 			HttpStatus.BAD_REQUEST,
 			"`enckeys` must contain at least a valid aes key"
 		)
-		val newPayload: Flow<DataBuffer> =
-			if (validEncryptionKeys?.isNotEmpty() == true)
+		val (newPayload, newSize) =
+			if (validEncryptionKeys?.isNotEmpty() == true) Pair(
 				// Encryption should never fail if the key is valid
 				CryptoUtils.encryptFlowAES(payload, validEncryptionKeys.first())
-					.map { DefaultDataBufferFactory.sharedInstance.wrap(it) }
-			else
-				payload
+					.map { DefaultDataBufferFactory.sharedInstance.wrap(it) },
+				size?.let { CryptoUtils.predictAESEncryptedSize(it) }
+			) else (payload to size)
 		val document = documentLogic.getOr404(documentId)
 		checkRevision(rev, document)
 		val mainAttachmentChange =
-			if (size != null)
-				DataAttachmentChange.CreateOrUpdate(newPayload, size, utis)
+			if (newSize != null)
+				DataAttachmentChange.CreateOrUpdate(newPayload, newSize, utis)
 			else
 				newPayload.toByteArray(true).let { payloadBytes ->
 					DataAttachmentChange.CreateOrUpdate(

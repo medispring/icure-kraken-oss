@@ -135,5 +135,8 @@ class ICureTestApplication {
 	@Primary
 	@Bean
 	fun fakeDocumentObjectStorageClient(): DocumentObjectStorageClient =
-		object : DocumentObjectStorageClient, ObjectStorageClient<Document> by FakeObjectStorageClient("documents") {}
+		object : DocumentObjectStorageClient, ObjectStorageClient<Document> by FakeObjectStorageClient(
+			"documents",
+			mapOf(System.getenv("ICURE_TEST_USER_NAME") to System.getenv("ICURE_TEST_USER_PASSWORD"))
+		) {}
 }
