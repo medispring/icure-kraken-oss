@@ -26,12 +26,16 @@ import java.nio.ByteBuffer
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.asPublisher
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.reactor.asFlux
 import kotlinx.coroutines.withContext
@@ -151,6 +155,12 @@ suspend fun Flow<ByteBuffer>.toInputStream(): InputStream {
 	}
 }
 
+/**
+ * Drop the first [n] bytes from this flow.
+ */
+fun Flow<DataBuffer>.dropBytes(n: Long): Flow<DataBuffer> =
+	if (n > 0) DataBufferUtils.skipUntilByteCount(this.asPublisher(), n).asFlow() else this
+
 /* TODO check if other implementation is more efficient and is also correct (does never leave trailing zeroes)
 DataBufferUtils.join(asPublisher()).awaitFirst().asByteBuffer().array()
  */
@@ -175,3 +185,33 @@ private fun ByteBuffer.writeTo(os: OutputStream): Unit =
 	} else {
 		os.write(ByteArray(remaining()).also { get(it) })
 	}
+
+
+
+/**
+ * Merges multiple data buffers together until the flow is fully exhausted or at least [size] bytes of
+ * data was collected. The returned flow will consist of a single [DataBuffer] with size strictly smaller
+ * than [size] or it will be a flow of one or more [DataBuffer]s where the first has size greater than
+ * or equal to [size]
+ */
+suspend fun Flow<DataBuffer>.bufferFirstSize(size: Int): Flow<DataBuffer> = flow {
+	var accumulatedSize = 0
+	val buffers = mutableListOf<DataBuffer>()
+	var didEmitBuffers = false
+
+	suspend fun emitAccumulatedBuffers() {
+		emit(DataBufferUtils.join(buffers.asFlow().asPublisher()).awaitFirst())
+		didEmitBuffers = true
+	}
+
+	this@bufferFirstSize.collect {
+		if (didEmitBuffers) {
+			emit(it)
+		} else {
+			buffers += it
+			accumulatedSize += it.readableByteCount()
+			if (accumulatedSize >= size) emitAccumulatedBuffers()
+		}
+	}
+	if (!didEmitBuffers && buffers.isNotEmpty()) emitAccumulatedBuffers()
+}

@@ -1,6 +1,5 @@
 package org.taktik.icure.services.external.rest.shared.controllers.core
 
-import kotlin.random.Random
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.delay
@@ -26,14 +25,13 @@ import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.test.bytesContent
 import org.taktik.icure.test.jsonContent
 import org.taktik.icure.test.multipartContent
+import org.taktik.icure.test.randomBytes
 import org.taktik.icure.test.uriWithVars
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 
 // Funny stuff happens if this is an interface with default implementations of functions
 abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
-	protected val random = Random(System.currentTimeMillis())
-
 	val host: String = System.getenv("ICURE_SERVICE_HOST")
 
 	abstract val port: Int
@@ -270,11 +268,11 @@ abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
 
 	// Create random bytes which can be used to simulate an attachment big enough to go to object storage
 	fun randomBigAttachment(): ByteArray =
-		random.nextBytes((properties.sizeLimit * 1.2).toInt())
+		randomBytes((properties.sizeLimit * 1.2).toInt())
 
 	// Create random bytes which can be used to simulate an attachment small enough to go to couch db
 	fun randomSmallAttachment(): ByteArray =
-		random.nextBytes((properties.sizeLimit * 0.8).toInt())
+		randomBytes((properties.sizeLimit * 0.8).toInt())
 
 	fun <T : DataAttachment?> T.shouldBeInCouch() = this.also {
 		this?.couchDbAttachmentId shouldNotBe null

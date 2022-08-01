@@ -63,7 +63,7 @@ class DataAttachmentLoaderTest : StringSpec({
 
 	"Loading an attachment stored with couch db should read the value from couch db" {
 		every { objectStorageMigration.isMigrating(sampleDocument, attachment1) } returns false
-		every { attachmentStub.contentLength } returns smallAttachment.size.toLong()
+		every { attachmentStub.length } returns smallAttachment.size.toLong()
 		every { dao.getAttachment(sampleDocument.id, attachment1, null) } returns flowOf(ByteBuffer.wrap(smallAttachment))
 		loader.contentBytesOfNullable(sampleDocument, key1) shouldContainExactly smallAttachment
 	}
@@ -88,7 +88,7 @@ class DataAttachmentLoaderTest : StringSpec({
 
 	"Loading an attachment stored in couch db should trigger a migration task if its size is greater than the migration size limit" {
 		every { objectStorageMigration.isMigrating(sampleDocument, attachment1) } returns false
-		every { attachmentStub.contentLength } returns migrationBigAttachment.size.toLong()
+		every { attachmentStub.length } returns migrationBigAttachment.size.toLong()
 		every { objectStorage.tryReadCachedAttachment(sampleDocument, attachment1) } returns null
 		every { dao.getAttachment(sampleDocument.id, attachment1, null) } returns flowOf(ByteBuffer.wrap(migrationBigAttachment))
 		coEvery { objectStorageMigration.scheduleMigrateAttachment(sampleDocument, attachment1) } just Runs
@@ -100,7 +100,7 @@ class DataAttachmentLoaderTest : StringSpec({
 
 	"Loading an attachment stored in couch db should not trigger a migration task if its size is smaller than the migration size limit, even if it is bigger than the size limit" {
 		every { objectStorageMigration.isMigrating(sampleDocument, attachment1) } returns false
-		every { attachmentStub.contentLength } returns bigAttachment.size.toLong()
+		every { attachmentStub.length } returns bigAttachment.size.toLong()
 		every { objectStorage.tryReadCachedAttachment(sampleDocument, attachment1) } returns null
 		every { dao.getAttachment(sampleDocument.id, attachment1, null) } returns flowOf(ByteBuffer.wrap(bigAttachment))
 		loader.contentBytesOfNullable(sampleDocument, key1) shouldContainExactly bigAttachment

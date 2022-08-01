@@ -25,7 +25,7 @@ interface IcureObjectStorageMigration<T : HasDataAttachments<T>> {
 	 * @param entity entity which owns the attachment.
 	 * @param attachmentId id of the attachment.
  	 */
-	fun scheduleMigrateAttachment(entity: T, attachmentId: String)
+	suspend fun scheduleMigrateAttachment(entity: T, attachmentId: String)
 
 	/**
 	 * Reschedules all migration tasks which could not be completed before the system was last shut down.

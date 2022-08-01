@@ -9,7 +9,9 @@ import io.kotest.matchers.shouldBe
 import io.mockk.MockK
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -20,6 +22,8 @@ import org.taktik.icure.security.database.DatabaseUserDetails
 val random = Random(System.currentTimeMillis())
 
 fun ByteArray.asDataBufferFlow() = flowOf(DefaultDataBufferFactory.sharedInstance.wrap(this))
+
+fun Iterable<ByteArray>.asDataBufferFlow() = asFlow().map { DefaultDataBufferFactory.sharedInstance.wrap(it) }
 
 val ByteArray.sizeL get() = size.toLong()
 

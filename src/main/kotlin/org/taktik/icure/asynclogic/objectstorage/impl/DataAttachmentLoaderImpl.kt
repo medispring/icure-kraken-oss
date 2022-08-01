@@ -3,6 +3,8 @@ package org.taktik.icure.asynclogic.objectstorage.impl
 import java.security.GeneralSecurityException
 import java.security.KeyException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
@@ -23,6 +25,7 @@ import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.security.CryptoUtils
 import org.taktik.icure.security.CryptoUtils.isValidAesKey
 import org.taktik.icure.security.CryptoUtils.keyFromHexString
+import org.taktik.icure.utils.bufferFirstSize
 
 class DataAttachmentLoaderImpl<T : HasDataAttachments<T>>(
 	private val dao: GenericDAO<T>,
@@ -53,9 +56,9 @@ class DataAttachmentLoaderImpl<T : HasDataAttachments<T>>(
 		} ?: attachment.couchDbAttachmentId!!.let { attachmentId ->
 			if (icureObjectStorageMigration.isMigrating(target, attachmentId)) {
 				icureObjectStorage.tryReadCachedAttachment(target, attachmentId) ?: loadCouchDbAttachment(target, attachmentId)
-			} else {
+			} else flow {
 				if (shouldMigrate(target, attachmentId)) icureObjectStorageMigration.scheduleMigrateAttachment(target, attachmentId)
-				loadCouchDbAttachment(target, attachmentId)
+				emitAll(loadCouchDbAttachment(target, attachmentId))
 			}
 		}
 
@@ -64,7 +67,7 @@ class DataAttachmentLoaderImpl<T : HasDataAttachments<T>>(
 
 	private fun shouldMigrate(target: T, attachmentId: String) =
 		objectStorageProperties.backlogToObjectStorage
-			&& target.attachments?.get(attachmentId)?.let { it.contentLength >= migrationSizeLimit } == true
+			&& target.attachments?.get(attachmentId)?.length?.let { it >= migrationSizeLimit } == true
 }
 
 @Service

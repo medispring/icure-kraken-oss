@@ -147,8 +147,9 @@ dependencies {
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.3.1.Final")
 
     //Krouch
-    implementation(group = "org.taktik.couchdb", name = "krouch", version = "jack211-1.0.2-105-g3ec3433148")
+    implementation(group = "org.taktik.couchdb", name = "krouch", version = "main-1.0.2-111-g34b8dc36d9")
     implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
+
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.13")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.13")
 	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.13")
