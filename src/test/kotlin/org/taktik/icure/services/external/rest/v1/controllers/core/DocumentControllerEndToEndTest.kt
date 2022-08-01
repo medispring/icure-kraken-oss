@@ -1,7 +1,6 @@
 package org.taktik.icure.services.external.rest.v1.controllers.core
 
 import java.io.File
-import java.util.UUID
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -44,6 +43,8 @@ import org.taktik.icure.services.external.rest.v1.dto.embed.DocumentTypeDto
 import org.taktik.icure.services.external.rest.v1.mapper.DocumentMapper
 import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.multipartContent
+import org.taktik.icure.test.newId
+import org.taktik.icure.test.random
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.test.shouldNotContainExactly
 import org.taktik.icure.test.shouldRespondErrorStatus
@@ -148,7 +149,7 @@ class DocumentControllerEndToEndTest(
 
 			override val dataFactory = object : DataFactory<DocumentDto, DocumentController.BulkAttachmentUpdateOptions> {
 				override fun newDocumentNoAttachment(index: Int?) = DocumentDto(
-					UUID.randomUUID().toString(),
+					newId(),
 					name = index?.let { "Document $it" } ?: "New document",
 					documentType = DocumentTypeDto.admission
 				)
@@ -175,7 +176,7 @@ class DocumentControllerEndToEndTest(
 private fun StringSpec.v1EndToEndTests(
 	context: DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>
 ): Unit = with (context) {
-	val encKey = UUID.randomUUID().toString()
+	val encKey = newId()
 
 	"Updating or deleting the main attachment should not require to specify a revision" {
 		val doc = createDocument(dataFactory.newDocumentNoAttachment())

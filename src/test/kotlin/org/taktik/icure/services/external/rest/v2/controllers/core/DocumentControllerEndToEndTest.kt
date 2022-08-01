@@ -1,7 +1,6 @@
 package org.taktik.icure.services.external.rest.v2.controllers.core
 
 import java.io.File
-import java.util.UUID
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.spring.SpringListener
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +31,8 @@ import org.taktik.icure.services.external.rest.v2.dto.embed.DeletedAttachmentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.DocumentTypeDto
 import org.taktik.icure.services.external.rest.v2.mapper.DocumentV2Mapper
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.newId
+import org.taktik.icure.test.random
 import org.taktik.icure.test.shouldRespondErrorStatus
 import reactor.core.publisher.Mono
 
@@ -132,7 +133,7 @@ class DocumentControllerEndToEndTest(
 
 			override val dataFactory = object : DataFactory<DocumentDto, DocumentController.BulkAttachmentUpdateOptions> {
 				override fun newDocumentNoAttachment(index: Int?) = DocumentDto(
-					UUID.randomUUID().toString(),
+					newId(),
 					name = index?.let { "Document $it" } ?: "New document",
 					documentType = DocumentTypeDto.admission
 				)

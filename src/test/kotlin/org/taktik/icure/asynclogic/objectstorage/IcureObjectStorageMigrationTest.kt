@@ -93,7 +93,7 @@ class IcureObjectStorageMigrationTest : StringSpec({
 	}
 
 	fun mockAttachmentFor(bytes: ByteArray): Attachment =
-		mockk<Attachment>().also { every { it.contentLength } returns bytes.size.toLong() }
+		mockk<Attachment>().also { every { it.length } returns bytes.size.toLong() }
 
 	val migrationDocument = Document(
 		document1.id,
@@ -122,7 +122,7 @@ class IcureObjectStorageMigrationTest : StringSpec({
 		)
 	}
 
-	fun migrate() {
+	suspend fun migrate() {
 		icureObjectStorageMigration.scheduleMigrateAttachment(migrationDocument, attachment1)
 		icureObjectStorageMigration.isMigrating(migrationDocument, attachment1) shouldBe true
 	}

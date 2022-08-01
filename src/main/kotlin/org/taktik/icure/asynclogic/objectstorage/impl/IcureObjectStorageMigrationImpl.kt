@@ -2,8 +2,11 @@ package org.taktik.icure.asynclogic.objectstorage.impl
 
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -11,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactor.ReactorContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.core.io.buffer.DataBuffer
@@ -19,7 +23,6 @@ import org.taktik.couchdb.entity.Attachment
 import org.taktik.icure.asyncdao.DocumentDAO
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageMigrationTasksDAO
-import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorage
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageMigration
 import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
@@ -33,6 +36,7 @@ import org.taktik.icure.properties.ObjectStorageProperties
 
 interface ScheduledIcureObjectStorageMigration<T : HasDataAttachments<T>> : IcureObjectStorageMigration<T>, DisposableBean
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private abstract class IcureObjectStorageMigrationImpl<T : HasDataAttachments<T>>(
 	private val dao: GenericDAO<T>,
 	private val objectStorageProperties: ObjectStorageProperties,
@@ -50,12 +54,11 @@ private abstract class IcureObjectStorageMigrationImpl<T : HasDataAttachments<T>
 	override fun isMigrating(entity: T, attachmentId: String): Boolean =
 		migrationTaskSet.contains(entity.id to attachmentId)
 
-	override fun scheduleMigrateAttachment(entity: T, attachmentId: String) {
-		if (migrationTaskSet.add(entity.id to attachmentId)) taskExecutorScope.launch {
+	override suspend fun scheduleMigrateAttachment(entity: T, attachmentId: String) {
+		if (migrationTaskSet.add(entity.id to attachmentId)) taskExecutorScope.launch(coroutineContext[ReactorContext] ?: EmptyCoroutineContext) {
 			if (tryPreStore(entity, attachmentId)) {
 				objectStorage.scheduleStoreAttachment(entity, attachmentId)
-				val task = ObjectStorageMigrationTask.of(entity, attachmentId)
-				objectStorageMigrationTasksDao.save(task)
+				val task = ObjectStorageMigrationTask.of(entity, attachmentId).let { objectStorageMigrationTasksDao.save(it) ?: it }
 				do {
 					delay(objectStorageProperties.migrationDelayMs)
 				} while (!tryMigration(task))
@@ -76,9 +79,9 @@ private abstract class IcureObjectStorageMigrationImpl<T : HasDataAttachments<T>
 	}
 
 	private suspend fun tryPreStore(entity: T, attachmentId: String) =
-		entity.attachments?.get(attachmentId)?.let { attachmentInfo ->
+		entity.attachments?.get(attachmentId)?.length?.let { length ->
 			loadAttachment(entity, attachmentId)
-				?.let { runCatching { objectStorage.preStore(entity, attachmentId, it, attachmentInfo.contentLength) } }
+				?.let { runCatching { objectStorage.preStore(entity, attachmentId, it, length) } }
 				?.isSuccess
 		} == true
 
@@ -99,7 +102,7 @@ private abstract class IcureObjectStorageMigrationImpl<T : HasDataAttachments<T>
 		} ?: true // The document was deleted, no need to migrate
 	).also { completed ->
 		if (completed) {
-			objectStorageMigrationTasksDao.purge(task)
+			if (!task.rev.isNullOrBlank()) objectStorageMigrationTasksDao.purge(task)
 			migrationTaskSet.remove(task.entityId to task.attachmentId)
 		}
 	}

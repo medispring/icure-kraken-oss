@@ -75,7 +75,7 @@ class FakeObjectStorageClient<T : HasDataAttachments<T>>(
 		enum class Type { SUCCESSFUL_UPLOAD, SUCCESSFUL_DELETE, UNSUCCESSFUL_UPLOAD, UNSUCCESSFUL_DELETE }
 	}
 
-	fun checkUser(user: String, password: String) {
+	private fun checkUser(user: String, password: String) {
 		user shouldBeIn users.keys
 		password shouldBe users.getValue(user)
 	}

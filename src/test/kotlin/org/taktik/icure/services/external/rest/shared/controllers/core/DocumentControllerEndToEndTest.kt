@@ -6,6 +6,8 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.apache.http.HttpHeaders
@@ -17,6 +19,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key3
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.*
 import org.taktik.icure.test.authorizationString
+import org.taktik.icure.test.randomBytes
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.test.shouldRespondErrorStatus
 import org.taktik.icure.utils.toByteArray
@@ -293,5 +296,39 @@ fun <DTO : Any, METADTO : Any> StringSpec.documentControllerSharedEndToEndTests(
 		shouldRespondErrorStatus(HttpStatus.BAD_REQUEST) {
 			updateDocument(initial.addDeletedAttachment())
 		}
+	}
+
+	"Loading a big attachment stored in couchdb should start migration" {
+		val prevSizeLimit = properties.sizeLimit
+		val prevMigrationSizeLimit = properties.migrationSizeLimit
+		val prevMigrationDelay = properties.migrationDelayMs
+		properties.sizeLimit = 3_000
+		properties.migrationSizeLimit = 4_000
+		properties.migrationDelayMs = 100
+		val attachment = randomBytes(2_500)
+		val doc = createDocumentWithAttachment(
+			dataFactory.newDocumentNoAttachment(),
+			attachment,
+			null
+		).document.also { println(it) }
+		doc.mainAttachment.shouldNotBeNull().shouldBeInCouch()
+		getAttachment(doc.id, null).toByteArray(true) shouldContainExactly attachment
+		delay(properties.migrationDelayMs * 3)
+		getDocument(doc.id).document.let {
+			it.rev shouldBe doc.rev
+			it.mainAttachment.shouldNotBeNull().shouldBeInCouch()
+		}
+		properties.sizeLimit = 1_000
+		properties.migrationSizeLimit = 2_000
+		getAttachment(doc.id, null).toByteArray(true) shouldContainExactly attachment
+		delay(properties.migrationDelayMs * 3)
+		getDocument(doc.id).document.let {
+			it.rev shouldNotBe doc.rev
+			it.mainAttachment.shouldNotBeNull().shouldBeInObjectStore()
+		}
+		getAttachment(doc.id, null).toByteArray(true) shouldContainExactly attachment
+		properties.sizeLimit = prevSizeLimit
+		properties.migrationSizeLimit = prevMigrationSizeLimit
+		properties.migrationDelayMs = prevMigrationDelay
 	}
 }
