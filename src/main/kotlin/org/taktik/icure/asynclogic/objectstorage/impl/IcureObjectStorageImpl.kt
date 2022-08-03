@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.security.authentication.AuthenticationServiceException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentLocalObjectStorage
@@ -108,7 +109,7 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 			entity,
 			attachmentId,
 			taskType,
-			checkNotNull((sessionLogic.getCurrentSessionContext().getUserDetails() as? DatabaseUserDetails)?.username) {
+			checkNotNull(getAuthenticatedUserAndPassword().first) {
 				"preStore should ensure user exists"
 			}
 		)
@@ -151,15 +152,18 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 	}
 
 	private suspend fun cacheAndGetCurrentUserCredentials(): Pair<String, String> {
-		val (user, password) = sessionLogic.getCurrentSessionContext().let {
-			(it.getUserDetails() as? DatabaseUserDetails)?.username to it.getAuthentication().toString()
-		}
-		if (user == null) throw AuthenticationServiceException(
-			"User must be an authenticated database user in order to upload data to object storage."
+		val (user, password) = getAuthenticatedUserAndPassword()
+		if (user == null || password == null) throw AuthenticationServiceException(
+			"User must be authenticated with username-password authentication in order to upload data to object storage."
 		)
 		credentialsCache[user] = password
 		return user to password
 	}
+
+	private suspend fun getAuthenticatedUserAndPassword(): Pair<String?, String?> =
+		(sessionLogic.getCurrentSessionContext().getAuthentication().credentials as? UsernamePasswordAuthenticationToken)?.let {
+			(it.principal.toString() as? String) to (it.credentials.toString() as? String)
+		} ?: Pair(null, null)
 }
 
 @Service

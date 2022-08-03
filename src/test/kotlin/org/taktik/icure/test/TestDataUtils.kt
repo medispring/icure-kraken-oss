@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.security.authentication.AuthenticationServiceException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.security.database.DatabaseUserDetails
@@ -41,11 +42,11 @@ fun AsyncSessionLogic.setCurrentUserData(
 ) {
 	isMock shouldBe true
 	val sessionContext = mockk<AsyncSessionLogic.AsyncSessionContext>()
-	val dbUserDetails = mockk<DatabaseUserDetails>()
 	val authentication = mockk<Authentication>()
+	val credentials = mockk<UsernamePasswordAuthenticationToken>()
 	coEvery { getCurrentSessionContext() } returns sessionContext
-	coEvery { sessionContext.getUserDetails() } returns dbUserDetails
-	coEvery { dbUserDetails.username } returns user
 	coEvery { sessionContext.getAuthentication() } returns authentication
-	coEvery { authentication.toString() } returns password
+	coEvery { authentication.credentials } returns credentials
+	coEvery { credentials.principal } returns user
+	coEvery { credentials.credentials } returns password
 }
