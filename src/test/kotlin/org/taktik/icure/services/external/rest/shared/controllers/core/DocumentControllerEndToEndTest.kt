@@ -1,5 +1,8 @@
 package org.taktik.icure.services.external.rest.shared.controllers.core
 
+import kotlin.time.seconds
+import io.kotest.assertions.fail
+import io.kotest.assertions.retry
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
@@ -20,8 +23,10 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.*
 import org.taktik.icure.test.authorizationString
 import org.taktik.icure.test.randomBytes
+import org.taktik.icure.test.retryUntil
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.test.shouldRespondErrorStatus
+import org.taktik.icure.utils.suspendRetry
 import org.taktik.icure.utils.toByteArray
 
 val client = WebClient.builder()
@@ -330,5 +335,25 @@ fun <DTO : Any, METADTO : Any> StringSpec.documentControllerSharedEndToEndTests(
 		properties.sizeLimit = prevSizeLimit
 		properties.migrationSizeLimit = prevMigrationSizeLimit
 		properties.migrationDelayMs = prevMigrationDelay
+	}
+
+	"Upload to object storage of big attachments should complete successfully at some point" {
+		val attachment = randomBigAttachment()
+		val doc = createDocumentWithAttachment(dataFactory.newDocumentNoAttachment(), attachment, null).document
+		val available = retryUntil(10, 500) {
+			objectStorageClient.checkAvailable(
+				doc,
+				doc.objectStoreReference!!,
+				System.getenv("ICURE_TEST_USER_NAME"),
+				System.getenv("ICURE_TEST_USER_PASSWORD"),
+			)
+		}
+		if (!available) fail("Attachment was not uploaded successfully to object storage")
+		objectStorageClient.get(
+			doc,
+			doc.objectStoreReference!!,
+			System.getenv("ICURE_TEST_USER_NAME"),
+			System.getenv("ICURE_TEST_USER_PASSWORD"),
+		).toByteArray(true) shouldContainExactly attachment
 	}
 }
