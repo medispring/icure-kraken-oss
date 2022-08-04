@@ -11,11 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asPublisher
-import kotlinx.coroutines.reactive.awaitSingle
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
@@ -28,22 +25,17 @@ import org.springframework.util.DigestUtils
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
 import org.springframework.web.reactive.function.client.awaitBody
 import org.springframework.web.reactive.function.client.bodyToFlow
-import org.springframework.web.reactive.function.client.bodyToMono
 import org.springframework.web.util.UriUtils
-import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
-import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
 import org.taktik.icure.asynclogic.objectstorage.UnavailableObjectException
 import org.taktik.icure.asynclogic.objectstorage.UnreachableObjectStorageException
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.properties.ObjectStorageProperties
-import org.taktik.icure.security.database.DatabaseUserDetails
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 
@@ -76,11 +68,11 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		password: String
 	): Boolean = runCatching {
 		val contentBytes = content.toByteArray(true)
-		val md5urlEncoded = UriUtils.encode(Base64.getEncoder().encodeToString(DigestUtils.md5Digest(contentBytes)), "UTF-8")
+		val md5 = Base64.getUrlEncoder().encodeToString(DigestUtils.md5Digest(contentBytes))
 		val nextExpectedByte = nextBytesMap[entityId to attachmentId] ?: 0
 		val nextBytes = if (nextExpectedByte > 0) contentBytes.sliceArray(nextExpectedByte until contentBytes.size) else contentBytes
 		icureCloudClient.post()
-			.uri("${uriTo(entityId, attachmentId)}?size=${contentBytes.size}&md5Hash=$md5urlEncoded&startByte=$nextExpectedByte")
+			.uri("${uriTo(entityId, attachmentId)}?size=${contentBytes.size}&md5Hash=$md5&startByte=$nextExpectedByte")
 			.setAuthorization(user, password)
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
 			.body(BodyInserters.fromDataBuffers(flowOf(DefaultDataBufferFactory.sharedInstance.wrap(nextBytes)).asPublisher()))
@@ -169,16 +161,16 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 	private sealed class StoredObjectInformation {
 		/**
 		 * The object is fully stored and available.
-		 * @param md5hashBase64 base64 representation of the md5 hash of the content.
+		 * @param md5HashHexString hex string representation of the md5 hash of the content.
 		 */
-		data class Available(val md5hashBase64: String) : StoredObjectInformation(), Serializable
+		data class Available(val md5HashHexString: String) : StoredObjectInformation(), Serializable
 
 		/**
 		 * The object is currently getting stored.
 		 * @param nextByte the next expected byte of the object content (all bytes up until the previous have already been stored).
-		 * @param md5hashBase64 md5 hash of the expected hash of the full content base64-encoded.
+		 * @param md5HashHexString md5 hash of the expected hash of the full content as an hex string.
 		 */
-		data class Storing(val nextByte: Long, val md5hashBase64: String?) : StoredObjectInformation(), Serializable
+		data class Storing(val nextByte: Long, val md5HashHexString: String?) : StoredObjectInformation(), Serializable
 
 		/**
 		 * The object is not stored in the object storage service and it is not getting stored.
