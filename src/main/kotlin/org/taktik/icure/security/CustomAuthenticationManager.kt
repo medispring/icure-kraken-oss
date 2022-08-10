@@ -83,7 +83,7 @@ class CustomAuthenticationManager(
 					emptyList()
 				}
 			}
-		}.filter { it.status == Users.Status.ACTIVE }.sortedBy { it.id }.distinctBy { it.id }
+		}.filter { it.status == Users.Status.ACTIVE && it.deletionDate == null }.sortedBy { it.id }.distinctBy { it.id }
 
 		val matchingUsers = mutableListOf<User>()
 		val password: String = authentication.credentials.toString()
