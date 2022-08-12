@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.body
 import org.springframework.web.reactive.function.client.bodyToFlow
 import org.taktik.couchdb.exception.CouchDbException
 import org.taktik.icure.asyncdao.DocumentDAO
+import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.entities.Document
@@ -43,6 +44,8 @@ abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
 	abstract val dao: DocumentDAO
 
 	abstract val objectStorageClient: DocumentObjectStorageClient
+
+	abstract val testUserId: String
 
 	abstract fun WebClient.RequestBodySpec.dtoBody(dto: DTO): WebClient.RequestHeadersSpec<*>
 
@@ -251,16 +254,14 @@ abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
 				objectStorageClient.checkAvailable(
 					doc,
 					dataAttachment.objectStoreAttachmentId!!,
-					System.getenv("ICURE_TEST_USER_NAME"),
-					System.getenv("ICURE_TEST_USER_PASSWORD")
+					testUserId
 				)
 			) { // If it was not deleted yet wait a bit to ensure all storage jobs are completed.
 				delay(500)
 				objectStorageClient.checkAvailable(
 					doc,
 					dataAttachment.objectStoreAttachmentId!!,
-					System.getenv("ICURE_TEST_USER_NAME"),
-					System.getenv("ICURE_TEST_USER_PASSWORD")
+					testUserId
 				) shouldBe false
 			}
 		}

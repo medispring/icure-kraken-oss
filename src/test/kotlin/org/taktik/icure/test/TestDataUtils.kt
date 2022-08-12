@@ -6,7 +6,6 @@ import java.util.UUID
 import kotlin.random.Random
 import com.ninjasquad.springmockk.isMock
 import io.kotest.matchers.shouldBe
-import io.mockk.MockK
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.asFlow
@@ -14,11 +13,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
-import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.taktik.icure.asynclogic.AsyncSessionLogic
-import org.taktik.icure.security.database.DatabaseUserDetails
 
 val random = Random(System.currentTimeMillis())
 
@@ -36,17 +33,9 @@ fun randomBytes(size: Int) = random.nextBytes(size)
 
 fun randomUri() = URI("https://example.com/${newId()}")
 
-fun AsyncSessionLogic.setCurrentUserData(
-	user: String,
-	password: String
-) {
+fun AsyncSessionLogic.setCurrentUserData(userId: String) {
 	isMock shouldBe true
 	val sessionContext = mockk<AsyncSessionLogic.AsyncSessionContext>()
-	val authentication = mockk<Authentication>()
-	val credentials = mockk<UsernamePasswordAuthenticationToken>()
 	coEvery { getCurrentSessionContext() } returns sessionContext
-	coEvery { sessionContext.getAuthentication() } returns authentication
-	coEvery { authentication.credentials } returns credentials
-	coEvery { credentials.principal } returns user
-	coEvery { credentials.credentials } returns password
+	coEvery { sessionContext.getUserId() } returns userId
 }

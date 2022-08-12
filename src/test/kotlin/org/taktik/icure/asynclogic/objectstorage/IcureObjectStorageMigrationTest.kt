@@ -6,7 +6,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -61,16 +60,14 @@ class IcureObjectStorageMigrationTest : StringSpec({
 	lateinit var objectStorageClient: FakeObjectStorageClient<Document>
 	lateinit var icureObjectStorage: DocumentObjectStorageImpl
 	lateinit var icureObjectStorageMigration: DocumentObjectStorageMigrationImpl
-	lateinit var user: String
-	lateinit var password: String
+	lateinit var userId: String
 
 	beforeEach {
-		user = newId()
-		password = newId()
-		sessionLogic.setCurrentUserData(user, password)
+		userId = newId()
+		sessionLogic.setCurrentUserData(userId)
 		resetTestLocalStorageDirectory()
 		documentDAO = mockk()
-		objectStorageClient = FakeObjectStorageClient("documents", mapOf(user to password))
+		objectStorageClient = FakeObjectStorageClient("documents", setOf(userId))
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		migrationTasksDAO = FakeObjectStorageMigrationTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(

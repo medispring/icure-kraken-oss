@@ -40,6 +40,7 @@ interface AsyncSessionLogic {
 	suspend fun getCurrentDataOwnerId(): String
 
 	interface AsyncSessionContext : Serializable {
+		fun getUserId(): String?
 		fun getAuthentication(): Authentication
 		fun getUserDetails(): UserDetails
 		fun isAuthenticated(): Boolean

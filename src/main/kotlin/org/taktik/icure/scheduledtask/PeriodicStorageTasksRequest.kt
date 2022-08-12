@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
 
-private const val TIME_STRING = "\${icure.objectstorage.storagetasks.rescheduleIntervalSeconds:360}000"
+private const val TIME_STRING = "\${icure.objectstorage.storagetasks.rescheduleIntervalSeconds:600}000"
 
 @ExperimentalCoroutinesApi
 @Component

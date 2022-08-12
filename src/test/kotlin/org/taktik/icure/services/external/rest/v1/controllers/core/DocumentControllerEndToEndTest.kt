@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asPublisher
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -26,6 +27,7 @@ import org.springframework.web.reactive.function.client.awaitBody
 import org.springframework.web.reactive.function.client.body
 import org.springframework.web.reactive.function.client.bodyToFlow
 import org.taktik.icure.asyncdao.DocumentDAO
+import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.testutils.htmlUti
 import org.taktik.icure.asynclogic.objectstorage.testutils.javascriptUti
@@ -73,6 +75,7 @@ class DocumentControllerEndToEndTest(
 	documentMapper: DocumentMapper,
 	dao: DocumentDAO,
 	objectStorageClient: DocumentObjectStorageClient,
+	userLogic: UserLogic,
 	@LocalServerPort port: Int
 ) : StringSpec() {
 	init {
@@ -88,6 +91,9 @@ class DocumentControllerEndToEndTest(
 			override val properties: ObjectStorageProperties = properties
 			override val dao: DocumentDAO = dao
 			override val objectStorageClient: DocumentObjectStorageClient = objectStorageClient
+			override val testUserId: String = runBlocking {
+				userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id
+			}
 
 			override fun WebClient.RequestBodySpec.dtoBody(dto: DocumentDto): WebClient.RequestHeadersSpec<*> =
 				body<DocumentDto>(Mono.just(dto))

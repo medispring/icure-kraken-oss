@@ -344,16 +344,14 @@ fun <DTO : Any, METADTO : Any> StringSpec.documentControllerSharedEndToEndTests(
 			objectStorageClient.checkAvailable(
 				doc,
 				doc.objectStoreReference!!,
-				System.getenv("ICURE_TEST_USER_NAME"),
-				System.getenv("ICURE_TEST_USER_PASSWORD"),
+				testUserId
 			)
 		}
 		if (!available) fail("Attachment was not uploaded successfully to object storage")
 		objectStorageClient.get(
 			doc,
 			doc.objectStoreReference!!,
-			System.getenv("ICURE_TEST_USER_NAME"),
-			System.getenv("ICURE_TEST_USER_PASSWORD"),
+			testUserId
 		).toByteArray(true) shouldContainExactly attachment
 	}
 }

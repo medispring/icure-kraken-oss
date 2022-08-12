@@ -50,15 +50,13 @@ class IcureObjectStorageTest : StringSpec({
 	lateinit var storageTasksDAO: ObjectStorageTasksDAO
 	lateinit var objectStorageClient: FakeObjectStorageClient<Document>
 	lateinit var icureObjectStorage: DocumentObjectStorageImpl
-	lateinit var user: String
-	lateinit var password: String
+	lateinit var userId: String
 
 	beforeEach {
-		user = newId()
-		password = newId()
-		sessionLogic.setCurrentUserData(user, password)
+		userId = newId()
+		sessionLogic.setCurrentUserData(userId)
 		resetTestLocalStorageDirectory()
-		objectStorageClient = FakeObjectStorageClient("documents", mapOf(user to password))
+		objectStorageClient = FakeObjectStorageClient("documents", setOf(userId))
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(
 			storageTasksDAO,
@@ -155,7 +153,7 @@ class IcureObjectStorageTest : StringSpec({
 				attachmentId = attachment1,
 				type = if (it % 2 == 0) ObjectStorageTaskType.UPLOAD else ObjectStorageTaskType.DELETE,
 				requestTime = 100L + (it * 100),
-				user = user
+				userId = userId
 			)
 		}
 		icureObjectStorage.preStore(document1, attachment1, flowOf(DefaultDataBufferFactory.sharedInstance.wrap(bytes1)), bytes1.size.toLong())

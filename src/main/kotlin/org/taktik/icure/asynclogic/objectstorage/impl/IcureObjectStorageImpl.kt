@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.security.authentication.AuthenticationServiceException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentLocalObjectStorage
@@ -34,7 +33,6 @@ import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
-import org.taktik.icure.security.database.DatabaseUserDetails
 
 interface ScheduledIcureObjectStorage<T : HasDataAttachments<T>> : IcureObjectStorage<T>, InitializingBean, DisposableBean {
 	val hasScheduledStorageTasks: Boolean
@@ -51,7 +49,6 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
     companion object {
         private val log = LoggerFactory.getLogger(IcureObjectStorageImpl::class.java)
     }
-	private val credentialsCache = ConcurrentHashMap<String, String>()
 	private val taskExecutorScope = CoroutineScope(Dispatchers.Default)
 	private val taskChannel = Channel<ObjectStorageTask>(UNLIMITED)
 
@@ -71,7 +68,7 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 
 	override suspend fun preStore(entity: T, attachmentId: String, content: Flow<DataBuffer>, size: Long) =
 		try {
-			cacheAndGetCurrentUserCredentials()
+			ensureUserLogged()
 			localObjectStorage.store(entity, attachmentId, content)
 		} catch (e: Exception) {
 			throw ObjectStorageException("Could not store attachment to local cache", e)
@@ -82,16 +79,16 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 
 	override fun readAttachment(entity: T, attachmentId: String): Flow<DataBuffer> =
 		tryReadCachedAttachment(entity, attachmentId) ?: flow {
-			val (user, password) = cacheAndGetCurrentUserCredentials()
-			emitAll(objectStorageClient.get(entity, attachmentId, user, password).let { localObjectStorage.storing(entity, attachmentId, it) })
+			val userId = getLoggedUserId()
+			emitAll(objectStorageClient.get(entity, attachmentId, userId).let { localObjectStorage.storing(entity, attachmentId, it) })
 		}
 
 	override fun tryReadCachedAttachment(entity: T, attachmentId: String): Flow<DataBuffer>? =
 		localObjectStorage.read(entity, attachmentId)
 
 	override suspend fun hasStoredAttachment(entity: T, attachmentId: String): Boolean =
-		cacheAndGetCurrentUserCredentials().let { (user, password) ->
-			objectStorageClient.checkAvailable(entity, attachmentId, user = user, password = password)
+		getLoggedUserId().let { userId ->
+			objectStorageClient.checkAvailable(entity, attachmentId, userId)
 		}
 
 	override suspend fun scheduleDeleteAttachment(entity: T, attachmentId: String) =
@@ -109,9 +106,7 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 			entity,
 			attachmentId,
 			taskType,
-			checkNotNull(getAuthenticatedUserAndPassword().first) {
-				"preStore should ensure user exists"
-			}
+			getLoggedUserId()
 		)
 		objectStorageTasksDao.save(task)
 		taskChannel.send(task)
@@ -123,17 +118,15 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 			.toList()
 		val newestTask = relatedTasks.maxByOrNull { it.requestTime }
 		val success = newestTask?.takeIf { it.id == task.id }?.let {
-			credentialsCache[task.user]?.let { password ->
-				when (task.type) {
-					ObjectStorageTaskType.UPLOAD ->
-						localObjectStorage.unsafeRead(entityId = task.entityId, attachmentId = task.attachmentId)?.let {
-							objectStorageClient.unsafeUpload(entityId = task.entityId, attachmentId = task.attachmentId, it, user = task.user, password = password)
-						} ?: false.also {
-							log.error("Could not load value of attachment to store ${task.attachmentId}@${task.entityId}:${entityClass.javaClass.simpleName}")
-						}
-					ObjectStorageTaskType.DELETE ->
-						objectStorageClient.unsafeDelete(entityId = task.entityId, attachmentId = task.attachmentId, user = task.user, password = password)
-				}
+			when (task.type) {
+				ObjectStorageTaskType.UPLOAD ->
+					localObjectStorage.unsafeRead(entityId = task.entityId, attachmentId = task.attachmentId)?.let {
+						objectStorageClient.unsafeUpload(entityId = task.entityId, attachmentId = task.attachmentId, it, userId = task.userId)
+					} ?: false.also {
+						log.error("Could not load value of attachment to store ${task.attachmentId}@${task.entityId}:${entityClass.javaClass.simpleName}")
+					}
+				ObjectStorageTaskType.DELETE ->
+					objectStorageClient.unsafeDelete(entityId = task.entityId, attachmentId = task.attachmentId, userId = task.userId)
 			}
 		} ?: false
 		val toDelete = if (success) relatedTasks else relatedTasks.filter { it !== newestTask }
@@ -151,19 +144,13 @@ private class IcureObjectStorageImpl<T : HasDataAttachments<T>>(
 		}
 	}
 
-	private suspend fun cacheAndGetCurrentUserCredentials(): Pair<String, String> {
-		val (user, password) = getAuthenticatedUserAndPassword()
-		if (user == null || password == null) throw AuthenticationServiceException(
-			"User must be authenticated with username-password authentication in order to upload data to object storage."
-		)
-		credentialsCache[user] = password
-		return user to password
+	private suspend fun ensureUserLogged() {
+		getLoggedUserId()
 	}
 
-	private suspend fun getAuthenticatedUserAndPassword(): Pair<String?, String?> =
-		(sessionLogic.getCurrentSessionContext().getAuthentication().credentials as? UsernamePasswordAuthenticationToken)?.let {
-			(it.principal.toString() as? String) to (it.credentials.toString() as? String)
-		} ?: Pair(null, null)
+	private suspend fun getLoggedUserId() =
+		sessionLogic.getCurrentSessionContext().getUserId()
+			?: throw AuthenticationServiceException("Current session context has no user id.")
 }
 
 @Service
