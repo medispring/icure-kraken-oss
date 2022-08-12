@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asPublisher
 import org.slf4j.LoggerFactory
@@ -28,11 +30,11 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
 import org.springframework.web.reactive.function.client.awaitBody
 import org.springframework.web.reactive.function.client.bodyToFlow
-import org.springframework.web.util.UriUtils
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.UnavailableObjectException
 import org.taktik.icure.asynclogic.objectstorage.UnreachableObjectStorageException
+import org.taktik.icure.asynclogic.utils.CloudAuthenticationLogic
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.properties.ObjectStorageProperties
@@ -42,6 +44,7 @@ import reactor.core.publisher.Mono
 @OptIn(ExperimentalCoroutinesApi::class)
 private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 	private val objectStorageProperties: ObjectStorageProperties,
+	private val cloudAuthenticationLogic: CloudAuthenticationLogic,
 	override val entityGroupName: String
 ) : ObjectStorageClient<T> {
 	companion object {
@@ -57,15 +60,14 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 	}
 	private val nextBytesMap = ConcurrentHashMap<Pair<String, String>, Int>()
 
-	override suspend fun upload(entity: T, attachmentId: String, content: Flow<DataBuffer>, user: String, password: String): Boolean =
-		unsafeUpload(entity.id, attachmentId, content, user, password)
+	override suspend fun upload(entity: T, attachmentId: String, content: Flow<DataBuffer>, userId: String): Boolean =
+		unsafeUpload(entity.id, attachmentId, content, userId)
 
 	override suspend fun unsafeUpload(
 		entityId: String,
 		attachmentId: String,
 		content: Flow<DataBuffer>,
-		user: String,
-		password: String
+		userId: String
 	): Boolean = runCatching {
 		val contentBytes = content.toByteArray(true)
 		val md5 = Base64.getUrlEncoder().encodeToString(DigestUtils.md5Digest(contentBytes))
@@ -73,7 +75,7 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		val nextBytes = if (nextExpectedByte > 0) contentBytes.sliceArray(nextExpectedByte until contentBytes.size) else contentBytes
 		icureCloudClient.post()
 			.uri("${uriTo(entityId, attachmentId)}?size=${contentBytes.size}&md5Hash=$md5&startByte=$nextExpectedByte")
-			.setAuthorization(user, password)
+			.setAuthorization(userId)
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
 			.body(BodyInserters.fromDataBuffers(flowOf(DefaultDataBufferFactory.sharedInstance.wrap(nextBytes)).asPublisher()))
 			.retrieve()
@@ -92,24 +94,28 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		log.warn("Error while uploading attachment $attachmentId@$entityId:$entityGroupName", it)
 	}.getOrNull() == true
 
-	override fun get(entity: T, attachmentId: String, user: String, password: String): Flow<DataBuffer> = try {
-		icureCloudClient.get()
-			.uri(uriTo(entity.id, attachmentId))
-			.setAuthorization(user, password)
-			.retrieve()
-			.onStatus({ it == HttpStatus.NOT_FOUND }) {
-				Mono.just(UnavailableObjectException("There is no attachment $attachmentId@${entity.id}:$entityGroupName", null))
-			}
-			.bodyToFlow()
-	} catch (e: WebClientRequestException) {
-		throw UnreachableObjectStorageException(e)
+	override fun get(entity: T, attachmentId: String, userId: String): Flow<DataBuffer> = flow {
+		try {
+			emitAll(
+				icureCloudClient.get()
+					.uri(uriTo(entity.id, attachmentId))
+					.setAuthorization(userId)
+					.retrieve()
+					.onStatus({ it == HttpStatus.NOT_FOUND }) {
+						Mono.just(UnavailableObjectException("There is no attachment $attachmentId@${entity.id}:$entityGroupName", null))
+					}
+					.bodyToFlow()
+			)
+		} catch (e: WebClientRequestException) {
+			throw UnreachableObjectStorageException(e)
+		}
 	}
 
-	override suspend fun checkAvailable(entity: T, attachmentId: String, user: String, password: String): Boolean =
+	override suspend fun checkAvailable(entity: T, attachmentId: String, userId: String): Boolean =
 		runCatching {
 			val info = icureCloudClient.get()
 				.uri("${uriTo(entity.id, attachmentId)}/info")
-				.setAuthorization(user, password)
+				.setAuthorization(userId)
 				.retrieve()
 				.awaitBody<StoredObjectInformation>()
 			when (info) {
@@ -124,11 +130,11 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		}.getOrNull() == true
 
 	// Deletion is actually handled by maintenance tasks
-	override suspend fun delete(entity: T, attachmentId: String, user: String, password: String): Boolean =
+	override suspend fun delete(entity: T, attachmentId: String, userId: String): Boolean =
 		true
 
 	// Deletion is actually handled by maintenance tasks
-	override suspend fun unsafeDelete(entityId: String, attachmentId: String, user: String, password: String): Boolean =
+	override suspend fun unsafeDelete(entityId: String, attachmentId: String, userId: String): Boolean =
 		true
 
 	private fun uriTo(entityId: String, attachmentId: String): String = try {
@@ -139,14 +145,11 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		"$cloudUrl/${attachmentRoute(entityId, attachmentId)}"
 	}
 
-	private fun <S : WebClient.RequestHeadersSpec<S>> WebClient.RequestHeadersSpec<S>.setAuthorization(user: String, password: String) =
-		authHeader(user, password).let { this.header("Authorization", it) } ?: this
+	private suspend fun <S : WebClient.RequestHeadersSpec<S>> WebClient.RequestHeadersSpec<S>.setAuthorization(userId: String): S =
+		this.header("Authorization", cloudAuthenticationLogic.userAuthenticationHeader(userId))
 
 	private fun attachmentRoute(entityId: String, attachmentId: String): String =
 		listOf("rest", "v2", "objectstorage", entityGroupName, entityId, attachmentId).joinToString("/")
-
-	private fun authHeader(user: String, password: String) =
-		"Basic ${Base64.getEncoder().encodeToString(("$user:$password").toByteArray())}"
 
 	/**
 	 * Represents the status of an object which may be stored in the object storage service.
@@ -181,7 +184,9 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 
 class DocumentObjectStorageClientImpl(
 	objectStorageProperties: ObjectStorageProperties,
+	cloudAuthenticationLogic: CloudAuthenticationLogic
 ) : DocumentObjectStorageClient, ObjectStorageClient<Document> by ObjectStorageClientImpl(
 	objectStorageProperties,
+	cloudAuthenticationLogic,
 	"documents"
 )

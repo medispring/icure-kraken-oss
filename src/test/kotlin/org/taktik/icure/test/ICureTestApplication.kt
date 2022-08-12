@@ -134,9 +134,10 @@ class ICureTestApplication {
 	// Test beans
 	@Primary
 	@Bean
-	fun fakeDocumentObjectStorageClient(): DocumentObjectStorageClient =
-		object : DocumentObjectStorageClient, ObjectStorageClient<Document> by FakeObjectStorageClient(
-			"documents",
-			mapOf(System.getenv("ICURE_TEST_USER_NAME") to System.getenv("ICURE_TEST_USER_PASSWORD"))
-		) {}
+	fun fakeDocumentObjectStorageClient(userLogic: UserLogic): DocumentObjectStorageClient {
+		val fakeClient = FakeObjectStorageClient<Document>(
+			"documents"
+		) { runBlocking { setOf(userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id) } }
+		return object : DocumentObjectStorageClient, ObjectStorageClient<Document> by fakeClient {}
+	}
 }

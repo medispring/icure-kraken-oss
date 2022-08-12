@@ -19,11 +19,11 @@ data class ObjectStorageTask(
 	val entityClassName: String,
 	val entityId: String,
 	val attachmentId: String,
-	val user: String,
+	val userId: String,
 	val requestTime: Long = System.currentTimeMillis()
 ) : StoredDocument {
 	companion object {
-		fun <T : HasDataAttachments<T>> of(entity: T, attachmentId: String, type: ObjectStorageTaskType, user: String) = ObjectStorageTask(
+		fun <T : HasDataAttachments<T>> of(entity: T, attachmentId: String, type: ObjectStorageTaskType, userId: String) = ObjectStorageTask(
 			UUID.randomUUID().toString(),
 			type = type,
 			entityClassName = entity::class.java.simpleName.also {
@@ -31,7 +31,7 @@ data class ObjectStorageTask(
 			},
 			entityId = entity.id,
 			attachmentId = attachmentId,
-			user = user
+			userId = userId
 		)
 	}
 
