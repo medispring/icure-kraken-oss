@@ -26,12 +26,12 @@ final data class ObjectStorageProperties(
 	/**
 	 * Minimum size for new attachments to be stored to object storage (in bytes).
 	 */
-    var sizeLimit: Long = 2_000_000,
+    var sizeLimit: Long = 134_217_728,
 	/**
 	 * Minimum size for existing attachments to be migrated to object storage (in bytes).
 	 * Must be greater than or equal to [sizeLimit].
 	 */
-	var migrationSizeLimit: Long = 4_000_000,
+	var migrationSizeLimit: Long = 134_217_728,
 	/**
 	 * Delay in milliseconds between when a migratable attachment is found and when the migration is actually executed.
 	 */
