@@ -42,6 +42,7 @@ import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DataAttachmentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DeletedAttachmentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DocumentTypeDto
+import org.taktik.icure.services.external.rest.v1.dto.requests.BulkAttachmentUpdateOptions
 import org.taktik.icure.services.external.rest.v1.mapper.DocumentMapper
 import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.multipartContent
@@ -86,7 +87,7 @@ class DocumentControllerEndToEndTest(
 			runCatching { File(TEST_CACHE).deleteRecursively() }
 		}
 
-		val context = object : DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>() {
+		val context = object : DocumentControllerEndToEndTestContext<DocumentDto, BulkAttachmentUpdateOptions>() {
 			override val port: Int = port
 			override val controllerRoot: String = CONTROLLER_ROOT
 			override val properties: ObjectStorageProperties = properties
@@ -154,7 +155,7 @@ class DocumentControllerEndToEndTest(
 				)
 			)
 
-			override val dataFactory = object : DataFactory<DocumentDto, DocumentController.BulkAttachmentUpdateOptions> {
+			override val dataFactory = object : DataFactory<DocumentDto, BulkAttachmentUpdateOptions> {
 				override fun newDocumentNoAttachment(index: Int?) = DocumentDto(
 					newId(),
 					name = index?.let { "Document $it" } ?: "New document",
@@ -164,10 +165,10 @@ class DocumentControllerEndToEndTest(
 				override fun bulkAttachmentUpdateOptions(
 					deleteAttachments: Set<String>,
 					updateAttachmentsMetadata: Map<String, DataFactory.UpdateAttachmentMetadata>
-				) = DocumentController.BulkAttachmentUpdateOptions(
+				) = BulkAttachmentUpdateOptions(
 					deleteAttachments = deleteAttachments,
 					updateAttachmentsMetadata = updateAttachmentsMetadata.mapValues {
-						DocumentController.BulkAttachmentUpdateOptions.AttachmentMetadata(it.value.size, it.value.utis)
+						BulkAttachmentUpdateOptions.AttachmentMetadata(it.value.utis)
 					}
 				)
 			}
@@ -181,7 +182,7 @@ class DocumentControllerEndToEndTest(
 
 // Test legacy behaviour to ensure retro-compatibility
 private fun StringSpec.v1EndToEndTests(
-	context: DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>
+	context: DocumentControllerEndToEndTestContext<DocumentDto, BulkAttachmentUpdateOptions>
 ): Unit = with (context) {
 	val encKey = newId()
 

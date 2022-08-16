@@ -156,17 +156,14 @@ class DocumentController(
 		@RequestParam(required = false)
 		@Parameter(description = "Utis for the attachment")
 		utis: List<String>?,
-		@RequestParam(required = false)
-		@Parameter(description = "Size of the attachment in bytes, alternative to providing it as a ${HttpHeaders.CONTENT_LENGTH} header.")
-		size: Long?,
 		@Schema(type = "string", format = "binary")
 		@RequestBody
 		payload: Flow<DataBuffer>,
 		@RequestHeader(name = HttpHeaders.CONTENT_LENGTH, required = false)
 		lengthHeader: Long?
 	): Mono<DocumentDto> = mono {
-		val payloadSize = requireNotNull(size ?: lengthHeader) {
-			"Payload size must be provided either as a query parameter `size` or as the `Content-Length` header"
+		val payloadSize = requireNotNull(lengthHeader?.takeIf { it > 0 }) {
+			"The `Content-Length` header must contain the payload size"
 		}
 		val document = documentLogic.getOr404(documentId)
 		checkRevision(rev, document)
@@ -298,18 +295,15 @@ class DocumentController(
 		@RequestParam(required = false)
 		@Parameter(description = "Utis for the attachment")
 		utis: List<String>?,
-		@RequestParam(required = false)
-		@Parameter(description = "Size of the attachment in bytes. If provided it can help to make the best decisions about where to store it")
-		size: Long?,
 		@Schema(type = "string", format = "binary")
 		@RequestBody
 		payload: Flow<DataBuffer>,
 		@RequestHeader(name = HttpHeaders.CONTENT_LENGTH, required = false)
 		lengthHeader: Long?
 	): Mono<DocumentDto> = mono {
-		val attachmentSize = size ?: lengthHeader ?: throw ResponseStatusException(
+		val attachmentSize = lengthHeader ?: throw ResponseStatusException(
 			HttpStatus.BAD_REQUEST,
-			"Attachment size must be specified either as a query parameter or as a content-length header"
+			"Attachment size must be specified in the content-length header"
 		)
 		documentLogic.updateAttachmentsWrappingExceptions(
 			documentLogic.getOr404(documentId).also { checkRevision(rev, it) },
@@ -415,9 +409,9 @@ class DocumentController(
 	private fun makeMultipartAttachmentUpdate(name: String, part: FilePart, metadata: BulkAttachmentUpdateOptions.AttachmentMetadata?) =
 		DataAttachmentChange.CreateOrUpdate(
 			part.content().asFlow(),
-			metadata?.contentSize ?: part.headers().contentLength.takeIf { it > 0 } ?: throw ResponseStatusException(
+			part.headers().contentLength.takeIf { it > 0 } ?: throw ResponseStatusException(
 				HttpStatus.BAD_REQUEST,
-				"Missing size information for $name: you must provide it either as part of the metadata or as a Content-Length header."
+				"Missing size information for $name: you must provide the size of the attachment in bytes using a Content-Length part header."
 			),
 			metadata?.utis
 		)
