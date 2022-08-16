@@ -31,6 +31,7 @@ import org.taktik.icure.services.external.rest.v2.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.DataAttachmentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.DeletedAttachmentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.DocumentTypeDto
+import org.taktik.icure.services.external.rest.v2.dto.requests.BulkAttachmentUpdateOptions
 import org.taktik.icure.services.external.rest.v2.mapper.DocumentV2Mapper
 import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.newId
@@ -70,7 +71,7 @@ class DocumentControllerEndToEndTest(
 			runCatching { File(TEST_CACHE).deleteRecursively() }
 		}
 
-		val context = object : DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>() {
+		val context = object : DocumentControllerEndToEndTestContext<DocumentDto, BulkAttachmentUpdateOptions>() {
 			override val port: Int = port
 			override val controllerRoot: String = CONTROLLER_ROOT
 			override val properties: ObjectStorageProperties = properties
@@ -138,7 +139,7 @@ class DocumentControllerEndToEndTest(
 				)
 			)
 
-			override val dataFactory = object : DataFactory<DocumentDto, DocumentController.BulkAttachmentUpdateOptions> {
+			override val dataFactory = object : DataFactory<DocumentDto, BulkAttachmentUpdateOptions> {
 				override fun newDocumentNoAttachment(index: Int?) = DocumentDto(
 					newId(),
 					name = index?.let { "Document $it" } ?: "New document",
@@ -148,10 +149,10 @@ class DocumentControllerEndToEndTest(
 				override fun bulkAttachmentUpdateOptions(
 					deleteAttachments: Set<String>,
 					updateAttachmentsMetadata: Map<String, DataFactory.UpdateAttachmentMetadata>
-				) = DocumentController.BulkAttachmentUpdateOptions(
+				) = BulkAttachmentUpdateOptions(
 					deleteAttachments = deleteAttachments,
 					updateAttachmentsMetadata = updateAttachmentsMetadata.mapValues {
-						DocumentController.BulkAttachmentUpdateOptions.AttachmentMetadata(it.value.size, it.value.utis)
+						BulkAttachmentUpdateOptions.AttachmentMetadata(it.value.utis)
 					}
 				)
 			}
@@ -165,7 +166,7 @@ class DocumentControllerEndToEndTest(
 
 // Test v2 only behaviours
 private fun StringSpec.v2EndToEndTests(
-	context: DocumentControllerEndToEndTestContext<DocumentDto, DocumentController.BulkAttachmentUpdateOptions>
+	context: DocumentControllerEndToEndTestContext<DocumentDto, BulkAttachmentUpdateOptions>
 ): Unit = with (context) {
 	"Creation of a document with initialized main attachment information should not be allowed (BAD REQUEST)" {
 		shouldRespondErrorStatus(HttpStatus.BAD_REQUEST) {
