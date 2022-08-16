@@ -45,6 +45,7 @@ private const val TEST_CACHE = "build/tests/icureCache"
 	classes = [ICureTestApplication::class],
 	properties = [
 		"spring.main.allow-bean-definition-overriding=true",
+		"icure.objectstorage.icureCloudUrl=test",
 		"icure.objectstorage.cacheLocation=$TEST_CACHE",
 		"icure.objectstorage.backlogToObjectStorage=true",
 		"icure.objectstorage.sizeLimit=1000",

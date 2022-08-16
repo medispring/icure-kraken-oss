@@ -139,7 +139,7 @@ private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 	}
 
 	private fun toFolderPath(documentId: String) = Paths.get(
-		checkNotNull(objectStorageProperties.cacheLocation) { "Cache location not set" },
+		objectStorageProperties.cacheLocation,
 		entityPath,
 		*(documentId.chunked(2).take(3) + documentId).toTypedArray()
 	)

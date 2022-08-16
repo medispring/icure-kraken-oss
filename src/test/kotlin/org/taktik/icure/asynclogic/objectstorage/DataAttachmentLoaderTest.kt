@@ -25,6 +25,8 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key2
 import org.taktik.icure.asynclogic.objectstorage.testutils.migrationBigAttachment
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.asynclogic.objectstorage.testutils.smallAttachment
+import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
+import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.properties.ObjectStorageProperties
@@ -40,7 +42,10 @@ class DataAttachmentLoaderTest : StringSpec({
 		dao,
 		objectStorage,
 		objectStorageMigration,
-		ObjectStorageProperties(sizeLimit = SIZE_LIMIT, migrationSizeLimit = MIGRATION_SIZE_LIMIT, backlogToObjectStorage = true)
+		testObjectStorageProperties(
+			sizeLimit = SIZE_LIMIT,
+			migrationSizeLimit = MIGRATION_SIZE_LIMIT
+		)
 	)
 	lateinit var sampleDocument: Document // The data attachments can store the cached bytes.
 

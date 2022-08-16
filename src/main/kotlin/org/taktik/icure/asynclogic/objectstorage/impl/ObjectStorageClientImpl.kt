@@ -138,7 +138,7 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		true
 
 	private fun uriTo(entityId: String, attachmentId: String): String = try {
-		URI(checkNotNull(objectStorageProperties.icureCloudUrl) { "Icure cloud url not set" }).toString()
+		URI(objectStorageProperties.icureCloudUrl).toString()
 	} catch (_: URISyntaxException) {
 		throw IllegalStateException("Malformed icure cloud uri ${objectStorageProperties.icureCloudUrl}")
 	}.let { cloudUrl ->
@@ -149,7 +149,7 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 		this.header("Authorization", cloudAuthenticationLogic.userAuthenticationHeader(userId))
 
 	private fun attachmentRoute(entityId: String, attachmentId: String): String =
-		listOf("rest", "v2", "objectstorage", entityGroupName, entityId, attachmentId).joinToString("/")
+		listOf("rest", "v1", "objectstorage", entityGroupName, entityId, attachmentId).joinToString("/")
 
 	/**
 	 * Represents the status of an object which may be stored in the object storage service.
