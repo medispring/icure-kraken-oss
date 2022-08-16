@@ -18,7 +18,6 @@
 
 package org.taktik.icure.services.external.rest.v1.controllers.core
 
-import java.io.Serializable
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -68,6 +67,7 @@ import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
 import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.dto.IcureStubDto
 import org.taktik.icure.services.external.rest.v1.dto.ListOfIdsDto
+import org.taktik.icure.services.external.rest.v1.dto.requests.BulkAttachmentUpdateOptions
 import org.taktik.icure.services.external.rest.v1.mapper.DocumentMapper
 import org.taktik.icure.services.external.rest.v1.mapper.StubMapper
 import org.taktik.icure.services.external.rest.v1.mapper.embed.DelegationMapper
@@ -569,18 +569,4 @@ class DocumentController(
 				"One or more attachments must be stored using the object storage service, but the service is currently unavailable."
 			)
 		}
-
-	data class BulkAttachmentUpdateOptions(
-		@Schema(description = "Metadata for new attachments or attachments which will be updated, by key. The key for the main attachment is the document id.")
-		val updateAttachmentsMetadata: Map<String, AttachmentMetadata> = emptyMap(),
-		@Schema(description = "Keys of attachments to delete. The key for the main attachment is the document id.")
-		val deleteAttachments: Set<String> = emptySet()
-	) : Serializable {
-		data class AttachmentMetadata(
-			@Schema(description = "Size of the data attachment content in bytes. If not provided the corresponding content part must have a Content-Length header with the appropriate size.")
-			val contentSize: Long? = null,
-			@Schema(description = "The Uniform Type Identifiers (https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_conc/understand_utis_conc.html#//apple_ref/doc/uid/TP40001319-CH202-CHDHIJDE) of the attachment. This is a list to allow representing a priority, but each UTI must be unique.")
-			val utis: List<String> = emptyList()
-		) : Serializable
-	}
 }
