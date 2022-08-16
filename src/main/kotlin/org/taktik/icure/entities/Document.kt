@@ -165,13 +165,9 @@ data class Document(
 
 	fun merge(other: Document) = Document(args = this.solveConflictsWith(other))
 
-	/*TODO
-	 * Previously conflict resolution worked based on attachment size, and it also checked the actual attachment bytes size.
-	 * Since now we don't directly have access to an attachment content in the document we don't consider it when we do conflict solving.
-	 */
 	fun solveConflictsWith(other: Document) = super<StoredICureDocument>.solveConflictsWith(other) + super<Encryptable>.solveConflictsWith(other) + mapOf(
-		"size" to (this.size ?: other.size), // TODO this seems currently unused
-		"hash" to (this.hash ?: other.hash), // TODO this seems currently unused
+		"size" to (this.size ?: other.size),
+		"hash" to (this.hash ?: other.hash),
 		"openingContactId" to (this.openingContactId ?: other.openingContactId),
 		"documentLocation" to (this.documentLocation ?: other.documentLocation),
 		"documentType" to (this.documentType ?: other.documentType),
