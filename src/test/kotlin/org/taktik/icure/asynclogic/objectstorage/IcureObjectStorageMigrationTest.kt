@@ -37,6 +37,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.bytes2
 import org.taktik.icure.asynclogic.objectstorage.testutils.document1
 import org.taktik.icure.asynclogic.objectstorage.testutils.resetTestLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
+import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.entities.objectstorage.ObjectStorageMigrationTask
@@ -48,10 +49,7 @@ private const val TEST_MIGRATION_DELAY = 300L
 
 @ExperimentalCoroutinesApi
 class IcureObjectStorageMigrationTest : StringSpec({
-	val objectStorageProperties = ObjectStorageProperties(
-		cacheLocation = testLocalStorageDirectory,
-		migrationDelayMs = TEST_MIGRATION_DELAY
-	)
+	val objectStorageProperties = testObjectStorageProperties(migrationDelayMs = TEST_MIGRATION_DELAY)
 	val localStorage = DocumentLocalObjectStorageImpl(objectStorageProperties)
 	val sessionLogic = mockk<AsyncSessionLogic>()
 	lateinit var documentDAO: DocumentDAO

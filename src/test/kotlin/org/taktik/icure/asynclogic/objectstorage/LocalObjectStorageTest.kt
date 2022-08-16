@@ -20,6 +20,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.document1
 import org.taktik.icure.asynclogic.objectstorage.testutils.resetTestLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleAttachments
 import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
+import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.test.shouldContainExactly
@@ -29,7 +30,7 @@ private const val SLOW_BYTES_DELAY = 100L
 
 class LocalObjectStorageTest : StringSpec({
 	val cache: DocumentLocalObjectStorage =
-		DocumentLocalObjectStorageImpl(ObjectStorageProperties(cacheLocation = testLocalStorageDirectory))
+		DocumentLocalObjectStorageImpl(testObjectStorageProperties())
 
 	beforeEach {
 		resetTestLocalStorageDirectory()

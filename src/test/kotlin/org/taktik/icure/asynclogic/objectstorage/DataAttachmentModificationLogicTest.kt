@@ -36,6 +36,8 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key4
 import org.taktik.icure.asynclogic.objectstorage.testutils.modify
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.asynclogic.objectstorage.testutils.smallAttachment
+import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
+import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.entities.embed.DeletedAttachment
@@ -52,7 +54,7 @@ class DataAttachmentModificationLogicTest : StringSpec({
 	val dataAttachmentModificationLogic = DocumentDataAttachmentModificationLogicImpl(
 		dao,
 		icureObjectStorage,
-		ObjectStorageProperties(sizeLimit = SIZE_LIMIT)
+		testObjectStorageProperties(sizeLimit = SIZE_LIMIT)
 	)
 
 	fun nextRev(rev: String?) = if (rev == null) "0" else (rev.toInt() + 1).toString()

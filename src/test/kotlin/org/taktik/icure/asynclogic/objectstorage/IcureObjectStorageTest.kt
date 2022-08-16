@@ -29,6 +29,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.document1
 import org.taktik.icure.asynclogic.objectstorage.testutils.resetTestLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleAttachments
 import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
+import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.objectstorage.ObjectStorageTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTaskType
@@ -42,9 +43,7 @@ private const val STORAGE_TASK_TIMEOUT = 300L
 
 @ExperimentalCoroutinesApi
 class IcureObjectStorageTest : StringSpec({
-	val objectStorageProperties = ObjectStorageProperties(
-		cacheLocation = testLocalStorageDirectory
-	)
+	val objectStorageProperties = testObjectStorageProperties()
 	val localStorage = DocumentLocalObjectStorageImpl(objectStorageProperties)
 	val sessionLogic = mockk<AsyncSessionLogic>()
 	lateinit var storageTasksDAO: ObjectStorageTasksDAO
