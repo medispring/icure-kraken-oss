@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfigurati
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.PropertySource
 import org.springframework.core.task.TaskExecutor
 import org.springframework.scheduling.TaskScheduler
@@ -26,7 +27,11 @@ import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.asynclogic.ICureLogic
 import org.taktik.icure.asynclogic.PropertyLogic
 import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
+import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
+import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient
 import org.taktik.icure.constants.Users
+import org.taktik.icure.entities.Document
 import org.taktik.icure.exceptions.DuplicateDocumentException
 import org.taktik.icure.properties.CouchDbProperties
 import reactor.netty.http.client.HttpClient
@@ -109,11 +114,11 @@ class ICureTestApplication {
 
 			// Creation of the test user
 			try {
-				userLogic.newUser(Users.Type.database, System.getenv("ICURE_COUCHDB_TEST_USER"), System.getenv("ICURE_COUCHDB_TEST_PWD"), "icure")// Creates a test user if it does not exist
+				userLogic.newUser(Users.Type.database, System.getenv("ICURE_TEST_USER_NAME"), System.getenv("ICURE_TEST_USER_PASSWORD"), "icure")// Creates a test user if it does not exist
 			} catch (e: DuplicateDocumentException) {
 				log.info("Test user already exists!")
 			} finally {
-				log.info("iCure test user\nusername: ${System.getenv("ICURE_COUCHDB_TEST_USER")}\npassword: ${System.getenv("ICURE_COUCHDB_TEST_PWD")}")
+				log.info("iCure test user\nusername: ${System.getenv("ICURE_TEST_USER_NAME")}\npassword: ${System.getenv("ICURE_TEST_USER_PASSWORD")}")
 			}
 		}
 	}
@@ -124,5 +129,15 @@ class ICureTestApplication {
 		ProcessBuilder(("docker rm -f couchdb-test-instance -v").split(' '))
 			.start()
 			.waitFor()
+	}
+
+	// Test beans
+	@Primary
+	@Bean
+	fun fakeDocumentObjectStorageClient(userLogic: UserLogic): DocumentObjectStorageClient {
+		val fakeClient = FakeObjectStorageClient<Document>(
+			"documents"
+		) { runBlocking { setOf(userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id) } }
+		return object : DocumentObjectStorageClient, ObjectStorageClient<Document> by fakeClient {}
 	}
 }

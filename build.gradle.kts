@@ -66,6 +66,11 @@ apply(plugin = "maven-publish")
 
 tasks.withType<Test> {
     useJUnitPlatform()
+	/*
+	 * If tests rely on system properties we can use gradle settings to set the properties but then we need to propagate them to the actual test virtual machine.
+	 * This example propagates all properties passed to gradle, it would be better to only propagate the necessary properties.
+	 */
+	// System.getProperties().forEach { k,	v -> systemProperty(k as String, v) }
 }
 
 tasks.withType<JavaCompile> {
@@ -142,8 +147,9 @@ dependencies {
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.3.1.Final")
 
     //Krouch
-    implementation(group = "org.taktik.couchdb", name = "krouch", version = "jack211-1.0.2-105-g3ec3433148")
+    implementation(group = "org.taktik.couchdb", name = "krouch", version = "main-1.0.2-111-g34b8dc36d9")
     implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
+
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.13")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.13")
 	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.13")
@@ -228,6 +234,9 @@ dependencies {
     testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "2.5.13")
     testImplementation(group = "io.mockk", name = "mockk", version = "1.11.0")
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = "3.1.1")
+	testImplementation(group = "io.kotest", name = "kotest-assertions-core", version = "4.4.3")
+	testImplementation(group = "io.kotest", name = "kotest-runner-junit5", version = "4.4.3")
+	testImplementation(group = "io.kotest.extensions", name = "kotest-extensions-spring", version = "1.0.1")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

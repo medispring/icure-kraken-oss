@@ -105,8 +105,8 @@ class SecurityConfigAdapter(
 			.pathMatchers("/actuator/**").permitAll()
 			.matchers(
 				TokenWebExchangeMatcher(asyncCacheManager).paths(
-					"/rest/v1/document/*/attachment/*",
-					"/rest/v1/form/template/*/attachment/*",
+					"/rest/*/document/*/attachment/*",
+					"/rest/*/form/template/*/attachment/*",
 					"/ws/**"
 				)
 			).hasRole("USER")
