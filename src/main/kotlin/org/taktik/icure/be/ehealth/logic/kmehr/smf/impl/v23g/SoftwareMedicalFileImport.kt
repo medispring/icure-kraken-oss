@@ -33,7 +33,9 @@ import kotlinx.collections.immutable.plus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.commons.uti.UTI
 import org.taktik.commons.uti.impl.SimpleUTIDetector
 import org.taktik.couchdb.exception.UpdateConflictException
@@ -47,6 +49,8 @@ import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.InsuranceLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic.DataAttachmentChange
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils
 import org.taktik.icure.be.ehealth.logic.kmehr.validNihiiOrNull
 import org.taktik.icure.be.ehealth.logic.kmehr.validSsinOrNull
@@ -388,13 +392,28 @@ class SoftwareMedicalFileImport(
 							}?.firstOrNull()?.id ?: author.healthcarePartyId,
 							created = svcRecordDateTime,
 							modified = svcRecordDateTime,
-							attachment = lnk.value,
-							name = docname,
-							mainUti = mainUti,
-							otherUtis = otherUtis
+							name = docname
 						).let {
+							/*TODO
+							 * Before attachment redesign document was also created with an initialized value for the attachment bytes, which would also appear in the
+							 * document added to the import result `v`, but now it is not allowed to put directly the bytes in the document.
+							 * I don't think this is an issue because anyway the import result would be serialized to json, so without the bytes.
+							 * Another possible issue is that the document added to the import result won't have the `attachmentId` properly initialized, but this
+							 * was already happening before, so I don't think this is an issue either.
+							 */
 							v.documents.add(it)
-							if (saveToDatabase) documentLogic.createDocument(it, trnauthorhcpid) else it
+							if (saveToDatabase) {
+								documentLogic.createDocument(it, true)?.let {
+									documentLogic.updateAttachments(
+										it,
+										mainAttachmentChange = DataAttachmentChange.CreateOrUpdate(
+											flowOf(DefaultDataBufferFactory.sharedInstance.wrap(lnk.value)),
+											lnk.value.size.toLong(),
+											listOf(mainUti) + otherUtis
+										)
+									)
+								}
+							} else it
 						}?.id
 					)
 				)
