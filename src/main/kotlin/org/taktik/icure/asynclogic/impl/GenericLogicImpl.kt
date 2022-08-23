@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
+import org.slf4j.LoggerFactory
 import org.taktik.couchdb.DocIdentifier
 import org.taktik.couchdb.entity.Versionable
-import org.taktik.couchdb.id.Identifiable
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.EntityPersister
@@ -32,12 +32,16 @@ import org.taktik.icure.validation.aspect.Fixer
 
 abstract class GenericLogicImpl<E : Versionable<String>, D : GenericDAO<E>>(private val sessionLogic: AsyncSessionLogic) : EntityPersister<E, String> {
 	private val fixer = Fixer<E>(sessionLogic)
+	private val log = LoggerFactory.getLogger(this.javaClass)
 	suspend fun <R> fix(doc: E, next: suspend (doc: E) -> R): R = next(fixer.fix(doc))
 	suspend fun fix(doc: E): E = fixer.fix(doc)
 
 	override fun createEntities(entities: Collection<E>): Flow<E> = flow {
 		emitAll(getGenericDAO().create(entities.map {
-			if (it.rev != null) error("Cannot create entity with id ${it.id} because the rev field is not null")
+			if (it.rev != null) {
+				if (log.isErrorEnabled) log.error("Cannot create entity with id ${it.id}, rev field not null")
+				error("Cannot create entity with id ${it.id} because the rev field is not null")
+			}
 			else it
 		}))
 	}
