@@ -41,7 +41,7 @@ class MaintenanceTaskControllerEndToEndTest(
 ) : StringSpec({
 
 	val apiHost = System.getenv("ICURE_BE_URL") ?: "http://localhost"
-	val apiEndpoint: String = "/rest/v1/maintenancetask"
+	val apiEndpoint = "/rest/v1/maintenancetask"
 	val objectMapper: ObjectMapper by lazy {
 		ObjectMapper().registerModule(
 			KotlinModule.Builder()
