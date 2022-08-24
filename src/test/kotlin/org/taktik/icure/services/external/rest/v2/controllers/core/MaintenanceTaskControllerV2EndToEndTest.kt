@@ -1,4 +1,4 @@
-package org.taktik.icure.services.external.rest.v1.controllers.core
+package org.taktik.icure.services.external.rest.v2.controllers.core
 
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -41,7 +41,7 @@ class MaintenanceTaskControllerV2EndToEndTest(
 ) : StringSpec({
 
 	val apiHost = System.getenv("ICURE_BE_URL") ?: "http://localhost"
-	val apiEndpoint: String = "/rest/v2/maintenancetask"
+	val apiEndpoint = "/rest/v2/maintenancetask"
 	val objectMapper: ObjectMapper by lazy {
 		ObjectMapper().registerModule(
 			KotlinModule.Builder()
