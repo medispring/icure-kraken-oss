@@ -34,13 +34,16 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.task.TaskExecutor
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.taktik.icure.asyncdao.DocumentDAO
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.InternalDAO
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.asynclogic.ICureLogic
 import org.taktik.icure.asynclogic.PropertyLogic
 import org.taktik.icure.asynclogic.UserLogic
-import org.taktik.icure.constants.Users
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorageMigration
 import org.taktik.icure.entities.embed.AddressType
 import org.taktik.icure.entities.embed.Confidentiality
 import org.taktik.icure.entities.embed.DocumentStatus
@@ -53,7 +56,6 @@ import org.taktik.icure.entities.embed.PaymentType
 import org.taktik.icure.entities.embed.PersonalStatus
 import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.entities.embed.Visibility
-import org.taktik.icure.exceptions.DuplicateDocumentException
 import org.taktik.icure.properties.CouchDbProperties
 
 @SpringBootApplication(
@@ -76,6 +78,7 @@ import org.taktik.icure.properties.CouchDbProperties
 		"org.taktik.icure.services.external.rest.v2.mapper",
 		"org.taktik.icure.services.external.rest.v2.wscontrollers",
 		"org.taktik.icure.errors",
+		"org.taktik.icure.scheduledtask",
 	],
 	exclude = [
 		FreeMarkerAutoConfiguration::class,
@@ -86,11 +89,24 @@ import org.taktik.icure.properties.CouchDbProperties
 	]
 )
 @PropertySource("classpath:icure-default.properties")
+@EnableScheduling
 class ICureBackendApplication {
 	private val log = LoggerFactory.getLogger(this.javaClass)
 
 	@Bean
-	fun performStartupTasks(@Qualifier("threadPoolTaskExecutor") taskExecutor: TaskExecutor, taskScheduler: TaskScheduler, userLogic: UserLogic, iCureLogic: ICureLogic, codeLogic: CodeLogic, propertyLogic: PropertyLogic, allDaos: List<GenericDAO<*>>, internalDaos: List<InternalDAO<*>>, couchDbProperties: CouchDbProperties) = ApplicationRunner {
+	fun performStartupTasks(
+		@Qualifier("threadPoolTaskExecutor") taskExecutor: TaskExecutor,
+		taskScheduler: TaskScheduler,
+		userLogic: UserLogic,
+		iCureLogic: ICureLogic,
+		codeLogic: CodeLogic,
+		propertyLogic: PropertyLogic,
+		allDaos: List<GenericDAO<*>>,
+		internalDaos: List<InternalDAO<*>>,
+		couchDbProperties: CouchDbProperties,
+		allObjectStorageLogic: List<IcureObjectStorage<*>>,
+		allObjectStorageMigrationLogic: List<IcureObjectStorageMigration<*>>
+	) = ApplicationRunner {
 		//Check that core types have corresponding codes
 		log.info("icure (" + iCureLogic.getVersion() + ") is initialised")
 
@@ -117,6 +133,8 @@ class ICureBackendApplication {
 			internalDaos.forEach {
 				it.forceInitStandardDesignDocument(true)
 			}
+			allObjectStorageLogic.forEach { it.rescheduleFailedStorageTasks() }
+			allObjectStorageMigrationLogic.forEach { it.rescheduleStoredMigrationTasks() }
 		}
 
 		log.info("icure (" + iCureLogic.getVersion() + ") is started")

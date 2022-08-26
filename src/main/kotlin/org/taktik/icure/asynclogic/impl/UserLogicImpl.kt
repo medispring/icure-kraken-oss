@@ -367,10 +367,13 @@ class UserLogicImpl(
 		userDAO.save(hashPasswordAndTokens(modifiedUser))
 	}
 
-	override suspend fun getToken(user: User, key: String, tokenValidity: Long): String {
+	override suspend fun getToken(user: User, key: String, tokenValidity: Long): String =
+		getToken(user.id, key, tokenValidity)
+
+	override suspend fun getToken(userId: String, key: String, tokenValidity: Long): String {
 		val authenticationToken = uuidGenerator.newGUID().toString()
 
-		userDAO.getUserOnUserDb(user.id, false).let {
+		userDAO.getUserOnUserDb(userId, false).let {
 			userDAO.save(
 				it.copy(authenticationTokens = it.authenticationTokens + (key to AuthenticationToken(encodePassword(authenticationToken), validity = tokenValidity)))
 			) ?: throw IllegalStateException("Cannot create token for user")
