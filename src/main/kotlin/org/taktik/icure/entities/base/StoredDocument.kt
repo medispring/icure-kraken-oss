@@ -46,10 +46,21 @@ interface StoredDocument : Versionable<String> {
 			"revHistory" to (other.revHistory?.let { it + (this.revHistory ?: mapOf()) } ?: this.revHistory),
 			"revisionsInfo" to this.revisionsInfo,
 			"conflicts" to this.conflicts,
-			"attachments" to this.attachments,
+			"attachments" to solveAttachmentsConflicts(this.attachments, other.attachments),
 			"deletionDate" to (this.deletionDate ?: other.deletionDate)
 		)
 	}
+
+	private fun solveAttachmentsConflicts(thisAttachments: Map<String, Attachment>?, otherAttachments: Map<String, Attachment>?): Map<String, Attachment>? =
+		if (thisAttachments != null && otherAttachments != null) {
+			(thisAttachments.keys + otherAttachments.keys).associateWith { key ->
+				val a = thisAttachments[key]
+				val b = otherAttachments[key]
+				if (a != null && b != null) {
+					if (b.length?.let { it > (a.length ?: 0) } == true) b else a
+				} else a ?: b!!
+			}
+		} else thisAttachments ?: otherAttachments
 
 	fun withDeletionDate(deletionDate: Long?): StoredDocument
 }

@@ -18,29 +18,35 @@
 
 package org.taktik.icure.asyncdao.impl
 
-import java.io.IOException
 import java.nio.ByteBuffer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.io.output.ByteArrayOutputStream
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.io.buffer.DataBuffer
+import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.stereotype.Repository
-import org.taktik.commons.uti.UTI
 import org.taktik.couchdb.annotation.View
 import org.taktik.couchdb.entity.ComplexKey
 import org.taktik.couchdb.id.IDGenerator
 import org.taktik.couchdb.queryViewIncludeDocs
 import org.taktik.couchdb.queryViewIncludeDocsNoValue
 import org.taktik.icure.asyncdao.DocumentDAO
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentLoader
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorageMigration
 import org.taktik.icure.entities.Document
+import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.properties.CouchDbProperties
-import org.taktik.icure.utils.writeTo
+import org.taktik.icure.properties.ObjectStorageProperties
+import org.taktik.icure.utils.toByteArray
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @Repository("documentDAO")
 @View(name = "all", map = "function(doc) { if (doc.java_type == 'org.taktik.icure.entities.Document' && !doc.deleted) emit( null, doc._id )}")
 class DocumentDAOImpl(
@@ -48,71 +54,6 @@ class DocumentDAOImpl(
 	@Qualifier("healthdataCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator
 ) : GenericDAOImpl<Document>(couchDbProperties, Document::class.java, couchDbDispatcher, idGenerator), DocumentDAO {
-
-	override suspend fun beforeSave(entity: Document) =
-		super.beforeSave(entity).let { document ->
-			if (document.attachment != null) {
-				val newAttachmentId = DigestUtils.sha256Hex(document.attachment)
-
-				if (newAttachmentId != document.attachmentId && document.id != null && document.rev != null && document.attachmentId != null) {
-					document.attachments?.containsKey(document.attachmentId)?.takeIf { it }?.let {
-						document.copy(
-							rev = deleteAttachment(document.id, document.rev!!, document.attachmentId!!),
-							attachments = document.attachments - document.attachmentId,
-							attachmentId = newAttachmentId,
-							isAttachmentDirty = true
-						)
-					} ?: document.copy(
-						attachmentId = newAttachmentId,
-						isAttachmentDirty = true
-					)
-				} else
-					document.copy(isAttachmentDirty = true, attachmentId = newAttachmentId)
-			} else {
-				if (document.attachmentId != null && document.rev != null) {
-					document.copy(
-						rev = deleteAttachment(document.id, document.rev, document.attachmentId),
-						attachmentId = null,
-						isAttachmentDirty = false
-					)
-				} else document
-			}
-		}
-
-	override suspend fun afterSave(entity: Document) =
-		super.afterSave(entity).let { document ->
-			if (document.isAttachmentDirty && document.attachmentId != null && document.rev != null && document.attachment != null) {
-				val uti = UTI.get(document.mainUti)
-				var mimeType = "application/xml"
-				if (uti != null && uti.mimeTypes != null && uti.mimeTypes.size > 0) {
-					mimeType = uti.mimeTypes[0]
-				}
-				createAttachment(document.id, document.attachmentId, document.rev, mimeType, flowOf(ByteBuffer.wrap(document.attachment))).let {
-					document.copy(
-						rev = it,
-						isAttachmentDirty = false
-					)
-				}
-			} else document
-		}
-
-	override suspend fun postLoad(entity: Document) =
-		super.postLoad(entity).let { document ->
-			if (document.attachmentId != null) {
-				try {
-					val attachmentFlow = getAttachment(document.id, document.attachmentId, document.rev)
-					document.copy(
-						attachment = ByteArrayOutputStream().use {
-							attachmentFlow.writeTo(it)
-							it.toByteArray()
-						}
-					)
-				} catch (e: IOException) {
-					document //Could not load
-				}
-			} else document
-		}
-
 	@View(name = "conflicts", map = "function(doc) { if (doc.java_type == 'org.taktik.icure.entities.Document' && !doc.deleted && doc._conflicts) emit(doc._id )}")
 	override fun listConflicts(): Flow<Document> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
