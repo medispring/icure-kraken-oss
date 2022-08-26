@@ -4,6 +4,7 @@
 
 package org.taktik.icure.services.external.rest.v1.controllers.support
 
+import java.lang.IllegalStateException
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -55,7 +56,9 @@ class MaintenanceTaskController(
 	fun createMaintenanceTask(@RequestBody maintenanceTaskDto: MaintenanceTaskDto) = mono {
 		maintenanceTaskLogic.createEntities(listOf(maintenanceTaskMapper.map(maintenanceTaskDto)))
 			.catch { e ->
-				if (e is Exception)
+				if (e is IllegalStateException)
+					throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+				else if (e is Exception)
 					throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "MaintenanceTask creation failed.")
 			}
 			.firstOrNull()

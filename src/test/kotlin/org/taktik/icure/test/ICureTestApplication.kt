@@ -56,6 +56,7 @@ import reactor.netty.http.client.HttpClient
 		"org.taktik.icure.services.external.rest.v2.mapper",
 		"org.taktik.icure.services.external.rest.v2.wscontrollers",
 		"org.taktik.icure.errors",
+		"org.taktik.icure.test"
 	],
 	exclude = [
 		FreeMarkerAutoConfiguration::class,
