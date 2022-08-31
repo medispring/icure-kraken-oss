@@ -18,19 +18,20 @@ import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.User
 import org.taktik.icure.properties.CouchDbProperties
 
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserLogicImplTest {
-	private val couchDbProperties = mockk<CouchDbProperties>(relaxed = true)
-	private val roleDAO = mockk<RoleDAO>(relaxed = true)
-	private val sessionLogic = mockk<AsyncSessionLogic>(relaxed = true)
-	private val filters = mockk<org.taktik.icure.asynclogic.impl.filter.Filters>(relaxed = true)
+    private val couchDbProperties = mockk<CouchDbProperties>(relaxed = true)
+    private val roleDAO = mockk<RoleDAO>(relaxed = true)
+    private val filters = mockk<org.taktik.icure.asynclogic.impl.filter.Filters>(relaxed = true)
 	private val healthcarePartyLogic = mockk<HealthcarePartyLogic>(relaxed = true)
-	private val propertyLogic = mockk<PropertyLogic>(relaxed = true)
-	private val passwordEncoder = mockk<PasswordEncoder>(relaxed = true)
-	private val uuidGenerator = mockk<UUIDGenerator>(relaxed = true)
+    private val propertyLogic = mockk<PropertyLogic>(relaxed = true)
+    private val passwordEncoder = mockk<PasswordEncoder>(relaxed = true)
+    private val uuidGenerator = mockk<UUIDGenerator>(relaxed = true)
+	private val sessionLogic = mockk<AsyncSessionLogic>(relaxed = true)
 
-	private val userDAO = mockk<UserDAO>()
-	private val userLogic: UserLogic = UserLogicImpl(couchDbProperties = couchDbProperties, roleDao = roleDAO, sessionLogic = sessionLogic, filters = filters, userDAO = userDAO, healthcarePartyLogic = healthcarePartyLogic, propertyLogic = propertyLogic, passwordEncoder = passwordEncoder, uuidGenerator = uuidGenerator)
+    private val userDAO = mockk<UserDAO>()
+    private val userLogic: UserLogic = UserLogicImpl(couchDbProperties = couchDbProperties, roleDao = roleDAO, sessionLogic = sessionLogic, filters = filters, userDAO = userDAO, propertyLogic = propertyLogic, passwordEncoder = passwordEncoder, uuidGenerator = uuidGenerator, healthcarePartyLogic = healthcarePartyLogic)
 
 	private val patientUser = mockk<ViewRowWithDoc<*, *, *>> {
 		every { (doc as User).patientId } returns UUID.randomUUID().toString()
