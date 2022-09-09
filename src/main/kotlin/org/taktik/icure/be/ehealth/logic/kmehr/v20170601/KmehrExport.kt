@@ -189,10 +189,10 @@ open class KmehrExport(
 			}
 			cds?.let { this.cds.addAll(it) }
 			this.cds.addAll(
-				if (m.specialityCodes.size > 0) {
+				if (m.specialityCodes.size > 0 && m.specialityCodes.any{it -> it != null}) {
 					m.specialityCodes.map { CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = it.code } }
 				} else if (m.speciality ?: "" != "") {
-					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality })
+					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality?.toLowerCase() })
 				} else
 					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = "persphysician" })
 			)
