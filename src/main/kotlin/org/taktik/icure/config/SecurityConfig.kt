@@ -39,8 +39,8 @@ import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.PermissionLogic
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.CustomAuthenticationManager
-import org.taktik.icure.security.Http401UnauthorizedEntryPoint
 import org.taktik.icure.security.TokenWebExchangeMatcher
+import org.taktik.icure.security.UnauthorizedEntryPoint
 import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
 
@@ -82,7 +82,7 @@ class SecurityConfigAdapter(
 	fun securityWebFilterChain(http: ServerHttpSecurity, asyncCacheManager: AsyncCacheManager): SecurityWebFilterChain {
 		return http
 			.csrf().disable()
-			.httpBasic().authenticationEntryPoint(Http401UnauthorizedEntryPoint()).securityContextRepository(WebSessionServerSecurityContextRepository())
+			.httpBasic().authenticationEntryPoint(UnauthorizedEntryPoint()).securityContextRepository(WebSessionServerSecurityContextRepository())
 			//.securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) //See https://stackoverflow.com/questions/50954018/prevent-session-creation-when-using-basic-auth-in-spring-security to prevent sessions creation // https://stackoverflow.com/questions/56056404/disable-websession-creation-when-using-spring-security-with-spring-webflux for webflux (TODO SH later: necessary?)
 			.authenticationManager(authenticationManager)
 			.and()

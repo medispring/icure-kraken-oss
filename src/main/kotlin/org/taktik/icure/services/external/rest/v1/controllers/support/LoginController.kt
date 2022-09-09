@@ -29,7 +29,10 @@ import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.reactor.mono
 import kotlinx.coroutines.withContext
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.web.bind.annotation.GetMapping
@@ -40,6 +43,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.WebSession
 import org.taktik.icure.asynclogic.AsyncSessionLogic
+import org.taktik.icure.exceptions.Invalid2FAException
+import org.taktik.icure.exceptions.Missing2FAException
 import org.taktik.icure.security.SecurityToken
 import org.taktik.icure.services.external.rest.v1.dto.AuthenticationResponse
 import org.taktik.icure.services.external.rest.v1.dto.LoginCredentials
@@ -60,18 +65,34 @@ class LoginController(
 	@PostMapping("/login")
 	fun login(request: ServerHttpRequest, @RequestBody loginCredentials: LoginCredentials, @Parameter(hidden = true) session: WebSession) = mono {
 		val response = AuthenticationResponse()
-		val authentication = sessionLogic.login(loginCredentials.username!!, loginCredentials.password!!, request, session)
-		response.successful = authentication != null && authentication.isAuthenticated
-		if (response.successful) {
-			val secContext = SecurityContextImpl(authentication)
-			val securityContext = kotlin.coroutines.coroutineContext[ReactorContext]?.context?.put(SecurityContext::class.java, Mono.just(secContext))
-			withContext(kotlin.coroutines.coroutineContext.plus(securityContext?.asCoroutineContext() as CoroutineContext)) {
-				response.healthcarePartyId = runCatching { sessionLogic.getCurrentHealthcarePartyId() }.getOrNull()
-				response.username = loginCredentials.username
-				session.attributes["SPRING_SECURITY_CONTEXT"] = secContext
+		try {
+			val authentication = sessionLogic.login(loginCredentials.username!!, loginCredentials.password!!, request, session)
+			response.successful = authentication != null && authentication.isAuthenticated
+			if (response.successful) {
+				val secContext = SecurityContextImpl(authentication)
+				val securityContext = kotlin.coroutines.coroutineContext[ReactorContext]?.context?.put(SecurityContext::class.java, Mono.just(secContext))
+				withContext(kotlin.coroutines.coroutineContext.plus(securityContext?.asCoroutineContext() as CoroutineContext)) {
+					response.healthcarePartyId = runCatching { sessionLogic.getCurrentHealthcarePartyId() }.getOrNull()
+					response.username = loginCredentials.username
+					session.attributes["SPRING_SECURITY_CONTEXT"] = secContext
+					ResponseEntity.ok().body(response)
+				}
+			} else {
+				ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response)
 			}
+		} catch (ex: AuthenticationException) {
+			ResponseEntity.status(
+				when (ex) {
+					is Missing2FAException -> HttpStatus.EXPECTATION_FAILED
+					is Invalid2FAException -> HttpStatus.NOT_ACCEPTABLE
+					else -> HttpStatus.UNAUTHORIZED
+				}
+			).body(
+				response.apply {
+					successful = false
+				}
+			)
 		}
-		response
 	}
 
 	@Operation(summary = "logout", description = "Logout")
