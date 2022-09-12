@@ -66,8 +66,9 @@ data class CouchDbProperties(
 			return String(buf)
 		}
 	}.toString(),
-	var desingDocumentStatusCheckTimeoutMilliseconds: Long = 2000,
-	var cachedDesignDocumentTtlMinutes: Long = 15
+	var designDocumentStatusCheckTimeoutMilliseconds: Long = 2000,
+	var cachedDesignDocumentTtlMinutes: Long = 15,
+	var populateDatabaseFromLocalXmls: Boolean = true,
 ) {
 	fun altUrlsList() = if (altUrls.isNullOrBlank()) listOf() else altUrls.split(";")
 }

@@ -118,11 +118,13 @@ class ICureBackendApplication {
 			).forEach { runBlocking { codeLogic.importCodesFromEnum(it) } }
 		}
 
-		taskExecutor.execute {
-			val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
-			resolver.getResources("classpath*:/org/taktik/icure/db/codes/**.xml").forEach {
-				val md5 = it.filename!!.replace(Regex(".+\\.([0-9a-f]{20}[0-9a-f]+)\\.xml"), "$1")
-				runBlocking { codeLogic.importCodesFromXml(md5, it.filename!!.replace(Regex("(.+)\\.[0-9a-f]{20}[0-9a-f]+\\.xml"), "$1"), it.inputStream) }
+		if (couchDbProperties.populateDatabaseFromLocalXmls) {
+			taskExecutor.execute {
+				val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
+				resolver.getResources("classpath*:/org/taktik/icure/db/codes/**.xml").forEach {
+					val md5 = it.filename!!.replace(Regex(".+\\.([0-9a-f]{20}[0-9a-f]+)\\.xml"), "$1")
+					runBlocking { codeLogic.importCodesFromXml(md5, it.filename!!.replace(Regex("(.+)\\.[0-9a-f]{20}[0-9a-f]+\\.xml"), "$1"), it.inputStream) }
+				}
 			}
 		}
 
