@@ -35,6 +35,8 @@ import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.asynclogic.PermissionLogic
 import org.taktik.icure.constants.Users
 import org.taktik.icure.entities.User
+import org.taktik.icure.exceptions.Invalid2FAException
+import org.taktik.icure.exceptions.Missing2FAException
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.database.DatabaseUserDetails
 import reactor.core.publisher.Mono
@@ -52,7 +54,8 @@ class CustomAuthenticationManager(
 	override fun authenticate(authentication: Authentication?): Mono<Authentication> = mono {
 		authentication?.principal ?: throw BadCredentialsException("Invalid username or password")
 		Assert.isInstanceOf(
-			UsernamePasswordAuthenticationToken::class.java, authentication,
+			UsernamePasswordAuthenticationToken::class.java,
+			authentication,
 			messageSourceAccessor.getMessage(
 				"AbstractUserDetailsAuthenticationProvider.onlySupports",
 				"Only UsernamePasswordAuthenticationToken is supported"
@@ -86,31 +89,34 @@ class CustomAuthenticationManager(
 		}.filter { it.status == Users.Status.ACTIVE && it.deletionDate == null }.sortedBy { it.id }.distinctBy { it.id }
 
 		val matchingUsers = mutableListOf<User>()
+		val totpFailedUsers = mutableListOf<User>()
+		val totpMissingUsers = mutableListOf<User>()
 		val password: String = authentication.credentials.toString()
 
 		for (candidate in users) {
-			if (isPasswordValid(candidate, password)) {
-				matchingUsers.add(candidate)
+			when (isPasswordValid(candidate, password)) {
+				PasswordValidationStatus.SUCCESS -> {
+					matchingUsers.add(candidate)
+				}
+				PasswordValidationStatus.FAILURE -> log.debug { "No match for $username" }
+				PasswordValidationStatus.MISSING_2FA -> totpMissingUsers.add(candidate)
+				PasswordValidationStatus.FAILED_2FA -> totpFailedUsers.add(candidate)
 			}
 		}
 
 		val user: User? = matchingUsers.firstOrNull()
 
+		if (totpMissingUsers.isNotEmpty()) {
+			throw Missing2FAException("Missing verification code")
+		}
+
+		if (totpFailedUsers.isNotEmpty()) {
+			throw Invalid2FAException("Invalid verification code")
+		}
+
 		if (user == null) {
 			log.warn("Invalid username or password for user " + username + ", no user matched out of " + users.size + " candidates")
 			throw BadCredentialsException("Invalid username or password")
-		}
-
-		if (user.use2fa == true && user.secret?.isNotBlank() == true && !doesUserContainsToken(user, password)) {
-			val splittedPassword = password.split("\\|")
-			if (splittedPassword.size < 2) {
-				throw BadCredentialsException("Missing verification code")
-			}
-			val verificationCode = splittedPassword[1]
-			val totp = Totp(user.secret)
-			if (!isValidLong(verificationCode) || !totp.verify(verificationCode)) {
-				throw BadCredentialsException("Invalid verification code")
-			}
 		}
 
 		// Build permissionSetIdentifier
@@ -127,7 +133,7 @@ class CustomAuthenticationManager(
 			applicationTokens = user.applicationTokens ?: emptyMap(),
 			authenticationTokens = user.authenticationTokens,
 			application = applicationsContainingToken(user, authentication.credentials.toString()).firstOrNull(),
-			groupIdUserIdMatching = matchingUsers.map { it.id },
+			groupIdUserIdMatching = matchingUsers.map { it.id }
 		)
 
 		UsernamePasswordAuthenticationToken(
@@ -137,21 +143,59 @@ class CustomAuthenticationManager(
 		)
 	}
 
-	private fun isPasswordValid(u: User, password: String): Boolean {
+	private enum class PasswordValidationStatus {
+		SUCCESS,
+		FAILURE,
+		MISSING_2FA,
+		FAILED_2FA;
+
+		companion object {
+			fun PasswordValidationStatus.isSuccess() = this == SUCCESS
+		}
+	}
+
+	/**
+	 * Checks if a password is valid, the password can contain the verification code of the 2FA following this format `password|123456`.
+	 *
+	 * @returns [PasswordValidationStatus] depending of the status of the validation:
+	 * - [PasswordValidationStatus.SUCCESS]: Everything is checked and good
+	 * - [PasswordValidationStatus.FAILURE]: Password isn't correct
+	 * - [PasswordValidationStatus.MISSING_2FA]: Password validated, but 2FA verification code is missing
+	 * - [PasswordValidationStatus.FAILED_2FA]: Password validated, but 2FA verification code is wrong
+	 */
+	private fun isPasswordValid(u: User, password: String): PasswordValidationStatus {
 		if (doesUserContainsToken(u, appToken = password)) {
-			return true
+			return PasswordValidationStatus.SUCCESS
 		}
 		return when {
-			u.passwordHash == null -> false
+			u.passwordHash == null -> PasswordValidationStatus.FAILURE
 			u.use2fa == true && u.secret?.isNotBlank() == true -> {
-				val splittedPassword = password.split("\\|").toTypedArray()
-				passwordEncoder.matches(splittedPassword[0], u.passwordHash)
+				if (passwordEncoder.matches(strip2fa(password).takeIf { it.isNotEmpty() } ?: password, u.passwordHash)) {
+					val verificationCode = password.split("|").takeIf { it.size >= 2 }?.last()
+					if (verificationCode != null && isValidLong(verificationCode)) {
+						val totp = Totp(u.secret)
+						if (totp.verify(verificationCode)) {
+							return PasswordValidationStatus.SUCCESS
+						}
+						return PasswordValidationStatus.FAILED_2FA
+					}
+					return PasswordValidationStatus.MISSING_2FA
+				}
+				return PasswordValidationStatus.FAILURE
 			}
 			else -> {
-				passwordEncoder.matches(password, u.passwordHash)
+				passwordEncoder
+					.matches(password, u.passwordHash).takeIf { it }
+					?.let { PasswordValidationStatus.SUCCESS }
+					?: PasswordValidationStatus.FAILURE
 			}
 		}
 	}
+
+	private fun strip2fa(password: String) = password
+		.split("|").toTypedArray().toList()
+		.dropLast(1)
+		.joinToString("|")
 
 	private fun applicationsContainingToken(u: User, appToken: String): List<String> {
 		return (

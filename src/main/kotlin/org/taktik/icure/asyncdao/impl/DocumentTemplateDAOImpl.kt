@@ -116,15 +116,15 @@ class DocumentTemplateDAOImpl(
 			if (documentTemplate.attachment != null) {
 				val newAttachmentId = DigestUtils.sha256Hex(documentTemplate.attachment)
 
-				if (newAttachmentId != documentTemplate.attachmentId && documentTemplate.rev != null && documentTemplate.attachmentId != null) {
-					documentTemplate.attachments?.containsKey(documentTemplate.attachmentId)?.takeIf { it }?.let {
+				if (newAttachmentId != documentTemplate.attachmentId && documentTemplate.rev != null) {
+					if (documentTemplate.attachmentId != null && documentTemplate.attachments?.containsKey(documentTemplate.attachmentId) == true) {
 						documentTemplate.copy(
 							rev = deleteAttachment(documentTemplate.id, documentTemplate.rev!!, documentTemplate.attachmentId!!),
 							attachments = documentTemplate.attachments - documentTemplate.attachmentId,
 							attachmentId = newAttachmentId,
 							isAttachmentDirty = true
 						)
-					} ?: documentTemplate.copy(
+					} else documentTemplate.copy(
 						attachmentId = newAttachmentId,
 						isAttachmentDirty = true
 					)
@@ -170,7 +170,7 @@ class DocumentTemplateDAOImpl(
 							it.toByteArray()
 						}
 					)
-				} catch (e: IOException) {
+				} catch (e: Exception) {
 					documentTemplate //Could not load
 				}
 			} else documentTemplate
