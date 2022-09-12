@@ -24,7 +24,6 @@ buildscript {
     repositories {
       mavenCentral()
       gradlePluginPortal()
-      jcenter()
       maven { url = uri("https://maven.taktik.be/content/groups/public") }
       maven { url = uri("https://repo.spring.io/plugins-release") }
     }
@@ -32,7 +31,7 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.13")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
         classpath("org.jetbrains.kotlin:kotlin-allopen:1.4.32")
-        classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.3")
+        classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.4")
         classpath("com.taktik.gradle:gradle-plugin-git-version:2.0.4")
     }
 }
@@ -55,7 +54,6 @@ java {
 
 repositories {
     mavenCentral()
-    jcenter()
     maven { url = uri("https://maven.taktik.be/content/groups/public") }
     maven { url = uri("https://www.e-contract.be/maven2/") }
     maven { url = uri("https://repo.ehealth.fgov.be/artifactory/maven2/") }
