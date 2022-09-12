@@ -186,7 +186,7 @@ open class KmehrExport(
 				if (m.specialityCodes.isNotEmpty()) {
 					m.specialityCodes.map { CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = it.code } }
 				} else if (!m.speciality.isNullOrBlank()) {
-					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality })
+					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality?.toLowerCase() })
 				}  else if (!m.lastName.isNullOrBlank() && !m.firstName.isNullOrBlank()) {
 					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = "persphysician" })
 				} else {

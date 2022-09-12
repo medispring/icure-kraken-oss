@@ -214,7 +214,7 @@ open class KmehrExport(
 				if (m.specialityCodes.size > 0) {
 					m.specialityCodes.map { CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = it.code } }
 				} else if (m.speciality ?: "" != "") {
-					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality })
+					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality?.toLowerCase() })
 				} else
 					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = "persphysician" })
 			)

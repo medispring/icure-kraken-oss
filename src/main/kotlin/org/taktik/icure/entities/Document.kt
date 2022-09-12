@@ -136,7 +136,7 @@ data class Document(
 			DataAttachment(
 				attachmentId,
 				objectStoreReference,
-				listOfNotNull(mainUti) + otherUtis
+				listOfNotNull(mainUti) + (mainUti?.let { otherUtis - it } ?: otherUtis)
 			)
 		else
 			null
