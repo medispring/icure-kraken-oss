@@ -37,8 +37,8 @@ class MaintenanceTaskLogicImpl(
 		emitAll(maintenanceTaskDAO.listMaintenanceTasksByHcPartyAndType(healthcarePartyId, type, startDate, endDate))
 	}
 
-	override fun listMaintenanceTasksAfterDate(date: Long): Flow<String> = flow {
-		emitAll(maintenanceTaskDAO.listMaintenanceTasksAfterDate(date))
+	override fun listMaintenanceTasksAfterDate(healthcarePartyId: String, date: Long): Flow<String> = flow {
+		emitAll(maintenanceTaskDAO.listMaintenanceTasksAfterDate(healthcarePartyId, date))
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)
