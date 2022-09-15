@@ -150,7 +150,7 @@ class HealthOneLogicImpl(
 	protected fun importProtocol(language: String, protoList: List<*>, position: Long, ril: ResultsInfosLine): org.taktik.icure.entities.embed.Service {
 		var text = (protoList[0] as ProtocolLine).text
 		for (i in 1 until protoList.size) {
-			text += "\n" + (protoList[i] as ProtocolLine).text
+			text += "\n" + ((protoList[i] as ProtocolLine).text ?: "")
 		}
 		val s = org.taktik.icure.entities.embed.Service(
 			id = uuidGen.newGUID().toString(),
