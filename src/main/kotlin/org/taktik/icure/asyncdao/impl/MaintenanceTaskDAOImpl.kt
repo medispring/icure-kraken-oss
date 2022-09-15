@@ -53,10 +53,17 @@ class MaintenanceTaskDAOImpl(
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-	@View(name = "by_date", map = "function(doc) { if (doc.java_type === 'org.taktik.icure.entities.MaintenanceTask' && !doc.deleted) emit(doc.created)}")
-	override fun listMaintenanceTasksAfterDate(date: Long) = flow {
+	@View(name = "by_hcparty_date", map = "classpath:js/maintenancetask/By_hcparty_date_map.js")
+	override fun listMaintenanceTasksAfterDate(healthcarePartyId: String, date: Long) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-		emitAll(client.queryView<Long, Void>(createQuery(client, "by_date").endKey(date).descending(true).includeDocs(false)).map { it.id })
+
+		val queryView = createQuery(client, "by_hcparty_date")
+			.startKey(ComplexKey.of(healthcarePartyId, ComplexKey.emptyObject()))
+			.endKey(ComplexKey.of(healthcarePartyId, date))
+			.descending(true)
+			.includeDocs(false)
+
+		emitAll(client.queryView<ComplexKey, Void>(queryView).map { it.id })
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)
