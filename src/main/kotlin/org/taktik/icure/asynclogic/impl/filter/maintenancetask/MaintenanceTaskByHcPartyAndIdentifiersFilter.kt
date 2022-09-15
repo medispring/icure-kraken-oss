@@ -10,7 +10,7 @@ import org.taktik.icure.asynclogic.impl.filter.Filter
 import org.taktik.icure.asynclogic.impl.filter.Filters
 import org.taktik.icure.domain.filter.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter
 import org.taktik.icure.entities.MaintenanceTask
-import org.taktik.icure.utils.getLoggedHealthCarePartyId
+import org.taktik.icure.utils.getLoggedDataOwnerId
 
 @Service
 class MaintenanceTaskByHcPartyAndIdentifiersFilter(private val maintenanceTaskLogic: MaintenanceTaskLogic, private val sessionLogic: AsyncSessionLogic) : Filter<String, MaintenanceTask, MaintenanceTaskByHcPartyAndIdentifiersFilter> {
@@ -20,7 +20,7 @@ class MaintenanceTaskByHcPartyAndIdentifiersFilter(private val maintenanceTaskLo
 		context: Filters
 	) = flow {
 		try {
-			emitAll(maintenanceTaskLogic.listMaintenanceTasksByHcPartyAndIdentifier(filter.healthcarePartyId ?: getLoggedHealthCarePartyId(sessionLogic), filter.identifiers))
+			emitAll(maintenanceTaskLogic.listMaintenanceTasksByHcPartyAndIdentifier(filter.healthcarePartyId ?: getLoggedDataOwnerId(sessionLogic), filter.identifiers))
 		} catch (e: LoginException) {
 			throw IllegalArgumentException(e)
 		}
