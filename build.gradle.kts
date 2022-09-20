@@ -109,6 +109,10 @@ tasks.withType<BootRun> {
     }
 }
 
+configure<com.taktik.gradle.plugins.flowr.DockerJavaPluginExtension> {
+	imageRepoAndName = "taktik/kraken"
+}
+
 configurations {
     all {
         exclude(group = "org.slf4j", module = "slf4j-log4j12")
