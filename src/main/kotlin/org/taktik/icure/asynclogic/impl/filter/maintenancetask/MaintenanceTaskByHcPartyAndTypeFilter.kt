@@ -14,7 +14,7 @@ import org.taktik.icure.asynclogic.impl.filter.Filter
 import org.taktik.icure.asynclogic.impl.filter.Filters
 import org.taktik.icure.domain.filter.maintenancetask.MaintenanceTaskByHcPartyAndTypeFilter
 import org.taktik.icure.entities.MaintenanceTask
-import org.taktik.icure.utils.getLoggedHealthCarePartyId
+import org.taktik.icure.utils.getLoggedDataOwnerId
 
 @Service
 @Profile("app")
@@ -25,7 +25,7 @@ class MaintenanceTaskByHcPartyAndTypeFilter(
 
 	override fun resolve(filter: MaintenanceTaskByHcPartyAndTypeFilter, context: Filters) = flow<String> {
 		try {
-			emitAll(maintenanceTaskLogic.listMaintenanceTasksByHcPartyAndType(filter.healthcarePartyId ?: getLoggedHealthCarePartyId(sessionLogic), filter.type))
+			emitAll(maintenanceTaskLogic.listMaintenanceTasksByHcPartyAndType(filter.healthcarePartyId ?: getLoggedDataOwnerId(sessionLogic), filter.type))
 		} catch (e: LoginException) {
 			throw IllegalArgumentException(e)
 		}
