@@ -11,9 +11,10 @@ import org.taktik.icure.entities.MaintenanceTask
 @KotlinBuilder
 data class MaintenanceTaskAfterDateFilter(
 	override val desc: String? = null,
+	override val healthcarePartyId: String? = null,
 	override val date: Long
 	): AbstractFilter<MaintenanceTask>, MaintenanceTaskAfterDateFilter {
 	override fun matches(item: MaintenanceTask): Boolean {
-		return ((item.created ?: 0) > date)
+		return (healthcarePartyId == null || item.delegations.keys.contains(healthcarePartyId)) && ((item.created ?: 0) > date)
 	}
 }

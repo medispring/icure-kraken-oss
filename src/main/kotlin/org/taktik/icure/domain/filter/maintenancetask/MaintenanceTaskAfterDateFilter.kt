@@ -7,5 +7,6 @@ import org.taktik.icure.domain.filter.Filter
 import org.taktik.icure.entities.MaintenanceTask
 
 interface MaintenanceTaskAfterDateFilter : Filter<String, MaintenanceTask> {
+	val healthcarePartyId: String?
 	val date: Long
 }
