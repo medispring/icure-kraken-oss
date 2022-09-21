@@ -14,5 +14,25 @@ data class ReplicateCommandDto(
 	val targetUrl: String,
 	val targetUsername: String,
 	val targetPassword: String,
-	val id: String? = null
-)
+	val id: String? = null,
+) {
+	data class RemoteDto(
+		val url: String,
+		val auth: AuthenticationDto? = null
+	) {
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		@KotlinBuilder
+		data class AuthenticationDto(
+			val basic: BasicDto? = null
+		) {
+			@JsonInclude(JsonInclude.Include.NON_NULL)
+			@JsonIgnoreProperties(ignoreUnknown = true)
+			@KotlinBuilder
+			data class BasicDto (
+				val username: String,
+				val password: String
+			)
+		}
+	}
+}

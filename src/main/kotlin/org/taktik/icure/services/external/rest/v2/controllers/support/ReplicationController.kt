@@ -13,18 +13,20 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.taktik.icure.asynclogic.ReplicationLogic
 import org.taktik.icure.services.external.rest.v2.dto.ReplicateCommandDto
+import org.taktik.icure.services.external.rest.v2.mapper.ReplicatorDocumentV2Mapper
 
 @ExperimentalCoroutinesApi
 @RestController("replicationControllerV2")
 @RequestMapping("/rest/v2/replication")
 @Tag(name = "replication")
 class ReplicationController(
-	private val replicationLogic: ReplicationLogic
+	private val replicationLogic: ReplicationLogic,
+	private val replicatorDocumentV2Mapper: ReplicatorDocumentV2Mapper
 ) {
 	@Operation(summary = "Get replication documents", description = "Get all replication infos and states")
 	@GetMapping("/docs")
 	fun getReplicationDocs() = mono {
-		replicationLogic.listReplicationDocs()
+		replicationLogic.listReplicationDocs().map { replicatorDocumentV2Mapper.map(it) }
 	}
 
 	@Operation(summary = "Create one time replication document", description = "Create a document to start a one time replication")
