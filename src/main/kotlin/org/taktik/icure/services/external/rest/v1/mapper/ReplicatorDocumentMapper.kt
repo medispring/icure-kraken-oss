@@ -20,17 +20,21 @@ package org.taktik.icure.services.external.rest.v1.mapper
 
 import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.taktik.couchdb.entity.ReplicateCommand
+import org.taktik.couchdb.entity.ReplicationStats
 import org.taktik.couchdb.entity.ReplicatorDocument
 import org.taktik.icure.services.external.rest.v1.dto.ReplicatorDocumentDto
+import org.taktik.icure.services.external.rest.v1.dto.AuthenticationDto
+import org.taktik.icure.services.external.rest.v1.dto.BasicDto
+import org.taktik.icure.services.external.rest.v1.dto.RemoteDto
+import org.taktik.icure.services.external.rest.v1.dto.ReplicationStatsDto
 
 @Mapper(componentModel = "spring", uses = [], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface ReplicatorDocumentMapper {
-	@Mappings(
-		Mapping(target = "revHistory", ignore = true),
-		Mapping(target = "revsInfo", ignore = true)
-	)
-	fun map(roleDto: ReplicatorDocumentDto): ReplicatorDocument
-	fun map(role: ReplicatorDocument): ReplicatorDocumentDto
+	fun map(replicatorDocument: ReplicatorDocument): ReplicatorDocumentDto
+	fun map(role: ReplicationStats): ReplicationStatsDto
+	fun map(remote: ReplicateCommand.Remote): RemoteDto
+	fun map(authenticaton: ReplicateCommand.Remote.Authentication): AuthenticationDto
+	fun map(basic: ReplicateCommand.Remote.Authentication.Basic): BasicDto
+
 }
