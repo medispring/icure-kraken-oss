@@ -17,7 +17,6 @@
 
 package org.taktik.icure.services.external.rest.v1.dto
 
-import java.io.Serializable
 import java.time.ZonedDateTime
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -34,8 +33,8 @@ import org.taktik.icure.services.external.rest.v1.dto.base.VersionableDto
 data class ReplicatorDocumentDto(
         override val id: String,
         override val rev: String?,
-        val source: ReplicateCommandDto.RemoteDto? = null,
-        val target: ReplicateCommandDto.RemoteDto? = null,
+        val source: RemoteDto? = null,
+        val target: RemoteDto? = null,
         val owner: String? = null,
         val create_target: Boolean? = null,
         val continuous: Boolean? = null,
@@ -50,19 +49,3 @@ data class ReplicatorDocumentDto(
     override fun withIdRev(id: String?, rev: String) = id?.let { this.copy(id = it, rev = rev) } ?: this.copy(rev = rev)
 }
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@KotlinBuilder
-data class ReplicationStatsDto(
-        val revisionsChecked: Int? = null,
-        val missingRevisionsFound: Int? = null,
-        val docsRead: Int? = null,
-        val docsWritten: Int? = null,
-        val changesPending: Int? = null,
-        val docWriteFailures: Int? = null,
-        val checkpointedSourceSeq: String? = null,
-        @JsonSerialize(using = ZonedDateTimeSerializer::class)
-        @JsonDeserialize(using = ZonedDateTimeDeserializer::class)
-        val startTime: ZonedDateTime? = null,
-        val error: String? = null
-) : Serializable
