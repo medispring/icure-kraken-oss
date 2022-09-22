@@ -36,9 +36,9 @@ data class ReplicatorDocumentDto(
         val source: RemoteDto? = null,
         val target: RemoteDto? = null,
         val owner: String? = null,
-        val create_target: Boolean? = null,
+        val createTarget: Boolean? = null,
         val continuous: Boolean? = null,
-        val doc_ids: List<String>? = null,
+        val docIds: List<String>? = null,
         val replicationState: String? = null,
         @JsonSerialize(using = ZonedDateTimeSerializer::class)
         @JsonDeserialize(using = ZonedDateTimeDeserializer::class)

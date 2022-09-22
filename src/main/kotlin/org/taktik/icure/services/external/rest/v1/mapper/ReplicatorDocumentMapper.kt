@@ -20,6 +20,8 @@ package org.taktik.icure.services.external.rest.v1.mapper
 
 import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 import org.taktik.couchdb.entity.ReplicateCommand
 import org.taktik.couchdb.entity.ReplicationStats
 import org.taktik.couchdb.entity.ReplicatorDocument
@@ -31,6 +33,10 @@ import org.taktik.icure.services.external.rest.v1.dto.ReplicationStatsDto
 
 @Mapper(componentModel = "spring", uses = [], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface ReplicatorDocumentMapper {
+	@Mappings(
+		Mapping(target = "createTarget", source = "create_target"),
+		Mapping(target = "docIds", source = "doc_ids")
+	)
 	fun map(replicatorDocument: ReplicatorDocument): ReplicatorDocumentDto
 	fun map(role: ReplicationStats): ReplicationStatsDto
 	fun map(remote: ReplicateCommand.Remote): RemoteDto
