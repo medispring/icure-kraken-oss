@@ -39,7 +39,7 @@ buildscript {
 apply(plugin = "git-version")
 
 val gitVersion: String? by project
-group = "org.taktik.icure"
+group = "com.icure"
 version = gitVersion ?: "0.0.1-SNAPSHOT"
 
 apply(plugin = "kotlin-spring")
@@ -132,7 +132,7 @@ dependencies {
 
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
-    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.18")
+    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.22")
 
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.4.32")
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.4.32")
@@ -143,8 +143,8 @@ dependencies {
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version = "0.3")
 
     //Jackson
-	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.6")
-	implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = "2.12.6")
+	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.7")
+	implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = "2.12.7")
     implementation(group = "com.fasterxml.jackson.datatype", name="jackson-datatype-jsr310", version = "2.12.6")
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.3.1.Final")
 
@@ -152,9 +152,9 @@ dependencies {
     implementation(group = "org.taktik.couchdb", name = "krouch", version = "main-1.0.2-111-g34b8dc36d9")
     implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
 
-    implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.13")
-    implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.13")
-	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.13")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.14")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.14")
+	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.14")
 
 
 	implementation(group = "org.springframework", name = "spring-aspects", version = "5.3.10")
@@ -233,7 +233,7 @@ dependencies {
     // ktlint will pick them up
 
     testImplementation(group = "org.junit.jupiter", name = "junit-jupiter", version = "5.4.2")
-    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "2.5.13")
+    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "2.5.14")
     testImplementation(group = "io.mockk", name = "mockk", version = "1.11.0")
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = "3.1.1")
 	testImplementation(group = "io.kotest", name = "kotest-assertions-core", version = "4.4.3")
