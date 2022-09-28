@@ -4,7 +4,7 @@ import java.time.Instant
 import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
 import org.taktik.icure.entities.security.AuthenticationToken
-import org.taktik.icure.services.external.rest.v1.mapper.utils.InstantMapper
+import org.taktik.icure.services.external.rest.mapper.utils.InstantMapper
 import org.taktik.icure.services.external.rest.v2.dto.security.AuthenticationTokenDto
 
 @Mapper(componentModel = "spring", uses = [InstantMapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
