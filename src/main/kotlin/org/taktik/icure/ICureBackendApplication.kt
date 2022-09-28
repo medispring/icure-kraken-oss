@@ -140,14 +140,6 @@ class ICureBackendApplication {
 		}
 
 		runBlocking {
-			if (authenticationProperties.createAdminUser && suspendRetry(10) { userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty() } ) {
-				val password = UUID.randomUUID().toString().substring(0,13).replace("-","")
-				userLogic.createUser(User(id = UUID.randomUUID().toString(), login = "admin", passwordHash = password, type =  Users.Type.database, status = Users.Status.ACTIVE))
-
-				log.warn("Default admin user created with password $password")
-			}
-
-
 			allDaos.forEach {
 				it.forceInitStandardDesignDocument(true)
 			}
@@ -156,6 +148,13 @@ class ICureBackendApplication {
 			}
 			allObjectStorageLogic.forEach { it.rescheduleFailedStorageTasks() }
 			allObjectStorageMigrationLogic.forEach { it.rescheduleStoredMigrationTasks() }
+
+			if (authenticationProperties.createAdminUser && suspendRetry(10) { userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty() } ) {
+				val password = UUID.randomUUID().toString().substring(0,13).replace("-","")
+				userLogic.createUser(User(id = UUID.randomUUID().toString(), login = "admin", passwordHash = password, type =  Users.Type.database, status = Users.Status.ACTIVE))
+
+				log.warn("Default admin user created with password $password")
+			}
 		}
 
 		log.info("icure (" + iCureLogic.getVersion() + ") is started")
