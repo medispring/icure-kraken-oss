@@ -18,7 +18,11 @@
 
 package org.taktik.icure
 
+import java.util.UUID
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import org.bouncycastle.cms.RecipientId.password
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.ApplicationRunner
@@ -35,7 +39,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.task.TaskExecutor
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.taktik.icure.asyncdao.DocumentDAO
+import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.InternalDAO
 import org.taktik.icure.asynclogic.CodeLogic
@@ -44,6 +48,9 @@ import org.taktik.icure.asynclogic.PropertyLogic
 import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
 import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorageMigration
+import org.taktik.icure.constants.Users
+import org.taktik.icure.db.PaginationOffset
+import org.taktik.icure.entities.User
 import org.taktik.icure.entities.embed.AddressType
 import org.taktik.icure.entities.embed.Confidentiality
 import org.taktik.icure.entities.embed.DocumentStatus
@@ -56,6 +63,7 @@ import org.taktik.icure.entities.embed.PaymentType
 import org.taktik.icure.entities.embed.PersonalStatus
 import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.entities.embed.Visibility
+import org.taktik.icure.properties.AuthenticationProperties
 import org.taktik.icure.properties.CouchDbProperties
 
 @SpringBootApplication(
@@ -104,6 +112,7 @@ class ICureBackendApplication {
 		allDaos: List<GenericDAO<*>>,
 		internalDaos: List<InternalDAO<*>>,
 		couchDbProperties: CouchDbProperties,
+		authenticationProperties: AuthenticationProperties,
 		allObjectStorageLogic: List<IcureObjectStorage<*>>,
 		allObjectStorageMigrationLogic: List<IcureObjectStorageMigration<*>>
 	) = ApplicationRunner {
@@ -129,6 +138,14 @@ class ICureBackendApplication {
 		}
 
 		runBlocking {
+			if (authenticationProperties.createAdminUser && userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty()) {
+				val password = UUID.randomUUID().toString().substring(0,13).replace("-","")
+				userLogic.createUser(User(id = UUID.randomUUID().toString(), login = "admin", passwordHash = password, type =  Users.Type.database, status = Users.Status.ACTIVE))
+
+				log.warn("Default admin user created with password $password")
+			}
+
+
 			allDaos.forEach {
 				it.forceInitStandardDesignDocument(true)
 			}
