@@ -26,7 +26,6 @@ import org.taktik.icure.test.randomBytes
 import org.taktik.icure.test.retryUntil
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.test.shouldRespondErrorStatus
-import org.taktik.icure.utils.suspendRetry
 import org.taktik.icure.utils.toByteArray
 
 val client = WebClient.builder()

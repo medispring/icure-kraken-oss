@@ -65,6 +65,8 @@ import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.entities.embed.Visibility
 import org.taktik.icure.properties.AuthenticationProperties
 import org.taktik.icure.properties.CouchDbProperties
+import org.taktik.icure.utils.retry
+import org.taktik.icure.utils.suspendRetry
 
 @SpringBootApplication(
 	scanBasePackages = [
@@ -138,7 +140,7 @@ class ICureBackendApplication {
 		}
 
 		runBlocking {
-			if (authenticationProperties.createAdminUser && userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty()) {
+			if (authenticationProperties.createAdminUser && suspendRetry(10) { userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty() } ) {
 				val password = UUID.randomUUID().toString().substring(0,13).replace("-","")
 				userLogic.createUser(User(id = UUID.randomUUID().toString(), login = "admin", passwordHash = password, type =  Users.Type.database, status = Users.Status.ACTIVE))
 
