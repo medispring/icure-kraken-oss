@@ -25,6 +25,11 @@ import com.github.pozo.KotlinBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
+
+/**
+ * @property rrule a RFC5545 recurrence rule specifying the days and recurrence type of the timetable item. ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on Thursday until 30 September 2022.)
+ */
+
 data class TimeTableItemDto(
 	val rrule: String? = null,
 	@Deprecated("Will be replaced by rrule") val days: List<String> = emptyList(),
