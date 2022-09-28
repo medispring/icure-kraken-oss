@@ -7,13 +7,8 @@ import com.github.pozo.KotlinBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
-data class ReplicateCommandDto(
-	val sourceUrl: String,
-	val sourceUsername: String,
-	val sourcePassword: String,
-	val targetUrl: String,
-	val targetUsername: String,
-	val targetPassword: String,
-	val id: String? = null,
+data class RemoteDto(
+    val url: String,
+    val auth: AuthenticationDto? = null
 ) {
 }
