@@ -300,5 +300,7 @@ class CodeController(
 
 	@Operation(summary = "Get ids of code matching the provided filter for the current user (HcParty) ")
 	@PostMapping("/match")
-	fun matchCodesBy(@RequestBody filter: AbstractFilterDto<Code>) = filters.resolve(filter).injectReactorContext()
+	fun matchCodesBy(@RequestBody filter: AbstractFilterDto<Code>) = mono {
+		filters.resolve(filter).toList()
+	}
 }
