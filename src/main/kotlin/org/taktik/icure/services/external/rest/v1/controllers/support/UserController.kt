@@ -238,5 +238,7 @@ class UserController(
 
 	@Operation(summary = "Get ids of healthcare party matching the provided filter for the current user (HcParty) ")
 	@PostMapping("/match")
-	fun matchUsersBy(@RequestBody filter: AbstractFilterDto<User>) = filters.resolve(filter).injectReactorContext()
+	fun matchUsersBy(@RequestBody filter: AbstractFilterDto<User>) = mono {
+		filters.resolve(filter).toList()
+	}
 }
