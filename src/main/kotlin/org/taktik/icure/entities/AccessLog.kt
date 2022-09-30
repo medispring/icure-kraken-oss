@@ -47,7 +47,7 @@ data class AccessLog(
 	@field:NotNull(autoFix = AutoFix.NOW) override val created: Long? = null,
 	@field:NotNull(autoFix = AutoFix.NOW) override val modified: Long? = null,
 	@field:NotNull(autoFix = AutoFix.CURRENTUSERID) override val author: String? = null,
-	@field:NotNull(autoFix = AutoFix.CURRENTHCPID) override val responsible: String? = null,
+	@field:NotNull(autoFix = AutoFix.CURRENTDATAOWNERID) override val responsible: String? = null,
 	override val medicalLocationId: String? = null,
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val tags: Set<CodeStub> = emptySet(),
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val codes: Set<CodeStub> = emptySet(),
