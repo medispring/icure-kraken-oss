@@ -220,5 +220,7 @@ class HealthElementController(
 
 	@Operation(summary = "Get ids of health element matching the provided filter for the current user (HcParty) ")
 	@PostMapping("/match")
-	fun matchHealthElementsBy(@RequestBody filter: AbstractFilterDto<HealthElement>) = filters.resolve(filter).injectReactorContext()
+	fun matchHealthElementsBy(@RequestBody filter: AbstractFilterDto<HealthElement>) = mono {
+		filters.resolve(filter).toList()
+	}
 }
