@@ -601,9 +601,12 @@ class PatientDAOImpl(
 			.reduce(true)
 			.group(true)
 
-		val viewResult = client.queryView<ComplexKey, String>(viewQuery)
+		val viewResult = client.queryView<ComplexKey, Int>(viewQuery)
 
-		val keysWithDuplicates = viewResult.filter { it.value?.toIntOrNull()?.let { it > 1 } == true }.map { it.key }.toList()
+		val keysWithDuplicates = viewResult
+			.filter { it.value?.let { it > 1 } == true }
+			.map { it.key }
+			.toList()
 
 		// TODO MB no reified
 		val duplicatePatients = client.queryViewIncludeDocs<ComplexKey, String, Patient>(createQuery(client, viewName).keys(keysWithDuplicates).reduce(false).includeDocs(true))
