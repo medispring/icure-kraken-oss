@@ -106,12 +106,12 @@ abstract class GenericResultFormatLogicImpl(
 	}
 
 	@Throws(ParserConfigurationException::class, IOException::class, SAXException::class)
-	protected fun getXmlDocument(doc: Document, enckeys: List<String>): org.w3c.dom.Document {
+	protected suspend fun getXmlDocument(doc: Document, enckeys: List<String>): org.w3c.dom.Document {
 		val dbFactory = DocumentBuilderFactory.newInstance()
 		val dBuilder = dbFactory.newDocumentBuilder()
 		return dBuilder.parse(
 			ByteArrayInputStream(
-				runBlocking { documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys) }
+				documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys)
 			)
 		)
 	}
