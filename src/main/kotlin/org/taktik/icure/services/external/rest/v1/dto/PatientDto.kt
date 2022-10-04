@@ -74,6 +74,7 @@ data class PatientDto(
 	@Schema(description = "An alias of the person, nickname, ...") val alias: String? = null,
 	@Schema(description = "Is the patient active (boolean).", defaultValue = "true") val active: Boolean = true,
 	@Schema(description = "When not active, the reason for deactivation.", defaultValue = "DeactivationReason.none") val deactivationReason: DeactivationReasonDto = DeactivationReasonDto.none,
+	@Schema(description = "Deactivation date of the patient") val deactivationDate: Int? = null,
 	@Schema(description = "Social security inscription number.") val ssin: String? = null,
 	@Schema(description = "Lastname at birth (can be different of the current name), depending on the country, must be used to design the patient .") val maidenName: String? = null, // Never changes (nom de jeune fille),
 	@Schema(description = "Lastname of the spouse for a married woman, depending on the country, can be used to design the patient.") val spouseName: String? = null, // Name of the spouse after marriage,
