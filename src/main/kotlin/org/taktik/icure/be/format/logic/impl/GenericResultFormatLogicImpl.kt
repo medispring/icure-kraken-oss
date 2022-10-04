@@ -30,7 +30,6 @@ import java.time.LocalDateTime
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import org.springframework.core.io.buffer.DataBuffer
 import org.taktik.couchdb.id.UUIDGenerator
 import org.taktik.icure.asynclogic.FormLogic
