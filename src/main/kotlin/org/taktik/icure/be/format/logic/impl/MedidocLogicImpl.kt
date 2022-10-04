@@ -38,7 +38,6 @@ import java.util.regex.Pattern
 import com.google.common.base.Strings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.runBlocking
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.io.ByteArrayResource
@@ -88,7 +87,7 @@ class MedidocLogicImpl(
 		var hasRHash = false
 		var hasRHashSlash = false
 		var hasFinalTag = false
-		val text = decodeRawData(runBlocking { documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys) })
+		val text = decodeRawData(documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys))
 		if (text != null) {
 			val reader = BufferedReader(StringReader(text))
 			while (reader.readLine()?.also { line ->
