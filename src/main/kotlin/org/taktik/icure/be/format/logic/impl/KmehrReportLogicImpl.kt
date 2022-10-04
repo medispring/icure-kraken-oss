@@ -77,7 +77,7 @@ class KmehrReportLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		val msg: Kmehrmessage? = extractMessage(doc, enckeys)
 
 		val isSmfOrPmf = msg?.header?.standard?.specialisation?.cd?.value?.let {
@@ -94,7 +94,7 @@ class KmehrReportLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		val msg: Kmehrmessage? = extractMessage(doc, enckeys)
 
 		return msg?.folders?.flatMap { f ->
@@ -191,7 +191,7 @@ class KmehrReportLogicImpl(
 		)
 	}
 
-	private fun extractMessage(doc: Document, enckeys: List<String>) =
+	private suspend fun extractMessage(doc: Document, enckeys: List<String>) =
 		try {
 			JAXBContext.newInstance(Kmehrmessage::class.java).createUnmarshaller().unmarshal(getBufferedReader(doc, enckeys)) as Kmehrmessage
 		} catch (e: Exception) {

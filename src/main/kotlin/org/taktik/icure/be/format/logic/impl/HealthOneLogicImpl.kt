@@ -317,7 +317,7 @@ class HealthOneLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		val br = getBufferedReader(doc, enckeys) ?: throw IllegalArgumentException("Cannot get document")
 		val documentId = doc.id
 		return extractResultInfos(br, language, documentId, full)
@@ -708,7 +708,7 @@ class HealthOneLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		val br = getBufferedReader(doc, enckeys)
 		val firstLine = br!!.readLine()
 		br.close()

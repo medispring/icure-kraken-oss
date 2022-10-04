@@ -82,7 +82,7 @@ class MedidocLogicImpl(
 	private val sidf: DateFormat = SimpleDateFormat("ddMMyy")
 	private val onlyNumbersAndPercentSigns = Pattern.compile("^[0-9%]+$")
 
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		var hasAHash = false
 		var hasAHashSlash = false
 		var hasRHash = false
@@ -115,7 +115,7 @@ class MedidocLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		val l: MutableList<ResultInfo> = ArrayList()
 		val br = getBufferedReader(doc, enckeys)
 		val lines = IOUtils.readLines(br)
