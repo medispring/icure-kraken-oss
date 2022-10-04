@@ -43,12 +43,14 @@ import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 
+interface ObjectStorageClientBean<T : HasDataAttachments<T>> : ObjectStorageClient<T>, InitializingBean {}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 	private val objectStorageProperties: ObjectStorageProperties,
 	private val cloudAuthenticationLogic: CloudAuthenticationLogic,
 	override val entityGroupName: String
-) : ObjectStorageClient<T>, InitializingBean {
+) : ObjectStorageClientBean<T> {
 	companion object {
 		private const val NEXT_BYTE_HEADER = "Next-Byte"
 		private val log = LoggerFactory.getLogger(ObjectStorageClientImpl::class.java)
@@ -197,7 +199,7 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 class DocumentObjectStorageClientImpl(
 	objectStorageProperties: ObjectStorageProperties,
 	cloudAuthenticationLogic: CloudAuthenticationLogic
-) : DocumentObjectStorageClient, ObjectStorageClient<Document> by ObjectStorageClientImpl(
+) : DocumentObjectStorageClient, ObjectStorageClientBean<Document> by ObjectStorageClientImpl(
 	objectStorageProperties,
 	cloudAuthenticationLogic,
 	"documents"

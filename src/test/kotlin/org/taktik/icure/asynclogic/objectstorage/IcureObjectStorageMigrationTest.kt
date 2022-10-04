@@ -40,6 +40,7 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProp
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.entities.objectstorage.ObjectStorageMigrationTask
+import org.taktik.icure.properties.ExternalServicesProperties
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.setCurrentUserData
 
@@ -63,7 +64,11 @@ class IcureObjectStorageMigrationTest : StringSpec({
 		sessionLogic.setCurrentUserData(userId)
 		resetTestLocalStorageDirectory()
 		documentDAO = mockk()
-		objectStorageClient = FakeObjectStorageClient("documents") { it == userId }
+		objectStorageClient = FakeObjectStorageClient(
+			"documents",
+			ExternalServicesProperties(true, true),
+			null
+		) { it == userId }
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		migrationTasksDAO = FakeObjectStorageMigrationTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(

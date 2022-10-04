@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -20,9 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
@@ -37,12 +34,12 @@ import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.utils.toByteArray
 
-interface ScheduledLocalObjectStorage<T : HasDataAttachments<T>> : LocalObjectStorage<T>, DisposableBean, InitializingBean
+interface LocalObjectStorageBean<T : HasDataAttachments<T>> : LocalObjectStorage<T>, DisposableBean, InitializingBean
 
 private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 	private val objectStorageProperties: ObjectStorageProperties,
 	private val entityPath: String
-) : ScheduledLocalObjectStorage<T> {
+) : LocalObjectStorageBean<T> {
 	companion object {
 		private val log = LoggerFactory.getLogger(LocalObjectStorageImpl::class.java)
 	}
@@ -167,7 +164,7 @@ private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 @Service
 class DocumentLocalObjectStorageImpl(
 	objectStorageProperties: ObjectStorageProperties
-) : DocumentLocalObjectStorage, ScheduledLocalObjectStorage<Document> by LocalObjectStorageImpl(
+) : DocumentLocalObjectStorage, LocalObjectStorageBean<Document> by LocalObjectStorageImpl(
 	objectStorageProperties,
 	"documents"
 )
