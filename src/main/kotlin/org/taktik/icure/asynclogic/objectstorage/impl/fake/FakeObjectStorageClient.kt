@@ -1,29 +1,44 @@
-package org.taktik.icure.asynclogic.objectstorage.testutils
+package org.taktik.icure.asynclogic.objectstorage.impl.fake
 
-import io.kotest.matchers.collections.shouldBeIn
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
+import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageException
+import org.taktik.icure.entities.Document
 import org.taktik.icure.utils.toByteArray
 
+/**
+ * Fake implementation of [ObjectStorageClient], for testing purposes only (including creation of a test container).
+ * @param entityGroupName group name of entities supported by this object storage client (e.g. documents)
+ * @param checkUser verifies if a user can actually use this client, for testing purposes.
+ */
 class FakeObjectStorageClient<T : HasDataAttachments<T>>(
 	override val entityGroupName: String,
-	userIdsProvider: () -> Set<String>
+	private val checkUser: (String) -> Boolean
 ) : ObjectStorageClient<T> {
-	constructor(entityGroupName: String, userIds: Set<String>) : this(entityGroupName, { userIds })
+	companion object {
+		/**
+		 * Creates a fake [DocumentObjectStorageClient], using a [FakeObjectStorageClient] as base for the implementation.
+		 * @param checkUser see [FakeObjectStorageClient.checkUser]
+		 */
+		fun document(checkUser: (String) -> Boolean): DocumentObjectStorageClient =
+			object : DocumentObjectStorageClient, ObjectStorageClient<Document> by FakeObjectStorageClient(
+				"documents",
+				checkUser
+			) {}
+	}
 
 	var available = true
 
 	val eventsChannel = Channel<ObjectStoreEvent>(UNLIMITED)
 
 	private val entityToAttachments = mutableMapOf<String, MutableMap<String, ByteArray>>()
-	private val userIds by lazy(userIdsProvider)
 
 	val attachmentsKeys get() = entityToAttachments.flatMap { (docId, attachments) -> attachments.keys.map { docId to it } }
 
@@ -74,9 +89,5 @@ class FakeObjectStorageClient<T : HasDataAttachments<T>>(
 
 	data class ObjectStoreEvent(val documentId: String, val attachmentId: String, val type: Type) {
 		enum class Type { SUCCESSFUL_UPLOAD, SUCCESSFUL_DELETE, UNSUCCESSFUL_UPLOAD, UNSUCCESSFUL_DELETE }
-	}
-
-	private fun checkUser(user: String) {
-		user shouldBeIn userIds
 	}
 }
