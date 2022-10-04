@@ -244,8 +244,8 @@ class MedidocLogicImpl(
 			}
 			i++
 		}
-		fillContactWithLines(lls.filterNotNull(), planOfActionId, hcpId, protocolIds, formIds)
-		return contactLogic.modifyContact(ctc)
+		val subContactsWithServices = fillContactWithLines(lls.filterNotNull(), planOfActionId, hcpId, protocolIds, formIds)
+		return contactLogic.modifyContact(ctc.copy(subContacts = ctc.subContacts + subContactsWithServices.map { it.first }, services = ctc.services + subContactsWithServices.flatMap { it.second }))
 	}
 
 	private fun fillService(language: String, lines: List<String>, i: Int, demandDate: Date?): Pair<Int, org.taktik.icure.entities.embed.Service> {
