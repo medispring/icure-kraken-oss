@@ -18,8 +18,8 @@ import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentLocalObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageImpl
-import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient
-import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient.ObjectStoreEvent
+import org.taktik.icure.asynclogic.objectstorage.impl.fake.FakeObjectStorageClient
+import org.taktik.icure.asynclogic.objectstorage.impl.fake.FakeObjectStorageClient.ObjectStoreEvent
 import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.objectstorage.testutils.attachment1
 import org.taktik.icure.asynclogic.objectstorage.testutils.attachment2
@@ -28,12 +28,10 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.bytes2
 import org.taktik.icure.asynclogic.objectstorage.testutils.document1
 import org.taktik.icure.asynclogic.objectstorage.testutils.resetTestLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleAttachments
-import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.objectstorage.ObjectStorageTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTaskType
-import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.setCurrentUserData
 import org.taktik.icure.test.shouldContainExactly
@@ -55,7 +53,7 @@ class IcureObjectStorageTest : StringSpec({
 		userId = newId()
 		sessionLogic.setCurrentUserData(userId)
 		resetTestLocalStorageDirectory()
-		objectStorageClient = FakeObjectStorageClient("documents", setOf(userId))
+		objectStorageClient = FakeObjectStorageClient("documents") { it == userId }
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(
 			storageTasksDAO,

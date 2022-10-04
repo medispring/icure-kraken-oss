@@ -27,7 +27,7 @@ import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentLocalObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageImpl
 import org.taktik.icure.asynclogic.objectstorage.impl.DocumentObjectStorageMigrationImpl
-import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient
+import org.taktik.icure.asynclogic.objectstorage.impl.fake.FakeObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageMigrationTasksDAO
 import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageTasksDAO
 import org.taktik.icure.asynclogic.objectstorage.testutils.attachment1
@@ -36,12 +36,10 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.bytes1
 import org.taktik.icure.asynclogic.objectstorage.testutils.bytes2
 import org.taktik.icure.asynclogic.objectstorage.testutils.document1
 import org.taktik.icure.asynclogic.objectstorage.testutils.resetTestLocalStorageDirectory
-import org.taktik.icure.asynclogic.objectstorage.testutils.testLocalStorageDirectory
 import org.taktik.icure.asynclogic.objectstorage.testutils.testObjectStorageProperties
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.entities.objectstorage.ObjectStorageMigrationTask
-import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.setCurrentUserData
 
@@ -65,7 +63,7 @@ class IcureObjectStorageMigrationTest : StringSpec({
 		sessionLogic.setCurrentUserData(userId)
 		resetTestLocalStorageDirectory()
 		documentDAO = mockk()
-		objectStorageClient = FakeObjectStorageClient("documents", setOf(userId))
+		objectStorageClient = FakeObjectStorageClient("documents") { it == userId }
 		storageTasksDAO = FakeObjectStorageTasksDAO()
 		migrationTasksDAO = FakeObjectStorageMigrationTasksDAO()
 		icureObjectStorage = DocumentObjectStorageImpl(

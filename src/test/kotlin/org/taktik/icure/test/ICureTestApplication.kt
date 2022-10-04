@@ -29,7 +29,7 @@ import org.taktik.icure.asynclogic.PropertyLogic
 import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
 import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
-import org.taktik.icure.asynclogic.objectstorage.testutils.FakeObjectStorageClient
+import org.taktik.icure.asynclogic.objectstorage.impl.fake.FakeObjectStorageClient
 import org.taktik.icure.constants.Users
 import org.taktik.icure.entities.Document
 import org.taktik.icure.exceptions.DuplicateDocumentException
@@ -133,12 +133,14 @@ class ICureTestApplication {
 	}
 
 	// Test beans
-	@Primary
-	@Bean
-	fun fakeDocumentObjectStorageClient(userLogic: UserLogic): DocumentObjectStorageClient {
-		val fakeClient = FakeObjectStorageClient<Document>(
-			"documents"
-		) { runBlocking { setOf(userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id) } }
-		return object : DocumentObjectStorageClient, ObjectStorageClient<Document> by fakeClient {}
+	@Bean("fakeObjectStorageClientUserCheck")
+	fun fakeObjectStorageClientUserCheck(userLogic: UserLogic): (String) -> Boolean {
+		return object : (String) -> Boolean {
+			private val expectedId by lazy {
+				runBlocking { userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id }
+			}
+
+			override fun invoke(userId: String): Boolean = userId == expectedId
+		}
 	}
 }
