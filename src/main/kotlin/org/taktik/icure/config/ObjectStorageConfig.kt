@@ -25,7 +25,11 @@ class ObjectStorageConfig {
 	): DocumentObjectStorageClient =
 		if (externalServicesProperties.useFakes) {
 			log.warn("Using fake object storage client. This should be done only for testing purposes.")
-			FakeObjectStorageClient.document(fakeObjectStorageClientUserCheck ?: { true })
+			FakeObjectStorageClient.document(
+				externalServicesProperties,
+				null,
+				fakeObjectStorageClientUserCheck ?: { true }
+			)
 		} else {
 			DocumentObjectStorageClientImpl(objectStorageProperties, cloudAuthenticationLogic)
 		}
