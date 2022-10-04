@@ -28,6 +28,7 @@ enum class AutoFix(private val fixer: suspend (b: Any?, v: Any?, sl: AsyncSessio
 	UUID({ _: Any?, _: Any?, _: AsyncSessionLogic? -> java.util.UUID.randomUUID().toString() }),
 	CURRENTUSERID({ _: Any?, _: Any?, sl: AsyncSessionLogic? -> sl?.getCurrentUserId() }),
 	CURRENTHCPID({ _: Any?, _: Any?, sl: AsyncSessionLogic? -> sl?.getCurrentHealthcarePartyId() }),
+	CURRENTDATAOWNERID({ _: Any?, _: Any?, sl: AsyncSessionLogic? -> sl?.getCurrentDataOwnerId() }),
 	NOFIX({ _: Any?, v: Any?, _: AsyncSessionLogic? -> v }),
 	NORMALIZECODE({ _: Any?, v: Any?, _: AsyncSessionLogic? -> (v as? CodeIdentification)?.normalizeIdentification() ?: v });
 
