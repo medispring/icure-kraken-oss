@@ -117,9 +117,9 @@ abstract class GenericResultFormatLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	protected fun getBufferedReader(doc: Document, enckeys: List<String>): BufferedReader? {
+	protected suspend fun getBufferedReader(doc: Document, enckeys: List<String>): BufferedReader? {
 		return decodeRawData(
-			runBlocking { documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys) }
+			documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys)
 		)?.let { BufferedReader(StringReader(it)) }
 	}
 

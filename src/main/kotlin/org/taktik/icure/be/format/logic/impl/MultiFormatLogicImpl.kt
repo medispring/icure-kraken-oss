@@ -34,7 +34,7 @@ import org.taktik.icure.entities.Patient
 @Service
 class MultiFormatLogicImpl(var engines: List<ResultFormatLogic>) : MultiFormatLogic {
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		for (e in engines) {
 			if (e.canHandle(doc, enckeys)) {
 				return true
@@ -44,7 +44,7 @@ class MultiFormatLogicImpl(var engines: List<ResultFormatLogic>) : MultiFormatLo
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		for (e in engines) {
 			if (e.canHandle(doc, enckeys)) {
 				val infos = e.getInfos(doc, full, language, enckeys)

@@ -53,7 +53,7 @@ class KetLogicImpl(
 	documentDataAttachmentLoader: DocumentDataAttachmentLoader
 ) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic, documentDataAttachmentLoader), KetLogic {
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		return try {
 			val xml = getXmlDocument(doc, enckeys)
 			val xPathfactory = XPathFactory.newInstance()
@@ -70,7 +70,7 @@ class KetLogicImpl(
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		return try {
 			val xml = getXmlDocument(doc, enckeys)
 			val xPathfactory = XPathFactory.newInstance()
