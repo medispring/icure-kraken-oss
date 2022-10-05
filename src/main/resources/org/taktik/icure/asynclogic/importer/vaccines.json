@@ -1386,5 +1386,23 @@
     "codes": [
       "covid19"
     ]
-  }
+  },
+	{
+		"cnk": "4489795",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	},
+	{
+		"cnk": "4490843",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	},
+	{
+		"cnk": "4491007",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	}
 ]
