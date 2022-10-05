@@ -18,14 +18,19 @@
 
 package org.taktik.icure.asynclogic.samv2.impl
 
+import java.util.TreeSet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.springframework.stereotype.Service
@@ -53,6 +58,7 @@ import org.taktik.icure.entities.samv2.Substance
 import org.taktik.icure.entities.samv2.Verse
 import org.taktik.icure.entities.samv2.Vmp
 import org.taktik.icure.entities.samv2.VmpGroup
+import org.taktik.icure.utils.aggregateResults
 import org.taktik.icure.utils.bufferedChunks
 import org.taktik.icure.utils.distinct
 
@@ -160,8 +166,17 @@ class SamV2LogicImpl(
 		return vmpDAO.findVmpsByGroupCode(vmpgCode, paginationOffset)
 	}
 
-	override fun findAmpsByLabel(language: String?, label: String?, paginationOffset: PaginationOffset<List<String>>): Flow<ViewQueryResultEvent> {
-		return ampDAO.findAmpsByLabel(language, label, paginationOffset)
+	override fun findAmpsByLabel(language: String?, label: String, paginationOffset: PaginationOffset<List<String>>): Flow<Amp> = flow {
+		val ampIds = ampDAO.listAmpIdsByLabel(language, label.split(" ").maxByOrNull { it.length }).toSet(TreeSet())
+		emitAll(
+			aggregateResults(
+				ids = ampIds,
+				limit = paginationOffset.limit,
+				supplier = { ids -> ampDAO.getEntities(ids) },
+				filter = { amp -> amp.officialName?.contains(label, true) ?: false },
+				startDocumentId = paginationOffset.startDocumentId,
+			).asFlow()
+		)
 	}
 
 	override fun listAmpIdsByLabel(language: String?, label: String?): Flow<String> {
