@@ -55,6 +55,8 @@ import org.taktik.icure.entities.samv2.Nmp
 import org.taktik.icure.entities.samv2.Vmp
 import org.taktik.icure.entities.samv2.VmpGroup
 import org.taktik.icure.services.external.rest.v1.dto.ListOfIdsDto
+import org.taktik.icure.services.external.rest.v1.dto.PaginatedDocumentKeyIdPair
+import org.taktik.icure.services.external.rest.v1.dto.PaginatedList
 import org.taktik.icure.services.external.rest.v1.dto.samv2.AmpDto
 import org.taktik.icure.services.external.rest.v1.dto.samv2.NmpDto
 import org.taktik.icure.services.external.rest.v1.dto.samv2.ParagraphDto
@@ -114,13 +116,30 @@ class SamV2Controller(
 		@Parameter(description = "An amp document ID") @RequestParam(required = false) startDocumentId: String?,
 		@Parameter(description = "Number of rows") @RequestParam(required = false) limit: Int?
 	) = mono {
+
+		if (label == null || label.trim().length < 3) {
+			throw IllegalArgumentException("Label must be at least 3 characters long")
+		}
+
 		val realLimit = limit ?: DEFAULT_LIMIT
 		val startKeyElements: List<String>? = if (startKey == null) null else objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java))
 		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, realLimit + 1)
 
-		samV2Logic.findAmpsByLabel(language, label, paginationOffset).paginatedList<Amp, AmpDto>(ampToAmpDto, realLimit).let {
-			it.copy(rows = addProductIdsToAmps(it.rows))
-		}
+		val result = samV2Logic.findAmpsByLabel(language, label, paginationOffset).toList()
+
+		PaginatedList(
+			pageSize = realLimit.takeIf { result.size > realLimit } ?: result.size,
+			totalSize = result.size,
+			rows = addProductIdsToAmps(result.take(realLimit).map(ampToAmpDto)),
+			nextKeyPair = if (result.size > realLimit) {
+				PaginatedDocumentKeyIdPair<AmpDto>(
+					startKeyDocId = result[realLimit + 1]!!.id,
+				)
+			}
+			else {
+				null
+			}
+		)
 	}
 
 	@Operation(summary = "Finding VMPs by label with pagination.", description = "Returns a paginated list of VMPs by matching label. Matches occur per word")
