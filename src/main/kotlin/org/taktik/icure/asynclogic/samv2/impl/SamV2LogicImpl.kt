@@ -167,13 +167,15 @@ class SamV2LogicImpl(
 	}
 
 	override fun findAmpsByLabel(language: String?, label: String, paginationOffset: PaginationOffset<List<String>>): Flow<Amp> = flow {
-		val ampIds = ampDAO.listAmpIdsByLabel(language, label.split(" ").maxByOrNull { it.length }).toSet(TreeSet())
+		val labelComponents = label.split(" ")
+		val ampIds = ampDAO.listAmpIdsByLabel(language, labelComponents.maxByOrNull { it.length }).toSet(TreeSet())
+
 		emitAll(
 			aggregateResults(
 				ids = ampIds,
 				limit = paginationOffset.limit,
 				supplier = { ids -> ampDAO.getEntities(ids) },
-				filter = { amp -> amp.officialName?.contains(label, true) ?: false },
+				filter = { amp -> labelComponents.all { labelComponent -> amp.officialName?.contains(other = labelComponent, ignoreCase = true) ?: false }  },
 				startDocumentId = paginationOffset.startDocumentId,
 			).asFlow()
 		)
