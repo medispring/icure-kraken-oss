@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.mono
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.server.ResponseStatusException
 import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asynclogic.samv2.SamV2Logic
 import org.taktik.icure.db.PaginationOffset
@@ -118,7 +120,7 @@ class SamV2Controller(
 	) = mono {
 
 		if (label == null || label.trim().length < 3) {
-			throw IllegalArgumentException("Label must be at least 3 characters long")
+			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Label must be at least 3 characters long")
 		}
 
 		val realLimit = limit ?: DEFAULT_LIMIT
