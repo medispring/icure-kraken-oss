@@ -79,7 +79,7 @@ class CodeController(
 	@Operation(summary = "Get paginated list of codes by code, type and version.", description = "Returns a list of codes matched with given input. If several types are provided, pagination is not supported")
 	@GetMapping("/byLabel")
 	fun findPaginatedCodesByLabel(
-		@RequestParam(required = false) region: String?,
+		@RequestParam(required = true) region: String,
 		@RequestParam(required = false) types: String?,
 		@RequestParam(required = false) language: String?,
 		@RequestParam(required = false) label: String?,
@@ -120,7 +120,7 @@ class CodeController(
 	@Operation(summary = "Gets paginated list of codes by code, type and version.", description = "Returns a list of codes matched with given input.")
 	@GetMapping
 	fun findPaginatedCodes(
-		@RequestParam(required = false) region: String?,
+		@RequestParam(required = true) region: String,
 		@RequestParam(required = false) type: String?,
 		@RequestParam(required = false) code: String?,
 		@RequestParam(required = false) version: String?,
@@ -170,7 +170,7 @@ class CodeController(
 	@Operation(summary = "Gets list of codes by code, type and version", description = "Returns a list of codes matched with given input.")
 	@GetMapping("/byRegionTypeCode")
 	fun findCodes(
-		@Parameter(description = "Code region") @RequestParam(required = false) region: String?,
+		@Parameter(description = "Code region") @RequestParam(required = true) region: String,
 		@Parameter(description = "Code type") @RequestParam(required = false) type: String?,
 		@Parameter(description = "Code code") @RequestParam(required = false) code: String?,
 		@Parameter(description = "Code version") @RequestParam(required = false) version: String?
