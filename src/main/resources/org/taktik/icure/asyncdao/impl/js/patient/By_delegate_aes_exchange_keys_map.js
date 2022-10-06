@@ -1,4 +1,4 @@
-map = function(doc) {
+map = function (doc) {
 	var emitted = []
 	if (doc.java_type === 'org.taktik.icure.entities.Patient' && !doc.deleted && ((doc.hcPartyKeys && doc.publicKey) || doc.aesExchangeKeys)) {
 		var aesPubKeys = Object.keys(doc.aesExchangeKeys || {});
@@ -8,7 +8,9 @@ map = function(doc) {
 				var delegateKeys = ks[hcpId];
 				Object.keys(delegateKeys).forEach(function (delPub) {
 					var delK = delegateKeys[delPub]
-					if (pk === doc.publicKey) { emitted.push(hcpId) }
+					if (pk === doc.publicKey) {
+						emitted.push(hcpId)
+					}
 					emit(hcpId, [doc._id, pk.slice(-32), delPub.slice(-32), delK]);
 				})
 			});
