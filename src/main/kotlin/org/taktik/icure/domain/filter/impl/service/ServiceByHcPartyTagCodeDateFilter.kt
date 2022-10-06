@@ -38,8 +38,8 @@ data class ServiceByHcPartyTagCodeDateFilter(
 		return (
 			item.endOfLife == null && (healthcarePartyId == null || item.delegations.keys.contains(healthcarePartyId)) &&
 				(patientSecretForeignKey == null || item.secretForeignKeys != null && item.secretForeignKeys.contains(patientSecretForeignKey)) &&
-				(tagType == null || item.tags.stream().filter { (_, type, code) -> tagType == type && (tagCode == null || tagCode == code) }.findAny().isPresent) &&
-				(codeType == null || item.codes.stream().filter { (_, type, code) -> codeType == type && (codeCode == null || codeCode == code) }.findAny().isPresent) &&
+				(tagType == null || item.tags.any { codeStub -> tagType == codeStub.type && (tagCode == null || tagCode == codeStub.code)} ) &&
+				(codeType == null || item.codes.any { codeStub -> codeType == codeStub.type && (codeCode == null || codeCode == codeStub.code) }) &&
 				(startValueDate == null || item.valueDate != null && item.valueDate > startValueDate || item.openingDate != null && item.openingDate > startValueDate) &&
 				(endValueDate == null || item.valueDate != null && item.valueDate < endValueDate || item.openingDate != null && item.openingDate < endValueDate)
 			)
