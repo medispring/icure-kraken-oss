@@ -119,8 +119,8 @@ class SamV2Controller(
 		@Parameter(description = "Number of rows") @RequestParam(required = false) limit: Int?
 	) = mono {
 
-		if (label == null || label.trim().length < 3) {
-			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Label must be at least 3 characters long")
+		if (label == null || label.trim().length < 2) {
+			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Label must be at least 2 characters long")
 		}
 
 		val realLimit = limit ?: DEFAULT_LIMIT
