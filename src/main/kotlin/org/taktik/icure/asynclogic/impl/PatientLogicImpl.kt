@@ -182,13 +182,8 @@ class PatientLogicImpl(
 					filterChain.predicate?.let { queryResult is ViewRowWithDoc<*, *, *> && it.apply(queryResult.doc as Patient) }
 						?: (queryResult is ViewRowWithDoc<*, *, *> && queryResult.doc is Patient)
 				},
-				filteredOutAccumulator = 0,
-				filteredOutElementsReducer = { totalCount, filteredOutElement ->
-					when (filteredOutElement) {
-						is TotalCount -> totalCount + 1
-						else -> totalCount
-					}
-				},
+				filteredOutAccumulator = ids.size,
+				filteredOutElementsReducer = { totalCount, _ -> totalCount },
 				startDocumentId = paginationOffset.startDocumentId
 			)
 
