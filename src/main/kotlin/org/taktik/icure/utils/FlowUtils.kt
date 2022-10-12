@@ -18,6 +18,7 @@
 
 package org.taktik.icure.utils
 
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -27,15 +28,22 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.channels.onClosed
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.asPublisher
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.reactor.asFlux
 import kotlinx.coroutines.withContext
+import org.springframework.core.io.buffer.DataBuffer
+import org.springframework.core.io.buffer.DataBufferUtils
+import org.taktik.couchdb.ViewRow
 import org.taktik.couchdb.id.Identifiable
 import org.taktik.icure.entities.base.StoredDocument
 import reactor.core.publisher.Flux
@@ -110,13 +118,7 @@ fun <T> Flow<T>.bufferedChunks(min: Int, max: Int): Flow<List<T>> = channelFlow 
 }.buffer(1)
 
 suspend fun Flow<ByteBuffer>.writeTo(os: OutputStream) {
-	this.collect { bb ->
-		if (bb.hasArray() && bb.hasRemaining()) {
-			os.write(bb.array(), bb.position() + bb.arrayOffset(), bb.remaining())
-		} else {
-			os.write(ByteArray(bb.remaining()).also { bb.get(it) })
-		}
-	}
+	this.collect { it.writeTo(os) }
 }
 
 suspend fun Flow<ByteBuffer>.toInputStream(): InputStream {
@@ -155,4 +157,65 @@ suspend fun Flow<ByteBuffer>.toInputStream(): InputStream {
 			}
 		}
 	}
+}
+
+/**
+ * Drop the first [n] bytes from this flow.
+ */
+fun Flow<DataBuffer>.dropBytes(n: Long): Flow<DataBuffer> =
+	if (n > 0) DataBufferUtils.skipUntilByteCount(this.asPublisher(), n).asFlow() else this
+
+/* TODO check if other implementation is more efficient and is also correct (does never leave trailing zeroes)
+DataBufferUtils.join(asPublisher()).awaitFirst().asByteBuffer().array()
+ */
+suspend fun Flow<DataBuffer>.toByteArray(releaseBuffers: Boolean): ByteArray =
+	ByteArrayOutputStream().use { os ->
+		collect {
+			it.asByteBuffer().writeTo(os)
+			if (releaseBuffers) DataBufferUtils.release(it)
+		}
+		os.toByteArray()
+	}
+
+suspend fun Flow<ByteBuffer>.toByteArray(): ByteArray =
+	ByteArrayOutputStream().use { os ->
+		collect { it.writeTo(os) }
+		os.toByteArray()
+	}
+
+private fun ByteBuffer.writeTo(os: OutputStream): Unit =
+	if (hasArray() && hasRemaining()) {
+		os.write(array(), position() + arrayOffset(), remaining())
+	} else {
+		os.write(ByteArray(remaining()).also { get(it) })
+	}
+
+
+
+/**
+ * Merges multiple data buffers together until the flow is fully exhausted or at least [size] bytes of
+ * data was collected. The returned flow will consist of a single [DataBuffer] with size strictly smaller
+ * than [size] or it will be a flow of one or more [DataBuffer]s where the first has size greater than
+ * or equal to [size]
+ */
+suspend fun Flow<DataBuffer>.bufferFirstSize(size: Int): Flow<DataBuffer> = flow {
+	var accumulatedSize = 0
+	val buffers = mutableListOf<DataBuffer>()
+	var didEmitBuffers = false
+
+	suspend fun emitAccumulatedBuffers() {
+		emit(DataBufferUtils.join(buffers.asFlow().asPublisher()).awaitFirst())
+		didEmitBuffers = true
+	}
+
+	this@bufferFirstSize.collect {
+		if (didEmitBuffers) {
+			emit(it)
+		} else {
+			buffers += it
+			accumulatedSize += it.readableByteCount()
+			if (accumulatedSize >= size) emitAccumulatedBuffers()
+		}
+	}
+	if (!didEmitBuffers && buffers.isNotEmpty()) emitAccumulatedBuffers()
 }

@@ -33,7 +33,9 @@ import kotlinx.collections.immutable.plus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.taktik.commons.uti.UTI
 import org.taktik.commons.uti.impl.SimpleUTIDetector
 import org.taktik.couchdb.exception.UpdateConflictException
@@ -47,6 +49,7 @@ import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.InsuranceLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic.DataAttachmentChange
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils
 import org.taktik.icure.be.ehealth.logic.kmehr.validNihiiOrNull
 import org.taktik.icure.be.ehealth.logic.kmehr.validSsinOrNull
@@ -350,7 +353,7 @@ class SoftwareMedicalFileImport(
 		val trnauthorhcpid = extractTransactionAuthor(trn, saveToDatabase, author, v)
 		val trnTypeCd = trn.cds.find { it.s == CDTRANSACTIONschemes.CD_TRANSACTION_TYPE }?.value
 
-		val services = trn.headingsAndItemsAndTexts?.filterIsInstance(LnkType::class.java)?.filter { it.type == CDLNKvalues.MULTIMEDIA }?.map { lnk ->
+		val services = trn.headingsAndItemsAndTexts?.filterIsInstance(LnkType::class.java)?.filter { it.type == CDLNKvalues.MULTIMEDIA && it.url == null }?.map { lnk ->
 			val docname = trn.cds.firstOrNull { it.s == CDTRANSACTIONschemes.CD_TRANSACTION }?.dn ?: trnTypeCd ?: "unnamed_document"
 			val svcRecordDateTime = trn.recorddatetime?.toGregorianCalendar()?.toInstant()?.toEpochMilli()
 
@@ -360,9 +363,7 @@ class SoftwareMedicalFileImport(
 			lnk.mediatype?.value()?.let {
 				v.attachments.put(
 					documentId,
-					MimeAttachment().copy(
-						data = lnk.value
-					)
+					MimeAttachment(lnk.value)
 				)
 			}
 
@@ -388,13 +389,28 @@ class SoftwareMedicalFileImport(
 							}?.firstOrNull()?.id ?: author.healthcarePartyId,
 							created = svcRecordDateTime,
 							modified = svcRecordDateTime,
-							attachment = lnk.value,
-							name = docname,
-							mainUti = mainUti,
-							otherUtis = otherUtis
+							name = docname
 						).let {
+							/*TODO
+							 * Before attachment redesign document was also created with an initialized value for the attachment bytes, which would also appear in the
+							 * document added to the import result `v`, but now it is not allowed to put directly the bytes in the document.
+							 * I don't think this is an issue because anyway the import result would be serialized to json, so without the bytes.
+							 * Another possible issue is that the document added to the import result won't have the `attachmentId` properly initialized, but this
+							 * was already happening before, so I don't think this is an issue either.
+							 */
 							v.documents.add(it)
-							if (saveToDatabase) documentLogic.createDocument(it, trnauthorhcpid) else it
+							if (saveToDatabase) {
+								documentLogic.createDocument(it, true)?.let {
+									documentLogic.updateAttachments(
+										it,
+										mainAttachmentChange = DataAttachmentChange.CreateOrUpdate(
+											flowOf(DefaultDataBufferFactory.sharedInstance.wrap(lnk.value)),
+											lnk.value.size.toLong(),
+											listOf(mainUti) + otherUtis
+										)
+									)
+								}
+							} else it
 						}?.id
 					)
 				)
@@ -850,12 +866,12 @@ class SoftwareMedicalFileImport(
 	private fun extractTags(item: ItemType): Collection<CodeStub> {
 		return (
 			item.cds.filter { it.s == CDITEMschemes.CD_PARAMETER || it.s == CDITEMschemes.CD_LAB || it.s == CDITEMschemes.CD_TECHNICAL || it.s == CDITEMschemes.CD_CONTACT_PERSON }.map { CodeStub.from(it.s.value(), it.value, it.sv) } +
-				item.cds.filter { (it.s == CDITEMschemes.LOCAL && it.sl.equals("LOCAL-PARAMETER")) }.map { CodeStub.from(it.sl, it.value, it.sv) } +
-				item.cds.filter { (it.s == CDITEMschemes.LOCAL && it.sl.equals("GPSMF-PARAMETER")) }.map { CodeStub.from(it.sl, it.dn, it.sv) } + item.contents.filter { it.cds?.size ?: 0 > 0 }.flatMap {
-				it.cds.filter {
-					listOf(CDCONTENTschemes.CD_LAB).contains(it.s)
-				}.map { CodeStub.from(it.s.value(), it.value, it.sv) }
-			}
+				item.cds.filter { (it.s == CDITEMschemes.LOCAL && it.sl.equals("LOCAL-PARAMETER")) }.map { CodeStub.from(it.sl, it.dn ?: it.value, it.sv) } +
+				item.cds.filter { (it.s == CDITEMschemes.LOCAL && it.sl.equals("GPSMF-PARAMETER")) }.map { CodeStub.from(it.sl, it.dn ?: it.value, it.sv) } +item.contents.filter { it.cds?.size ?: 0 > 0 }.flatMap {
+					it.cds.filter {
+						listOf(CDCONTENTschemes.CD_LAB).contains(it.s)
+					}.map { CodeStub.from(it.s.value(), it.value, it.sv) }
+				}
 			).toSet()
 	}
 

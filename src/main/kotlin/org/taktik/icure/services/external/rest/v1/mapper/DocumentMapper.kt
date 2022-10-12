@@ -25,14 +25,22 @@ import org.mapstruct.Mappings
 import org.taktik.icure.entities.Document
 import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeStubMapper
+import org.taktik.icure.services.external.rest.v1.mapper.embed.DataAttachmentMapper
 import org.taktik.icure.services.external.rest.v1.mapper.embed.DelegationMapper
+import org.taktik.icure.services.external.rest.v1.mapper.embed.DeletedAttachmentMapper
 
-@Mapper(componentModel = "spring", uses = [CodeStubMapper::class, DelegationMapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(
+	componentModel = "spring",
+	uses = [
+		CodeStubMapper::class,
+		DelegationMapper::class,
+		DataAttachmentMapper::class,
+		DeletedAttachmentMapper::class
+	],
+	injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 interface DocumentMapper {
 	@Mappings(
-		Mapping(target = "attachment", ignore = true),
-		Mapping(target = "isAttachmentDirty", ignore = true),
-
 		Mapping(target = "attachments", ignore = true),
 		Mapping(target = "revHistory", ignore = true),
 		Mapping(target = "conflicts", ignore = true),

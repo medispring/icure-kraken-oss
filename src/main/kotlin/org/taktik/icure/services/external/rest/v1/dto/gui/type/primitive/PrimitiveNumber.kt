@@ -25,6 +25,6 @@ import org.taktik.icure.services.external.rest.v1.dto.gui.type.Data
  */
 class PrimitiveNumber(val value: String? = null) : Data(), Primitive {
 	override fun getPrimitiveValue(): Serializable? {
-		return null
+		return value
 	}
 }

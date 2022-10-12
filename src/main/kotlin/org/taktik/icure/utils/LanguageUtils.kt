@@ -19,6 +19,7 @@
 package org.taktik.icure.utils
 
 import java.util.UUID
+import kotlinx.coroutines.delay
 
 tailrec fun <K> retry(trials: Int, closure: () -> K): K {
 	try {
@@ -39,6 +40,7 @@ tailrec suspend fun <K> suspendRetry(trials: Int, closure: suspend () -> K): K {
 			throw e
 		}
 	}
+	delay(1000)
 	return suspendRetry(trials - 1, closure)
 }
 

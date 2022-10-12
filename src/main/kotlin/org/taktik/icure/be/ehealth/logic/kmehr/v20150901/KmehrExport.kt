@@ -47,6 +47,9 @@ import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.impl.filter.Filters
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentExtensions
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
+import org.taktik.icure.asynclogic.objectstorage.contentBytesOfNullable
 import org.taktik.icure.be.ehealth.dto.kmehr.v20150901.Utils
 import org.taktik.icure.be.ehealth.dto.kmehr.v20150901.be.fgov.ehealth.standards.kmehr.cd.v1.CDADDRESS
 import org.taktik.icure.be.ehealth.dto.kmehr.v20150901.be.fgov.ehealth.standards.kmehr.cd.v1.CDADDRESSschemes
@@ -148,8 +151,9 @@ open class KmehrExport(
 	val documentLogic: DocumentLogic,
 	val sessionLogic: AsyncSessionLogic,
 	val userLogic: UserLogic,
-	val filters: Filters
-) {
+	val filters: Filters,
+	documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : DocumentDataAttachmentExtensions by DocumentDataAttachmentExtensions(documentDataAttachmentLoader) {
 	val unitCodes = HashMap<String, Code>()
 
 	internal val STANDARD = "20150901"
@@ -176,7 +180,7 @@ open class KmehrExport(
 				if (m.specialityCodes.size > 0) {
 					m.specialityCodes.map { CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = it.code } }
 				} else if (m.speciality ?: "" != "") {
-					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality })
+					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = m.speciality?.toLowerCase() })
 				} else
 					listOf(CDHCPARTY().apply { s(CDHCPARTYschemes.CD_HCPARTY); value = "persphysician" })
 			)
@@ -462,7 +466,7 @@ open class KmehrExport(
 				}
 				content.documentId?.let {
 					try {
-						documentLogic.getDocument(it)?.let { d -> d.attachment?.let { lnks.add(LnkType().apply { type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(d); value = it }) } }
+						documentLogic.getDocument(it)?.let { d -> d.attachment()?.let { lnks.add(LnkType().apply { type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(d); value = it }) } }
 					} catch (e: Exception) {
 						log.warn("Document with id $it could not be loaded", e)
 					}
@@ -612,10 +616,10 @@ open class KmehrExport(
 					if (text?.length ?: 0 > 0) headingsAndItemsAndTexts.add(TextType().apply { l = "fr"; value = text })
 					attachmentDocumentIds.forEach { id ->
 						val d = documentLogic.getDocument(id)
-						d?.attachment.let {
+						d?.attachment().let {
 							headingsAndItemsAndTexts.add(
 								LnkType().apply {
-									type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(d!!); value = d.attachment
+									type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(d!!); value = it
 								}
 							)
 						}

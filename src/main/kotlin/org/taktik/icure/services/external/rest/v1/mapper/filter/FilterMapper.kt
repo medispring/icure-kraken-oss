@@ -34,6 +34,7 @@ import org.taktik.icure.services.external.rest.v1.dto.filter.UnionFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.code.AllCodesFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.code.CodeByIdsFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.code.CodeByRegionTypeLabelLanguageFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.code.CodeIdsByTypeCodeVersionIntervalFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.contact.ContactByHcPartyFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.contact.ContactByHcPartyIdentifiersFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.contact.ContactByHcPartyPatientTagCodeDateFilter
@@ -52,11 +53,17 @@ import org.taktik.icure.services.external.rest.v1.dto.filter.healthelement.Healt
 import org.taktik.icure.services.external.rest.v1.dto.filter.healthelement.HealthElementByHcPartyTagCodeFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.healthelement.HealthElementByIdsFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.invoice.InvoiceByHcPartyCodeDateFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.maintenancetask.MaintenanceTaskAfterDateFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.maintenancetask.MaintenanceTaskByHcPartyAndTypeFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.maintenancetask.MaintenanceTaskByIdsFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndActiveFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndAddressFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndExternalIdFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndIdentifiersFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndSsinFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndSsinsFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyAndTelecomFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyDateOfBirthBetweenFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyDateOfBirthFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.patient.PatientByHcPartyFilter
@@ -74,11 +81,13 @@ import org.taktik.icure.services.external.rest.v1.dto.filter.service.ServiceBySe
 import org.taktik.icure.services.external.rest.v1.dto.filter.user.AllUsersFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.user.UserByIdsFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.user.UserByNameEmailPhoneFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.user.UsersByPatientIdFilter
 
 @ExperimentalStdlibApi
 @Mapper(componentModel = "spring", uses = [], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 abstract class FilterMapper {
 	abstract fun map(filterDto: CodeByRegionTypeLabelLanguageFilter): org.taktik.icure.domain.filter.impl.code.CodeByRegionTypeLabelLanguageFilter
+	abstract fun map(filterDto: CodeIdsByTypeCodeVersionIntervalFilter): org.taktik.icure.domain.filter.impl.code.CodeIdsByTypeCodeVersionIntervalFilter
 	abstract fun map(filterDto: ContactByHcPartyPatientTagCodeDateFilter): org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyPatientTagCodeDateFilter
 	abstract fun map(filterDto: ContactByHcPartyTagCodeDateFilter): org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyTagCodeDateFilter
 	abstract fun map(filterDto: ContactByServiceIdsFilter): org.taktik.icure.domain.filter.impl.contact.ContactByServiceIdsFilter
@@ -87,8 +96,14 @@ abstract class FilterMapper {
 	abstract fun map(filterDto: HealthElementByHcPartyIdentifiersFilter): org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyIdentifiersFilter
 	abstract fun map(filterDto: HealthElementByHcPartySecretForeignKeysFilter): org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartySecretForeignKeysFilter
 	abstract fun map(filterDto: InvoiceByHcPartyCodeDateFilter): org.taktik.icure.domain.filter.impl.invoice.InvoiceByHcPartyCodeDateFilter
+	abstract fun map(filterDto: MaintenanceTaskByHcPartyAndTypeFilter): org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndTypeFilter
+	abstract fun map(filterDto: MaintenanceTaskByHcPartyAndIdentifiersFilter): org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter
+	abstract fun map(filterDto: MaintenanceTaskByIdsFilter): org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByIdsFilter
+	abstract fun map(filterDto: MaintenanceTaskAfterDateFilter): org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskAfterDateFilter
 	abstract fun map(filterDto: PatientByHcPartyAndActiveFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndActiveFilter
 	abstract fun map(filterDto: PatientByHcPartyAndExternalIdFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndExternalIdFilter
+	abstract fun map(filterDto: PatientByHcPartyAndAddressFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndAddressFilter
+	abstract fun map(filterDto: PatientByHcPartyAndTelecomFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndTelecomFilter
 	abstract fun map(filterDto: PatientByHcPartyAndSsinFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinFilter
 	abstract fun map(filterDto: PatientByHcPartyAndSsinsFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinsFilter
 	abstract fun map(filterDto: PatientByHcPartyDateOfBirthBetweenFilter): org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyDateOfBirthBetweenFilter
@@ -121,6 +136,7 @@ abstract class FilterMapper {
 	abstract fun map(filterDto: ServiceByIdsFilter): org.taktik.icure.domain.filter.impl.service.ServiceByIdsFilter
 	abstract fun map(filterDto: UserByIdsFilter): org.taktik.icure.domain.filter.impl.user.UserByIdsFilter
 	abstract fun map(filterDto: UserByNameEmailPhoneFilter): org.taktik.icure.domain.filter.impl.user.UserByNameEmailPhoneFilter
+	abstract fun map(filterDto: UsersByPatientIdFilter): org.taktik.icure.domain.filter.impl.user.UsersByPatientIdFilter
 
 	fun <O : Identifiable<String>> mapToDto(filterDto: UnionFilter<O>): org.taktik.icure.domain.filter.impl.UnionFilter<O> {
 		val filters: List<AbstractFilter<O>> = filterDto.filters.map { map(it) as AbstractFilter<O> }
@@ -149,6 +165,7 @@ abstract class FilterMapper {
 	fun map(filterDto: AbstractFilterDto<*>): AbstractFilter<*> {
 		return when (filterDto) {
 			is CodeByRegionTypeLabelLanguageFilter -> map(filterDto)
+			is CodeIdsByTypeCodeVersionIntervalFilter -> map(filterDto)
 			is ContactByHcPartyPatientTagCodeDateFilter -> map(filterDto)
 			is ContactByHcPartyTagCodeDateFilter -> map(filterDto)
 			is ContactByServiceIdsFilter -> map(filterDto)
@@ -157,8 +174,14 @@ abstract class FilterMapper {
 			is HealthElementByHcPartyIdentifiersFilter -> map(filterDto)
 			is HealthElementByHcPartySecretForeignKeysFilter -> map(filterDto)
 			is InvoiceByHcPartyCodeDateFilter -> map(filterDto)
+			is MaintenanceTaskByHcPartyAndTypeFilter -> map(filterDto)
+			is MaintenanceTaskByHcPartyAndIdentifiersFilter -> map(filterDto)
+			is MaintenanceTaskByIdsFilter -> map(filterDto)
+			is MaintenanceTaskAfterDateFilter -> map(filterDto)
 			is PatientByHcPartyAndActiveFilter -> map(filterDto)
 			is PatientByHcPartyAndExternalIdFilter -> map(filterDto)
+			is PatientByHcPartyAndAddressFilter -> map(filterDto)
+			is PatientByHcPartyAndTelecomFilter -> map(filterDto)
 			is PatientByHcPartyAndSsinFilter -> map(filterDto)
 			is PatientByHcPartyAndSsinsFilter -> map(filterDto)
 			is PatientByHcPartyDateOfBirthBetweenFilter -> map(filterDto)
@@ -194,11 +217,13 @@ abstract class FilterMapper {
 			is ServiceByIdsFilter -> map(filterDto)
 			is UserByIdsFilter -> map(filterDto)
 			is UserByNameEmailPhoneFilter -> map(filterDto)
+			is UsersByPatientIdFilter -> map(filterDto)
 			else -> throw IllegalArgumentException("Unsupported filter class")
 		}
 	}
 
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.code.CodeByRegionTypeLabelLanguageFilter): CodeByRegionTypeLabelLanguageFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.code.CodeIdsByTypeCodeVersionIntervalFilter): CodeIdsByTypeCodeVersionIntervalFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyPatientTagCodeDateFilter): ContactByHcPartyPatientTagCodeDateFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyTagCodeDateFilter): ContactByHcPartyTagCodeDateFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.contact.ContactByServiceIdsFilter): ContactByServiceIdsFilter
@@ -207,8 +232,14 @@ abstract class FilterMapper {
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyIdentifiersFilter): HealthElementByHcPartyIdentifiersFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartySecretForeignKeysFilter): HealthElementByHcPartySecretForeignKeysFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.invoice.InvoiceByHcPartyCodeDateFilter): InvoiceByHcPartyCodeDateFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndTypeFilter): MaintenanceTaskByHcPartyAndTypeFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter): MaintenanceTaskByHcPartyAndIdentifiersFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByIdsFilter): MaintenanceTaskByIdsFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskAfterDateFilter): MaintenanceTaskAfterDateFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndActiveFilter): PatientByHcPartyAndActiveFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndExternalIdFilter): PatientByHcPartyAndExternalIdFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndAddressFilter): PatientByHcPartyAndAddressFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndTelecomFilter): PatientByHcPartyAndTelecomFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinFilter): PatientByHcPartyAndSsinFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinsFilter): PatientByHcPartyAndSsinsFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyDateOfBirthBetweenFilter): PatientByHcPartyDateOfBirthBetweenFilter
@@ -241,6 +272,7 @@ abstract class FilterMapper {
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.service.ServiceByIdsFilter): ServiceByIdsFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.user.UserByIdsFilter): UserByIdsFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.user.UserByNameEmailPhoneFilter): UserByNameEmailPhoneFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.user.UsersByPatientIdFilter): UsersByPatientIdFilter
 
 	fun <O : Identifiable<String>> mapToDomain(filterDto: org.taktik.icure.domain.filter.impl.UnionFilter<O>): UnionFilter<O> {
 		val filters: List<AbstractFilterDto<O>> = filterDto.filters.map { map(it) as AbstractFilterDto<O> }
@@ -269,6 +301,7 @@ abstract class FilterMapper {
 	fun map(filter: AbstractFilter<*>): AbstractFilterDto<*> {
 		return when (filter) {
 			is org.taktik.icure.domain.filter.impl.code.CodeByRegionTypeLabelLanguageFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.code.CodeIdsByTypeCodeVersionIntervalFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyPatientTagCodeDateFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyTagCodeDateFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.contact.ContactByServiceIdsFilter -> map(filter)
@@ -279,8 +312,14 @@ abstract class FilterMapper {
 				filter
 			)
 			is org.taktik.icure.domain.filter.impl.invoice.InvoiceByHcPartyCodeDateFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndTypeFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskByIdsFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.maintenancetask.MaintenanceTaskAfterDateFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndActiveFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndExternalIdFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndAddressFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndTelecomFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyAndSsinsFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.patient.PatientByHcPartyDateOfBirthBetweenFilter -> map(filter)
@@ -316,6 +355,7 @@ abstract class FilterMapper {
 			is org.taktik.icure.domain.filter.impl.service.ServiceByIdsFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.user.UserByIdsFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.user.UserByNameEmailPhoneFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.user.UsersByPatientIdFilter -> map(filter)
 			else -> throw IllegalArgumentException("Unsupported filter class")
 		}
 	}

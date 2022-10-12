@@ -77,6 +77,9 @@ interface UserLogic : EntityPersister<User, String>, PrincipalLogic<User> {
 	 * @param tokenValidity Token validity time in seconds. By default, token will be valid during one hour
 	 */
 	suspend fun getToken(user: User, key: String, tokenValidity: Long = 3600): String
+
+	suspend fun getToken(userId: String, key: String, tokenValidity: Long = 3600): String
+
 	fun filterUsers(paginationOffset: PaginationOffset<Nothing>, filter: FilterChain<User>): Flow<ViewQueryResultEvent>
 	suspend fun getUserByPhone(phone: String): User?
 }

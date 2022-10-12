@@ -34,6 +34,7 @@ import org.springframework.core.io.buffer.DataBuffer
 import org.taktik.couchdb.id.UUIDGenerator
 import org.taktik.icure.asynclogic.FormLogic
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.be.format.logic.ResultFormatLogic
 import org.taktik.icure.db.StringUtils.detectFrenchCp850Cp1252
 import org.taktik.icure.entities.Document
@@ -44,7 +45,11 @@ import org.taktik.icure.entities.embed.ServiceLink
 import org.taktik.icure.entities.embed.SubContact
 import org.xml.sax.SAXException
 
-abstract class GenericResultFormatLogicImpl(val healthcarePartyLogic: HealthcarePartyLogic, val formLogic: FormLogic) : ResultFormatLogic {
+abstract class GenericResultFormatLogicImpl(
+	val healthcarePartyLogic: HealthcarePartyLogic,
+	val formLogic: FormLogic,
+	private val documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : ResultFormatLogic {
 	protected var uuidGen = UUIDGenerator()
 
 	override fun doExport(sender: HealthcareParty?, recipient: HealthcareParty?, patient: Patient?, date: LocalDateTime?, ref: String?, mimeType: String?, content: ByteArray?): Flow<DataBuffer> {
@@ -100,15 +105,21 @@ abstract class GenericResultFormatLogicImpl(val healthcarePartyLogic: Healthcare
 	}
 
 	@Throws(ParserConfigurationException::class, IOException::class, SAXException::class)
-	protected fun getXmlDocument(doc: Document, enckeys: List<String?>?): org.w3c.dom.Document {
+	protected suspend fun getXmlDocument(doc: Document, enckeys: List<String>): org.w3c.dom.Document {
 		val dbFactory = DocumentBuilderFactory.newInstance()
 		val dBuilder = dbFactory.newDocumentBuilder()
-		return dBuilder.parse(ByteArrayInputStream(doc.decryptAttachment(enckeys)))
+		return dBuilder.parse(
+			ByteArrayInputStream(
+				documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys)
+			)
+		)
 	}
 
 	@Throws(IOException::class)
-	protected fun getBufferedReader(doc: Document, enckeys: List<String?>?): BufferedReader? {
-		return decodeRawData(doc.decryptAttachment(enckeys))?.let { BufferedReader(StringReader(it)) }
+	protected suspend fun getBufferedReader(doc: Document, enckeys: List<String>): BufferedReader? {
+		return decodeRawData(
+			documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys)
+		)?.let { BufferedReader(StringReader(it)) }
 	}
 
 	class LaboLine {

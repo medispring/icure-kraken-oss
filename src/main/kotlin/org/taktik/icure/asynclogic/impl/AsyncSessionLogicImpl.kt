@@ -112,7 +112,7 @@ class AsyncSessionLogicImpl(
 			this.permissionSetIdentifier = userDetails.permissionSetIdentifier
 		}
 
-		fun getUserId(): String? = permissionSetIdentifier.getPrincipalIdOfClass(User::class.java)
+		override fun getUserId(): String? = permissionSetIdentifier.getPrincipalIdOfClass(User::class.java)
 
 		override fun getAuthentication(): Authentication = authentication
 

@@ -24,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.taktik.icure.services.external.rest.v2.dto.base.AppendixTypeDto
 import org.taktik.icure.services.external.rest.v2.dto.base.CodeFlagDto
 import org.taktik.icure.services.external.rest.v2.dto.base.CodeIdentificationDto
-import org.taktik.icure.services.external.rest.v2.dto.base.LinkQualificationDto
 import org.taktik.icure.services.external.rest.v2.dto.base.StoredDocumentDto
 import org.taktik.icure.services.external.rest.v2.dto.embed.PeriodicityDto
 
@@ -47,7 +46,7 @@ data class CodeDto(
 	val periodicity: Set<PeriodicityDto> = emptySet(),
 	val level: Int? = null, //ex: 0 = System, not to be modified by userDto, 1 = optional, created or modified by userDto
 	val links: Set<String> = emptySet(), //Links towards related codes (corresponds to an approximate link in qualifiedLinks)
-	val qualifiedLinks: Map<LinkQualificationDto, List<String>> = emptyMap(), //Links towards related codes
+	val qualifiedLinks: Map<String, List<String>> = emptyMap(), //Links towards related codes
 	val flags: Set<CodeFlagDto> = emptySet(), //flags (like female only) for the code
 	val searchTerms: Map<String, Set<String>> = emptyMap(), //Extra search terms/ language
 	val data: String? = null,

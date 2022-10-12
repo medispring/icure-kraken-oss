@@ -18,7 +18,7 @@
 package org.taktik.icure.services.external.rest.v2.dto.gui.type.primitive
 
 import java.io.Serializable
-import java.util.*
+import java.util.Date
 import org.taktik.icure.services.external.rest.v2.dto.gui.type.Data
 
 /**

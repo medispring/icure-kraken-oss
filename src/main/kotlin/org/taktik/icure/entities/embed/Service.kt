@@ -105,7 +105,7 @@ data class Service(
 	@field:NotNull(autoFix = AutoFix.NOW) override val modified: Long? = null,
 	override val endOfLife: Long? = null,
 	@field:NotNull(autoFix = AutoFix.CURRENTUSERID) override val author: String? = null, //userId
-	@field:NotNull(autoFix = AutoFix.CURRENTHCPID) override val responsible: String? = null, //healthcarePartyId
+	@field:NotNull(autoFix = AutoFix.CURRENTDATAOWNERID) override val responsible: String? = null, //healthcarePartyId
 	override val medicalLocationId: String? = null,
 	val comment: String? = null,
 	val status: Int? = null, //bit 0: active/inactive, bit 1: relevant/irrelevant, bit2 : present/absent, ex: 0 = active,relevant and present

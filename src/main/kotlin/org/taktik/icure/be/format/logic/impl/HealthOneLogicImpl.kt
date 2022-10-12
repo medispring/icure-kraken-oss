@@ -51,6 +51,7 @@ import org.taktik.icure.asynclogic.DocumentLogic
 import org.taktik.icure.asynclogic.FormLogic
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.PatientLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.be.format.logic.HealthOneLogic
 import org.taktik.icure.dto.result.ResultInfo
 import org.taktik.icure.entities.Contact
@@ -65,14 +66,21 @@ import org.taktik.icure.entities.embed.Measure
 import org.taktik.icure.utils.FuzzyValues
 
 @Service
-class HealthOneLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: FormLogic, val patientLogic: PatientLogic, val documentLogic: DocumentLogic, val contactLogic: ContactLogic) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic), HealthOneLogic {
+class HealthOneLogicImpl(
+	healthcarePartyLogic: HealthcarePartyLogic,
+	formLogic: FormLogic,
+	val patientLogic: PatientLogic,
+	val documentLogic: DocumentLogic,
+	val contactLogic: ContactLogic,
+	private val documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic, documentDataAttachmentLoader), HealthOneLogic {
 	private val shortDateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy")
 
 	/* Import a series of protocols from a document into a contact
 
 	 */
 	override suspend fun doImport(language: String, doc: Document, hcpId: String?, protocolIds: List<String>, formIds: List<String>, planOfActionId: String?, ctc: Contact, enckeys: List<String>): Contact? {
-		val text = decodeRawData(doc.decryptAttachment(enckeys))
+		val text = decodeRawData(documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys))
 		return if (text != null) {
 			val r: Reader = StringReader(text)
 			val lls = parseReportsAndLabs(language, protocolIds, r).filterNotNull()
@@ -142,7 +150,7 @@ class HealthOneLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: 
 	protected fun importProtocol(language: String, protoList: List<*>, position: Long, ril: ResultsInfosLine): org.taktik.icure.entities.embed.Service {
 		var text = (protoList[0] as ProtocolLine).text
 		for (i in 1 until protoList.size) {
-			text += "\n" + (protoList[i] as ProtocolLine).text
+			text += "\n" + ((protoList[i] as ProtocolLine).text ?: "")
 		}
 		val s = org.taktik.icure.entities.embed.Service(
 			id = uuidGen.newGUID().toString(),
@@ -309,7 +317,7 @@ class HealthOneLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: 
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		val br = getBufferedReader(doc, enckeys) ?: throw IllegalArgumentException("Cannot get document")
 		val documentId = doc.id
 		return extractResultInfos(br, language, documentId, full)
@@ -700,7 +708,7 @@ class HealthOneLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: 
 	}
 
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		val br = getBufferedReader(doc, enckeys)
 		val firstLine = br!!.readLine()
 		br.close()

@@ -18,7 +18,11 @@
 
 package org.taktik.icure
 
+import java.util.UUID
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import org.bouncycastle.cms.RecipientId.password
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.ApplicationRunner
@@ -34,11 +38,19 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.task.TaskExecutor
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.InternalDAO
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.asynclogic.ICureLogic
 import org.taktik.icure.asynclogic.PropertyLogic
+import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorage
+import org.taktik.icure.asynclogic.objectstorage.IcureObjectStorageMigration
+import org.taktik.icure.constants.Users
+import org.taktik.icure.db.PaginationOffset
+import org.taktik.icure.entities.User
 import org.taktik.icure.entities.embed.AddressType
 import org.taktik.icure.entities.embed.Confidentiality
 import org.taktik.icure.entities.embed.DocumentStatus
@@ -51,7 +63,10 @@ import org.taktik.icure.entities.embed.PaymentType
 import org.taktik.icure.entities.embed.PersonalStatus
 import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.entities.embed.Visibility
+import org.taktik.icure.properties.AuthenticationProperties
 import org.taktik.icure.properties.CouchDbProperties
+import org.taktik.icure.utils.retry
+import org.taktik.icure.utils.suspendRetry
 
 @SpringBootApplication(
 	scanBasePackages = [
@@ -73,6 +88,7 @@ import org.taktik.icure.properties.CouchDbProperties
 		"org.taktik.icure.services.external.rest.v2.mapper",
 		"org.taktik.icure.services.external.rest.v2.wscontrollers",
 		"org.taktik.icure.errors",
+		"org.taktik.icure.scheduledtask",
 	],
 	exclude = [
 		FreeMarkerAutoConfiguration::class,
@@ -83,11 +99,25 @@ import org.taktik.icure.properties.CouchDbProperties
 	]
 )
 @PropertySource("classpath:icure-default.properties")
+@EnableScheduling
 class ICureBackendApplication {
 	private val log = LoggerFactory.getLogger(this.javaClass)
 
 	@Bean
-	fun performStartupTasks(@Qualifier("threadPoolTaskExecutor") taskExecutor: TaskExecutor, taskScheduler: TaskScheduler, iCureLogic: ICureLogic, codeLogic: CodeLogic, propertyLogic: PropertyLogic, allDaos: List<GenericDAO<*>>, internalDaos: List<InternalDAO<*>>, couchDbProperties: CouchDbProperties) = ApplicationRunner {
+	fun performStartupTasks(
+		@Qualifier("threadPoolTaskExecutor") taskExecutor: TaskExecutor,
+		taskScheduler: TaskScheduler,
+		userLogic: UserLogic,
+		iCureLogic: ICureLogic,
+		codeLogic: CodeLogic,
+		propertyLogic: PropertyLogic,
+		allDaos: List<GenericDAO<*>>,
+		internalDaos: List<InternalDAO<*>>,
+		couchDbProperties: CouchDbProperties,
+		authenticationProperties: AuthenticationProperties,
+		allObjectStorageLogic: List<IcureObjectStorage<*>>,
+		allObjectStorageMigrationLogic: List<IcureObjectStorageMigration<*>>
+	) = ApplicationRunner {
 		//Check that core types have corresponding codes
 		log.info("icure (" + iCureLogic.getVersion() + ") is initialised")
 
@@ -99,11 +129,13 @@ class ICureBackendApplication {
 			).forEach { runBlocking { codeLogic.importCodesFromEnum(it) } }
 		}
 
-		taskExecutor.execute {
-			val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
-			resolver.getResources("classpath*:/org/taktik/icure/db/codes/**.xml").forEach {
-				val md5 = it.filename!!.replace(Regex(".+\\.([0-9a-f]{20}[0-9a-f]+)\\.xml"), "$1")
-				runBlocking { codeLogic.importCodesFromXml(md5, it.filename!!.replace(Regex("(.+)\\.[0-9a-f]{20}[0-9a-f]+\\.xml"), "$1"), it.inputStream) }
+		if (couchDbProperties.populateDatabaseFromLocalXmls) {
+			taskExecutor.execute {
+				val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
+				resolver.getResources("classpath*:/org/taktik/icure/db/codes/**.xml").forEach {
+					val md5 = it.filename!!.replace(Regex(".+\\.([0-9a-f]{20}[0-9a-f]+)\\.xml"), "$1")
+					runBlocking { codeLogic.importCodesFromXml(md5, it.filename!!.replace(Regex("(.+)\\.[0-9a-f]{20}[0-9a-f]+\\.xml"), "$1"), it.inputStream) }
+				}
 			}
 		}
 
@@ -113,6 +145,15 @@ class ICureBackendApplication {
 			}
 			internalDaos.forEach {
 				it.forceInitStandardDesignDocument(true)
+			}
+			allObjectStorageLogic.forEach { it.rescheduleFailedStorageTasks() }
+			allObjectStorageMigrationLogic.forEach { it.rescheduleStoredMigrationTasks() }
+
+			if (authenticationProperties.createAdminUser && suspendRetry(10) { userLogic.listUsers(PaginationOffset(1)).filterIsInstance<ViewRowWithDoc<String, Nothing, User>>().toList().isEmpty() } ) {
+				val password = UUID.randomUUID().toString().substring(0,13).replace("-","")
+				userLogic.createUser(User(id = UUID.randomUUID().toString(), login = "admin", passwordHash = password, type =  Users.Type.database, status = Users.Status.ACTIVE))
+
+				log.warn("Default admin user created with password $password")
 			}
 		}
 
