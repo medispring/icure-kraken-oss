@@ -1,6 +1,8 @@
 package org.taktik.icure.be.ehealth.logic.kmehr.incapacity.impl.v20170601
 
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.taktik.icure.asynclogic.AsyncSessionLogic
@@ -11,6 +13,7 @@ import org.taktik.icure.asynclogic.HealthElementLogic
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170601.Utils
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170601.be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170601.be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENTschemes
@@ -49,7 +52,6 @@ import org.taktik.icure.be.ehealth.logic.kmehr.v20170601.KmehrExport
 import org.taktik.icure.domain.be.kmehr.IncapacityExportInfo
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.Patient
-import org.taktik.icure.entities.embed.Service
 import org.taktik.icure.services.external.api.AsyncDecrypt
 import org.taktik.icure.services.external.http.websocket.AsyncProgress
 import org.taktik.icure.services.external.rest.v1.mapper.embed.ServiceMapper
@@ -65,8 +67,9 @@ class IncapacityExport(
 	sessionLogic: AsyncSessionLogic,
 	userLogic: UserLogic,
 	filters: org.taktik.icure.asynclogic.impl.filter.Filters,
-	val serviceMapper: ServiceMapper
-) : KmehrExport(patientLogic, codeLogic, healthElementLogic, healthcarePartyLogic, contactLogic, documentLogic, sessionLogic, userLogic, filters) {
+	val serviceMapper: ServiceMapper,
+	documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : KmehrExport(patientLogic, codeLogic, healthElementLogic, healthcarePartyLogic, contactLogic, documentLogic, sessionLogic, userLogic, filters, documentDataAttachmentLoader) {
 	fun exportIncapacity(
 		patient: Patient,
 		sfks: List<String>,
@@ -86,7 +89,7 @@ class IncapacityExport(
 	) = flow {
 		config.defaultLanguage = if (sender.languages.firstOrNull() == "nl") "nl-BE" else if (sender.languages.firstOrNull() == "de") "de-BE" else "fr-BE"
 		config.format = Config.Format.MULTEMEDIATT
-		val message = initializeMessage(sender, config, exportInfo.incapacityId)
+		val message = initializeMessage(sender, config, createKmehrId(patient, exportInfo))
 		if (exportInfo.recipient != null) {
 			message.header.recipients.add(
 				RecipientType().apply { hcparties.add(createParty(exportInfo.recipient, emptyList())) }
@@ -102,6 +105,16 @@ class IncapacityExport(
 			exportInfo,
 		)
 		emitMessage(message.apply { folders.add(folder) }).collect { emit(it) }
+	}
+
+	private fun createKmehrId(patient: Patient, exportInfo: IncapacityExportInfo): String {
+		if(exportInfo.retraction){
+			// the retraction kmehr must have it's own id
+			val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS0")
+			return patient.ssin + "." + LocalDateTime.now().format(formatter)
+		} else {
+			return exportInfo.incapacityId
+		}
 	}
 
 	private suspend fun makePatientFolder(
@@ -135,6 +148,13 @@ class IncapacityExport(
 					this.l = language
 					this.value = job
 				}
+			} else {
+				if(this.patient.profession != null) {
+					this.patient.profession?.text = null
+					if(this.patient.profession?.cds?.size == 0){
+						this.patient.profession = null
+					}
+				}
 			}
 			this.patient.birthlocation = null
 			this.patient.deathlocation = null
@@ -148,7 +168,7 @@ class IncapacityExport(
 					TransactionType().apply {
 						ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; value = 1.toString() })
 						cds.add(CDTRANSACTION().apply { s(CDTRANSACTIONschemes.CD_TRANSACTION); value = "notification" })
-						cds.add(CDTRANSACTION().apply { s(CDTRANSACTIONschemes.CD_TRANSACTION_TYPE); value = "incapacity" })
+						cds.add(CDTRANSACTION().apply { s(CDTRANSACTIONschemes.CD_TRANSACTION_TYPE); value = transactionType })
 						date = config.date
 						time = config.time
 						author = AuthorType().apply { hcparties.add(createParty(sender, emptyList())) }
@@ -240,16 +260,27 @@ class IncapacityExport(
 										snomedDesc = if (language == "fr") codes[0]?.label?.get("fr") else codes[0]?.label?.get("nl")
 									}
 
+									if(!codes.isEmpty()) {
+										contents.add(
+											ContentType().apply {
+												cds.addAll(
+													codes.map { cd ->
+														val version = cd.version;
+														val type = cd.type
+														val cdt = CDCONTENTschemes.fromValue(if (type == "SNOMED") "CD-SNOMED" else type)
+														CDCONTENT().apply { s(cdt); sv = version; value = cd.code }
+														//CDCONTENT().apply { s(if (cd.type == "ICD") CDCONTENTschemes.ICD else (if (cd.type == "ICPC") CDCONTENTschemes.ICPC else CDCONTENTschemes.CD_SNOMED)); value = cd.code }
+													}
+												)
+											}
+										)
+									}
+									val descr_fr = svc.content?.get("descr_fr")?.stringValue
+									val descr_nl = svc.content?.get("descr_nl")?.stringValue
+									val descr = svc.content?.get("descr")?.stringValue
 									contents.add(
 										ContentType().apply {
-											cds.addAll(
-												codes.map { cd ->
-													CDCONTENT().apply { s(if (cd.type == "ICD") CDCONTENTschemes.ICD else (if (cd.type == "ICPC") CDCONTENTschemes.ICPC else CDCONTENTschemes.CD_SNOMED)); value = cd.code }
-												}
-											)
-											val descr_fr = svc.content?.get("descr_fr")?.stringValue
-											val descr_nl = svc.content?.get("descr_nl")?.stringValue
-											val descr = svc.content?.get("descr")?.stringValue
+
 											texts.add(
 												TextType().apply {
 													this.l = language

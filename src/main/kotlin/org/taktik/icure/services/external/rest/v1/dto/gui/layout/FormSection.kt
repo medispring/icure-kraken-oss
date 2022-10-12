@@ -18,6 +18,7 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui.layout
 
 import java.io.Serializable
+import org.taktik.icure.dto.gui.layout.FormColumn
 
 /**
  * Created by aduchate on 07/02/13, 17:10

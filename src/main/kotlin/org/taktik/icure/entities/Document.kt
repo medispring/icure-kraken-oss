@@ -17,25 +17,24 @@
  */
 package org.taktik.icure.entities
 
-import java.security.GeneralSecurityException
-import java.security.KeyException
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.pozo.KotlinBuilder
 import org.taktik.couchdb.entity.Attachment
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentLoader
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.base.Encryptable
+import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.entities.base.StoredICureDocument
+import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.entities.embed.Delegation
+import org.taktik.icure.entities.embed.DeletedAttachment
 import org.taktik.icure.entities.embed.DocumentLocation
 import org.taktik.icure.entities.embed.DocumentStatus
 import org.taktik.icure.entities.embed.DocumentType
 import org.taktik.icure.entities.embed.RevisionInfo
-import org.taktik.icure.security.CryptoUtils
-import org.taktik.icure.security.CryptoUtils.isValidAesKey
-import org.taktik.icure.security.CryptoUtils.keyFromHexString
 import org.taktik.icure.utils.DynamicInitializer
 import org.taktik.icure.utils.invoke
 import org.taktik.icure.validation.AutoFix
@@ -66,34 +65,30 @@ import org.taktik.icure.validation.ValidCode
  * @property size Size of the document file
  * @property hash Hashed version of the document
  * @property openingContactId Id of the contact during which the document was created
- * @property attachment Attachment for the document. This property is transient and is used to store the attachment temporarily inside the application server.
- * @property isAttachmentDirty If the attachment is dirty (data changes has not been synchronized back with the database) or not
  * @property documentLocation Location of the document
  * @property documentType The type of document, ex: admission, clinical path, document report,invoice, etc.
  * @property documentStatus The status of the development of the document. Ex: Draft, finalized, reviewed, signed, etc.
  * @property externalUri When the document is stored in an external repository, this is the uri of the document in that repository
- * @property mainUti The main Uniform Type Identifier of the document (https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_conc/understand_utis_conc.html#//apple_ref/doc/uid/TP40001319-CH202-CHDHIJDE)
  * @property name Name of the document
  * @property version The document version
- * @property otherUtis Extra Uniform Type Identifiers
  * @property storedICureDocumentId The ICureDocument (Form, Contact, ...) that has been used to generate the document
  * @property externalUuid A unique external id (from another external source).
- * @property attachmentId Id of attachment to this document
- * @property idOpeningContact Id of the contact marking the beginning of a healthcare element for which the document was created
- * @property idClosingContact Id of the contact marking the end of a healthcare element for which the document was created.
+ * @property attachmentId Id of the couch db attachment holding the main data attachment of this document. Null if the main data attachment is not stored as a couchdb attachment.
+ * @property objectStoreReference Id of the main data attachment of this document in the object storage service. Null if the main data attachment is not stored using the object storage service.
+ * @property mainUti The main Uniform Type Identifier of the document main data attachment (https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_conc/understand_utis_conc.html#//apple_ref/doc/uid/TP40001319-CH202-CHDHIJDE)
+ * @property otherUtis Extra Uniform Type Identifiers for thje document main data attachment.
  * @property delegations The delegations giving access to all connected healthcare information.
  * @property encryptionKeys The patient secret encryption key used to encrypt the secured properties (like note for example), encrypted for separate Crypto Actors.
  * @property encryptedSelf The encrypted fields of this document.
  *
  */
-
 data class Document(
 	@JsonProperty("_id") override val id: String,
 	@JsonProperty("_rev") override val rev: String? = null,
 	@field:NotNull(autoFix = AutoFix.NOW) override val created: Long? = null,
 	@field:NotNull(autoFix = AutoFix.NOW) override val modified: Long? = null,
 	@field:NotNull(autoFix = AutoFix.CURRENTUSERID) override val author: String? = null,
-	@field:NotNull(autoFix = AutoFix.CURRENTHCPID) override val responsible: String? = null,
+	@field:NotNull(autoFix = AutoFix.CURRENTDATAOWNERID) override val responsible: String? = null,
 	override val medicalLocationId: String? = null,
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val tags: Set<CodeStub> = emptySet(),
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val codes: Set<CodeStub> = emptySet(),
@@ -102,21 +97,21 @@ data class Document(
 	val size: Long? = null,
 	val hash: String? = null,
 	val openingContactId: String? = null,
-
-	val objectStoreReference: String? = null,
-	@JsonIgnore val attachment: ByteArray? = null,
-	@JsonIgnore var isAttachmentDirty: Boolean = false,
 	val documentLocation: DocumentLocation? = null,
 	val documentType: DocumentType? = null,
 	val documentStatus: DocumentStatus? = null,
 	val externalUri: String? = null,
-	val mainUti: String? = null,
 	val name: String? = null,
 	val version: String? = null,
-	val otherUtis: Set<String> = emptySet(),
 	val storedICureDocumentId: String? = null, //The ICureDocument (Form, Contact, ...) that has been used to generate the document
 	val externalUuid: String? = null,
+
 	val attachmentId: String? = null,
+	val objectStoreReference: String? = null,
+	val mainUti: String? = null,
+	val otherUtis: Set<String> = emptySet(),
+	val secondaryAttachments: Map<String, DataAttachment> = emptyMap(),
+	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
 
 	override val secretForeignKeys: Set<String> = emptySet(),
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
@@ -129,50 +124,78 @@ data class Document(
 	@JsonProperty("_conflicts") override val conflicts: List<String>? = emptyList(),
 	@JsonProperty("rev_history") override val revHistory: Map<String, String>? = emptyMap()
 
-) : StoredICureDocument, Encryptable {
+) : StoredICureDocument, Encryptable, HasDataAttachments<Document> {
 	companion object : DynamicInitializer<Document>
 
+	@get:JsonIgnore
+	val mainAttachmentKey: String get() = id
+
+	@get:JsonIgnore
+	val mainAttachment: DataAttachment? by lazy {
+		if (attachmentId != null || objectStoreReference != null)
+			DataAttachment(
+				attachmentId,
+				objectStoreReference,
+				listOfNotNull(mainUti) + (mainUti?.let { otherUtis - it } ?: otherUtis)
+			)
+		else
+			null
+	}
+
+	@get:JsonIgnore
+	override val dataAttachments: Map<String, DataAttachment> by lazy {
+		mainAttachment?.let { secondaryAttachments + (mainAttachmentKey to it) } ?: secondaryAttachments
+	}
+
+	override fun withUpdatedDataAttachment(key: String, newValue: DataAttachment?): Document =
+		if (key == mainAttachmentKey) {
+			withUpdatedMainAttachment(newValue)
+		} else if (newValue != null) {
+			copy(secondaryAttachments = secondaryAttachments + (key to newValue))
+		} else {
+			copy(secondaryAttachments = secondaryAttachments - key)
+		}
+
+	override fun withDataAttachments(newDataAttachments: Map<String, DataAttachment>): Document = this
+		.copy(secondaryAttachments = newDataAttachments.filter { it.key != mainAttachmentKey })
+		.withUpdatedMainAttachment(newDataAttachments[mainAttachmentKey])
+
+	override fun withDeletedAttachments(newDeletedAttachments: List<DeletedAttachment>): Document =
+		copy(deletedAttachments = newDeletedAttachments)
+
 	fun merge(other: Document) = Document(args = this.solveConflictsWith(other))
+
 	fun solveConflictsWith(other: Document) = super<StoredICureDocument>.solveConflictsWith(other) + super<Encryptable>.solveConflictsWith(other) + mapOf(
+		"size" to (this.size ?: other.size),
+		"hash" to (this.hash ?: other.hash),
+		"openingContactId" to (this.openingContactId ?: other.openingContactId),
 		"documentLocation" to (this.documentLocation ?: other.documentLocation),
 		"documentType" to (this.documentType ?: other.documentType),
 		"documentStatus" to (this.documentStatus ?: other.documentStatus),
-		"openingContactId" to (this.openingContactId ?: other.openingContactId),
 		"externalUri" to (this.externalUri ?: other.externalUri),
-		"mainUti" to (this.mainUti ?: other.mainUti),
 		"name" to (this.name ?: other.name),
 		"version" to (this.version ?: other.version),
-		"otherUtis" to (other.otherUtis + this.otherUtis),
 		"storedICureDocumentId" to (this.storedICureDocumentId ?: other.storedICureDocumentId),
 		"externalUuid" to (this.externalUuid ?: other.externalUuid),
-		"attachmentId" to (this.attachmentId ?: other.attachmentId),
-		"attachment" to (
-			this.attachment?.let { if (it.size >= other.attachment?.size ?: 0) it else other.attachment }
-				?: other.attachment
+		"deletedAttachments" to this.solveDeletedAttachmentsConflicts(other),
+	) + this.solveDataAttachmentsConflicts(other).let { allDataAttachments ->
+		allDataAttachments[this.mainAttachmentKey].let { mainAttachment ->
+			mapOf(
+				"attachmentId" to mainAttachment?.couchDbAttachmentId,
+				"objectStoreReference" to mainAttachment?.objectStoreAttachmentId,
+				"mainUti" to mainUtiOf(mainAttachment),
+				"otherUtis" to otherUtisOf(mainAttachment),
+				"secondaryAttachments" to (allDataAttachments - this.mainAttachmentKey)
 			)
-	)
-
-	fun decryptAttachment(enckeys: List<String?>?): ByteArray? {
-		return enckeys
-			?.filterNotNull()
-			?.filter { sfk -> sfk.keyFromHexString().isValidAesKey() }
-			?.mapNotNull { sfk ->
-				try {
-					attachment?.let { CryptoUtils.decryptAES(it, sfk.keyFromHexString()) }
-				} catch (ignored: GeneralSecurityException) {
-					null
-				} catch (ignored: KeyException) {
-					null
-				} catch (ignored: IllegalArgumentException) {
-					null
-				}
-			}
-			?.firstOrNull()
-			?: attachment
+		}
 	}
 
-	override fun withIdRev(id: String?, rev: String) = if (id != null) this.copy(id = id, rev = rev) else this.copy(rev = rev)
-	override fun withDeletionDate(deletionDate: Long?) = this.copy(deletionDate = deletionDate)
+	override fun withIdRev(id: String?, rev: String) =
+		if (id != null) this.copy(id = id, rev = rev) else this.copy(rev = rev)
+
+	override fun withDeletionDate(deletionDate: Long?) =
+		this.copy(deletionDate = deletionDate)
+
 	override fun withTimestamps(created: Long?, modified: Long?) =
 		when {
 			created != null && modified != null -> this.copy(created = created, modified = modified)
@@ -180,4 +203,18 @@ data class Document(
 			modified != null -> this.copy(modified = modified)
 			else -> this
 		}
+
+	fun withUpdatedMainAttachment(newMainAttachment: DataAttachment?) =
+		this.copy(
+			attachmentId = newMainAttachment?.couchDbAttachmentId,
+			objectStoreReference = newMainAttachment?.objectStoreAttachmentId,
+			mainUti = mainUtiOf(newMainAttachment),
+			otherUtis = otherUtisOf(newMainAttachment),
+		)
+
+	private fun mainUtiOf(mainAttachment: DataAttachment?) =
+		mainAttachment?.utis?.firstOrNull()
+
+	private fun otherUtisOf(mainAttachment: DataAttachment?) =
+		mainAttachment?.utis?.drop(1)?.toSet() ?: emptySet()
 }

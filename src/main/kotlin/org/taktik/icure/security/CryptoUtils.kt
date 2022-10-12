@@ -32,12 +32,26 @@ import javax.crypto.NoSuchPaddingException
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import com.google.common.primitives.Bytes
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.scan
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.springframework.core.io.buffer.DataBuffer
 import org.taktik.icure.exceptions.EncryptionException
+import org.taktik.icure.security.CryptoUtils.tryKeyFromHexString
+import org.taktik.icure.utils.toByteArray
 
 object CryptoUtils {
 	const val IV_BYTE_LENGTH = 16
 	val random: SecureRandom = Security.addProvider(BouncyCastleProvider()).let { SecureRandom.getInstance("SHA1PRNG") }
+
+	private fun newCipherAES() = Cipher.getInstance("AES/CBC/PKCS7Padding") // js WebCrypto uses PKCS7 as mentioned in the standard.
 
 	@Throws(
 		NoSuchPaddingException::class,
@@ -86,6 +100,14 @@ object CryptoUtils {
 		val iv = generateIV(IV_BYTE_LENGTH)
 		val cipherData = encryptAES(data, key, iv)
 		return Bytes.concat(iv, cipherData)
+	}
+
+	fun encryptFlowAES(data: Flow<DataBuffer>, key: ByteArray): Flow<ByteArray> {
+		val iv = generateIV(IV_BYTE_LENGTH)
+		return flow {
+			emit(iv)
+			emitAll(encryptFlowAES(data, key, iv))
+		}
 	}
 
 	fun decryptAESWithAnyKey(data: ByteArray, enckeys: List<String?>?): ByteArray {
@@ -139,6 +161,25 @@ object CryptoUtils {
 		return decryptAES(encData, key, iv)
 	}
 
+	// The first bytes of data must be the initialization vector
+	@OptIn(ExperimentalCoroutinesApi::class)
+	fun decryptFlowAES(data: Flow<DataBuffer>, key: ByteArray): Flow<ByteArray> {
+		require(key.isValidAesKey()) { "Invalid length for aes key: ${key.size}" }
+		val cipher = newCipherAES()
+		val decryptingFlow = data.scan<DataBuffer, Pair<Boolean, ByteArray?>>(true to null) { (first, _), curr ->
+			if (first) {
+				require(curr.readableByteCount() >= IV_BYTE_LENGTH) { "First data buffer should fully contain initialization vector" }
+				val iv = ByteArray(IV_BYTE_LENGTH).also { curr.read(it) }
+				cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
+			}
+			false to cipher.update(curr.toByteArray(true))
+		}.map { it.second }
+		return flow {
+			emitAll(decryptingFlow)
+			emit(cipher.doFinal())
+		}.filterNotNull().filter { it.isNotEmpty() }
+	}
+
 	@Throws(
 		NoSuchPaddingException::class,
 		NoSuchAlgorithmException::class,
@@ -148,10 +189,17 @@ object CryptoUtils {
 		InvalidAlgorithmParameterException::class
 	)
 	fun encryptAES(data: ByteArray?, key: ByteArray?, iv: ByteArray?): ByteArray {
-		val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding") // js WebCrypto uses PKCS7 as mentioned in the standard.
+		val cipher = newCipherAES()
 		val ivSpec = IvParameterSpec(iv)
 		cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), ivSpec)
 		return cipher.doFinal(data)
+	}
+
+	fun encryptFlowAES(data: Flow<DataBuffer>, key: ByteArray, iv: ByteArray): Flow<ByteArray> {
+		val cipher = newCipherAES()
+		val ivSpec = IvParameterSpec(iv)
+		cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), ivSpec)
+		return cipher.transformFlow(data)
 	}
 
 	@Throws(
@@ -163,10 +211,17 @@ object CryptoUtils {
 		InvalidAlgorithmParameterException::class
 	)
 	fun decryptAES(data: ByteArray?, key: ByteArray?, iv: ByteArray?): ByteArray {
-		val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding") // js WebCrypto uses PKCS7 as mentioned in the standard.
+		val cipher = newCipherAES()
 		val ivSpec = IvParameterSpec(iv)
 		cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), ivSpec)
 		return cipher.doFinal(data)
+	}
+
+	fun decryptFlowAES(data: Flow<DataBuffer>, key: ByteArray, iv: ByteArray): Flow<ByteArray> {
+		val cipher = newCipherAES()
+		val ivSpec = IvParameterSpec(iv)
+		cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), ivSpec)
+		return cipher.transformFlow(data)
 	}
 
 	@Throws(NoSuchProviderException::class, NoSuchAlgorithmException::class)
@@ -175,6 +230,9 @@ object CryptoUtils {
 		aesKeyGenerator.init(256)
 		return aesKeyGenerator.generateKey()
 	}
+
+	fun predictAESEncryptedSize(originalSize: Long): Long =
+		((originalSize + IV_BYTE_LENGTH) / 16 + 1) * 16
 
 	@Throws(Exception::class)
 	fun generateIV(ivSize: Int): ByteArray {
@@ -230,23 +288,38 @@ object CryptoUtils {
 		}
 	}
 
-	fun String.keyFromHexString(): ByteArray {
-		return this.let {
-			if (it.matches(Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))) {
-				val bb = ByteBuffer.wrap(ByteArray(16))
-				val uuid = UUID.fromString(it)
-				bb.putLong(uuid.mostSignificantBits)
-				bb.putLong(uuid.leastSignificantBits)
-				bb.array()
-			} else {
-				check(it.length % 2 == 0) { "Must have an even length" }
-
-				it.chunked(2)
-					.map { it.toInt(16).toByte() }
-					.toByteArray()
-			}
+	fun String.keyFromHexString(): ByteArray =
+		requireNotNull(tryKeyFromHexString()) {
+			"$this must be either a guid or a hex string."
 		}
-	}
+
+	fun String.tryKeyFromHexString(): ByteArray? =
+		if (this.isUUID()) {
+			val bb = ByteBuffer.wrap(ByteArray(16))
+			val uuid = UUID.fromString(this)
+			bb.putLong(uuid.mostSignificantBits)
+			bb.putLong(uuid.leastSignificantBits)
+			bb.array()
+		} else if (this.length % 2 == 0) {
+			this.chunked(2)
+				.fold<String, MutableList<Byte>?>(mutableListOf()) { acc, s ->
+					if (acc != null) {
+						s.toIntOrNull(16)?.let { i -> acc.also { it.add(i.toByte()) } }
+					} else null
+				}
+				?.toByteArray()
+		} else null
+
+	private fun String.isUUID() =
+		this.matches(Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))
 
 	fun ByteArray.isValidAesKey() = this.size * 8 in setOf(128, 192, 256)
+
+	private fun Cipher.transformFlow(data: Flow<DataBuffer>): Flow<ByteArray> = flow {
+		data.collect { buffer ->
+			// TODO update can also take byte buffer, may be better memory wise to use that directly
+			emit(update(buffer.toByteArray(true)))
+		}
+		emit(doFinal())
+	}.filterNotNull().filter { it.isNotEmpty() }
 }

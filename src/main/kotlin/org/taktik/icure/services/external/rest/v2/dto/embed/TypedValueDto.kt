@@ -36,7 +36,7 @@ import org.taktik.icure.utils.InstantSerializer
 data class TypedValueDto<T>(
 	val type: TypedValuesType? = null,
 	val booleanValue: Boolean? = null,
-	val integerValue: Int? = null,
+	val integerValue: Long? = null,
 	val doubleValue: Double? = null,
 	val stringValue: String? = null,
 
@@ -51,6 +51,7 @@ data class TypedValueDto<T>(
 			when (value) {
 				is Boolean -> TypedValuesType.BOOLEAN
 				is Int -> TypedValuesType.INTEGER
+				is Long -> TypedValuesType.INTEGER
 				is Double -> TypedValuesType.DOUBLE
 				is String -> TypedValuesType.STRING
 				is Date -> TypedValuesType.DATE
@@ -63,9 +64,11 @@ data class TypedValueDto<T>(
 			TypedValuesType.BOOLEAN -> if (value is Boolean) {
 				TypedValueDto(booleanValue = value, type = type)
 			} else throw IllegalArgumentException("Illegal boolean value")
-			TypedValuesType.INTEGER -> if (value is Int) {
-				TypedValueDto(integerValue = value, type = type)
-			} else throw IllegalArgumentException("Illegal integer value")
+			TypedValuesType.INTEGER -> when (value) {
+				is Int -> TypedValueDto(integerValue = value.toLong(), type = type)
+				is Long -> TypedValueDto(integerValue = value, type = type)
+				else -> throw IllegalArgumentException("Illegal integer value")
+			}
 			TypedValuesType.DOUBLE -> if (value is Double) {
 				TypedValueDto(doubleValue = value, type = type)
 			} else throw IllegalArgumentException("Illegal double value")

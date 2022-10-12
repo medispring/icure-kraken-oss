@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service
 import org.taktik.icure.asynclogic.ContactLogic
 import org.taktik.icure.asynclogic.FormLogic
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.be.format.logic.MedidocLogic
 import org.taktik.icure.dto.result.ResultInfo
 import org.taktik.icure.entities.Contact
@@ -63,7 +64,12 @@ import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.utils.FuzzyValues
 
 @Service
-class MedidocLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: FormLogic, val contactLogic: ContactLogic) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic), MedidocLogic {
+class MedidocLogicImpl(
+	healthcarePartyLogic: HealthcarePartyLogic,
+	formLogic: FormLogic,
+	val contactLogic: ContactLogic,
+	private val documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic, documentDataAttachmentLoader), MedidocLogic {
 	private val p1 = Pattern.compile("^#A.*$")
 	private val p2 = Pattern.compile("^#R[a-zA-Z]*\\s*$")
 	private val p3 = Pattern.compile("^#A/\\s*$")
@@ -75,13 +81,13 @@ class MedidocLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: Fo
 	private val sidf: DateFormat = SimpleDateFormat("ddMMyy")
 	private val onlyNumbersAndPercentSigns = Pattern.compile("^[0-9%]+$")
 
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		var hasAHash = false
 		var hasAHashSlash = false
 		var hasRHash = false
 		var hasRHashSlash = false
 		var hasFinalTag = false
-		val text = decodeRawData(doc.decryptAttachment(enckeys))
+		val text = decodeRawData(documentDataAttachmentLoader.decryptMainAttachment(doc, enckeys))
 		if (text != null) {
 			val reader = BufferedReader(StringReader(text))
 			while (reader.readLine()?.also { line ->
@@ -108,7 +114,7 @@ class MedidocLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: Fo
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		val l: MutableList<ResultInfo> = ArrayList()
 		val br = getBufferedReader(doc, enckeys)
 		val lines = IOUtils.readLines(br)
@@ -238,8 +244,8 @@ class MedidocLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: Fo
 			}
 			i++
 		}
-		fillContactWithLines(lls.filterNotNull(), planOfActionId, hcpId, protocolIds, formIds)
-		return contactLogic.modifyContact(ctc)
+		val subContactsWithServices = fillContactWithLines(lls.filterNotNull(), planOfActionId, hcpId, protocolIds, formIds)
+		return contactLogic.modifyContact(ctc.copy(subContacts = ctc.subContacts + subContactsWithServices.map { it.first }, services = ctc.services + subContactsWithServices.flatMap { it.second }))
 	}
 
 	private fun fillService(language: String, lines: List<String>, i: Int, demandDate: Date?): Pair<Int, org.taktik.icure.entities.embed.Service> {

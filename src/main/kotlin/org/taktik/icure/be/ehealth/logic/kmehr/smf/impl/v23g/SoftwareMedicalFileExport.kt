@@ -45,6 +45,8 @@ import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.InsuranceLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
+import org.taktik.icure.asynclogic.objectstorage.contentBytesOfNullable
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils.makeMomentType
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils.makeXMLGregorianCalendarFromFuzzyLong
@@ -128,7 +130,8 @@ class SoftwareMedicalFileExport(
 	val contactMapper: ContactMapper,
 	val documentMapper: DocumentMapper,
 	val healthElementMapper: HealthElementMapper,
-) : KmehrExport(patientLogic, codeLogic, healthElementLogic, healthcarePartyLogic, contactLogic, documentLogic, sessionLogic, userLogic, filters) {
+	documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : KmehrExport(patientLogic, codeLogic, healthElementLogic, healthcarePartyLogic, contactLogic, documentLogic, sessionLogic, userLogic, filters, documentDataAttachmentLoader) {
 	private var hesByContactId: Map<String?, List<HealthElement>> = HashMap()
 	private var servicesByContactId: Map<String?, List<Service>> = HashMap()
 	private var newestServicesById: MutableMap<String?, Service> = HashMap()
@@ -291,7 +294,7 @@ class SoftwareMedicalFileExport(
 			}
 
 			if (contact == null) return@contactsLoop
-			var subContacts: List<SubContact> = contact.subContacts.filter { subContact -> subContact.healthElementId == null && subContact.planOfActionId == null && subContact.formId != null }
+			var subContacts: List<SubContact> = if (config.soft?.name == "Medispring") contact.subContacts.filter { subContact -> subContact.healthElementId == null && subContact.planOfActionId == null && subContact.formId != null } else contact.subContacts.toList()
 			subContacts.forEachIndexed { index, subContact ->
 				folder.transactions.add(
 					TransactionType().apply {
@@ -321,7 +324,7 @@ class SoftwareMedicalFileExport(
 							time = makeXGC(0L)
 						}
 						(contact.responsible ?: healthcareParty.id).let {
-							author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+							author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 						}
 						isIscomplete = true
 						isIsvalidated = true
@@ -490,7 +493,7 @@ class SoftwareMedicalFileExport(
 						time = makeXGC(0L)
 					}
 					(svc.responsible ?: healthcareParty.id).let {
-						author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+						author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 					}
 					isIscomplete = true
 					isIsvalidated = true
@@ -565,7 +568,7 @@ class SoftwareMedicalFileExport(
 							time = makeXGC(0L)
 						}
 						(svc.responsible ?: healthcareParty.id).let {
-							author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+							author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 						}
 						isIscomplete = true
 						isIsvalidated = true
@@ -579,7 +582,7 @@ class SoftwareMedicalFileExport(
 							)
 						}
 						documentLogic.getDocument(docid)?.let { d ->
-							d.attachment?.let { headingsAndItemsAndTexts.add(makeMultimediaLnkType(d, it, decryptor)) }
+							d.attachment()?.let { headingsAndItemsAndTexts.add(makeMultimediaLnkType(d, it, decryptor)) }
 						}
 						headingsAndItemsAndTexts.add(LnkType().apply { type = CDLNKvalues.ISACHILDOF; url = makeLnkUrl(con.id) })
 					}
@@ -665,15 +668,8 @@ class SoftwareMedicalFileExport(
 					)
 				}
 			}
-			itemByServiceId[serviceId] = item
 		}
-	}
-
-	private fun isServiceANewVersionOf(mfId: String): Boolean {
-		itemByServiceId[mfId]?.let {
-			return true
-		}
-		return false
+		itemByServiceId[serviceId] = item
 	}
 
 	private suspend fun makeNursePrescriptionTransaction(contact: Service, language: String, decryptor: AsyncDecrypt?, transactionMfId: String): TransactionType {
@@ -696,7 +692,7 @@ class SoftwareMedicalFileExport(
 				time = makeXGC(it)
 			}
 			service.responsible?.let {
-				author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+				author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 			}
 			service.created?.let {
 				recorddatetime = Utils.makeXGC(it)
@@ -707,7 +703,7 @@ class SoftwareMedicalFileExport(
 
 			service.content[language]?.documentId?.let {
 				try {
-					documentLogic.getDocument(it)?.let { d -> d.attachment?.let { headingsAndItemsAndTexts.add(makeMultimediaLnkType(d, it, decryptor)) } }
+					documentLogic.getDocument(it)?.let { d -> d.attachment()?.let { headingsAndItemsAndTexts.add(makeMultimediaLnkType(d, it, decryptor)) } }
 				} catch (e: Exception) {
 					log.error("Cannot export document $it")
 				}
@@ -823,7 +819,7 @@ class SoftwareMedicalFileExport(
 				time = makeXGC(it)
 			}
 			service.responsible?.let {
-				author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+				author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 			}
 			service.created?.let {
 				recorddatetime = Utils.makeXGC(it)
@@ -851,7 +847,7 @@ class SoftwareMedicalFileExport(
 							time = makeXGC(0L)
 						}
 					(service.responsible ?: healthcareParty.id).let {
-						author = AuthorType().apply { hcparties.add(createParty(healthcarePartyLogic.getHealthcareParty(it)!!, emptyList())) }
+						author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 					}
 					isIscomplete = true
 					isIsvalidated = true
@@ -865,7 +861,7 @@ class SoftwareMedicalFileExport(
 						)
 					}
 					documentLogic.getDocument(documentId)?.let { d ->
-						d.attachment?.let {
+						d.attachment()?.let {
 							val element = makeMultimediaLnkType(d, it, decryptor)
 							headingsAndItemsAndTexts.add(element)
 						}
@@ -884,7 +880,7 @@ class SoftwareMedicalFileExport(
 		decryptor: AsyncDecrypt?
 	): LnkType {
 		val data = if (document.encryptionKeys.isNotEmpty() && decryptor != null) {
-			decryptor.decrypt(listOf(documentMapper.map(document).copy(encryptedAttachment = document.attachment)), DocumentDto::class.java).firstOrNull()?.decryptedAttachment
+			decryptor.decrypt(listOf(documentMapper.map(document).copy(encryptedAttachment = document.attachment())), DocumentDto::class.java).firstOrNull()?.decryptedAttachment
 				?: attachment
 		} else attachment
 		val element = LnkType().apply { type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(document); value = data }
@@ -1105,6 +1101,8 @@ class SoftwareMedicalFileExport(
 		return Pair(gmd, gmdRelationship.referralPeriods.find(isActive))
 	}
 
+	suspend fun checkHcpAndCreateCorrespondingPartyType(hcpId: String, cds: List<CDHCPARTY>? = emptyList()): HcpartyType? = healthcarePartyLogic.getHealthcareParty(hcpId)?.let { createParty(it, cds) }
+
 	private fun codesToKmehr(codes: Set<CodeStub>): ContentType {
 		return ContentType().apply {
 			cds.addAll(
@@ -1306,7 +1304,7 @@ class SoftwareMedicalFileExport(
 				time = makeXGC(it)
 			}
 			contact.responsible?.let {
-				author = AuthorType().apply { hcparties.add(healthcarePartyLogic.getHealthcareParty(it)?.let { hcp -> createParty(hcp, emptyList()) }) }
+				author = AuthorType().apply { hcparties.add(checkHcpAndCreateCorrespondingPartyType(it, emptyList())) }
 			}
 			recorddatetime = Utils.makeXGC(contact.created) // TODO: maybe should take form date instead of contact date
 			isIscomplete = true

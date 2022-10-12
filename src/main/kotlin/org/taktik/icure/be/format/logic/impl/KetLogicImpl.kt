@@ -31,6 +31,7 @@ import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.stereotype.Service
 import org.taktik.icure.asynclogic.FormLogic
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentLoader
 import org.taktik.icure.be.format.logic.KetLogic
 import org.taktik.icure.dto.result.ResultInfo
 import org.taktik.icure.entities.Contact
@@ -46,9 +47,13 @@ import org.xml.sax.SAXException
  * Created by aduchate on 20/06/2017.
  */
 @Service
-class KetLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: FormLogic) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic), KetLogic {
+class KetLogicImpl(
+	healthcarePartyLogic: HealthcarePartyLogic,
+	formLogic: FormLogic,
+	documentDataAttachmentLoader: DocumentDataAttachmentLoader
+) : GenericResultFormatLogicImpl(healthcarePartyLogic, formLogic, documentDataAttachmentLoader), KetLogic {
 	@Throws(IOException::class)
-	override fun canHandle(doc: Document, enckeys: List<String>): Boolean {
+	override suspend fun canHandle(doc: Document, enckeys: List<String>): Boolean {
 		return try {
 			val xml = getXmlDocument(doc, enckeys)
 			val xPathfactory = XPathFactory.newInstance()
@@ -65,7 +70,7 @@ class KetLogicImpl(healthcarePartyLogic: HealthcarePartyLogic, formLogic: FormLo
 	}
 
 	@Throws(IOException::class)
-	override fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
+	override suspend fun getInfos(doc: Document, full: Boolean, language: String, enckeys: List<String>): List<ResultInfo> {
 		return try {
 			val xml = getXmlDocument(doc, enckeys)
 			val xPathfactory = XPathFactory.newInstance()

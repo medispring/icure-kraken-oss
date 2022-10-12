@@ -23,7 +23,7 @@ import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
 import org.taktik.icure.constants.TypedValuesType
 import org.taktik.icure.entities.embed.TypedValue
-import org.taktik.icure.services.external.rest.v1.mapper.utils.InstantMapper
+import org.taktik.icure.services.external.rest.mapper.utils.InstantMapper
 import org.taktik.icure.services.external.rest.v2.dto.embed.TypedValueDto
 
 @Mapper(componentModel = "spring", uses = [InstantMapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)

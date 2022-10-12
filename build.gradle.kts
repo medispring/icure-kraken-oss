@@ -41,15 +41,15 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.13")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
         classpath("org.jetbrains.kotlin:kotlin-allopen:1.6.10")
-        classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.0")
-        classpath("com.taktik.gradle:gradle-plugin-git-version:2.0.1")
+        classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.4")
+        classpath("com.taktik.gradle:gradle-plugin-git-version:2.0.4")
     }
 }
 
 apply(plugin = "git-version")
 
 val gitVersion: String? by project
-group = "org.taktik.icure"
+group = "com.icure"
 version = gitVersion ?: "0.0.1-SNAPSHOT"
 
 apply(plugin = "kotlin-spring")
@@ -65,7 +65,6 @@ java {
 repositories {
     gradlePluginPortal()
     mavenCentral()
-    jcenter()
     maven { url = uri("https://maven.taktik.be/content/groups/public") }
     maven { url = uri("https://www.e-contract.be/maven2/") }
     maven { url = uri("https://repo.ehealth.fgov.be/artifactory/maven2/") }
@@ -76,6 +75,11 @@ apply(plugin = "maven-publish")
 
 tasks.withType<Test> {
     useJUnitPlatform()
+	/*
+	 * If tests rely on system properties we can use gradle settings to set the properties but then we need to propagate them to the actual test virtual machine.
+	 * This example propagates all properties passed to gradle, it would be better to only propagate the necessary properties.
+	 */
+	// System.getProperties().forEach { k,	v -> systemProperty(k as String, v) }
 }
 
 tasks.withType<JavaCompile> {
@@ -116,6 +120,10 @@ tasks.withType<BootRun> {
     }
 }
 
+configure<com.taktik.gradle.plugins.flowr.DockerJavaPluginExtension> {
+	imageRepoAndName = "taktik/kraken"
+}
+
 configurations {
     all {
         exclude(group = "org.slf4j", module = "slf4j-log4j12")
@@ -143,7 +151,7 @@ dependencies {
 
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
-    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.18")
+    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.22")
 
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.6.21")
@@ -154,20 +162,20 @@ dependencies {
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version = "0.3.5")
 
     //Jackson
-	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.6")
-	implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = "2.12.6")
+	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.7")
+	implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = "2.12.7")
     implementation(group = "com.fasterxml.jackson.datatype", name="jackson-datatype-jsr310", version = "2.12.6")
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.3.1.Final")
 
     //Krouch
-    implementation(group = "org.taktik.couchdb", name = "krouch", version = "jack211-1.0.2-103-gfebaca6a27")
+    implementation(group = "org.taktik.couchdb", name = "krouch", version = "main-1.0.2-111-g34b8dc36d9")
     implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
     implementation(group = "io.icure", name = "mapper-processor", version = "0.1.1-32d45af2a6")
 
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-mail", version = "2.5.5")
-    implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.13")
-    implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.13")
-	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.13")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.14")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.14")
+	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.14")
 
 
 	implementation(group = "org.springframework", name = "spring-aspects", version = "5.3.10")
@@ -246,8 +254,12 @@ dependencies {
     // ktlint will pick them up
 
     testImplementation(group = "org.junit.jupiter", name = "junit-jupiter", version = "5.4.2")
-    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "2.5.13")
-
+    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "2.5.14")
+    testImplementation(group = "io.mockk", name = "mockk", version = "1.11.0")
+    testImplementation(group = "com.ninja-squad", name = "springmockk", version = "3.1.1")
+	testImplementation(group = "io.kotest", name = "kotest-assertions-core", version = "4.4.3")
+	testImplementation(group = "io.kotest", name = "kotest-runner-junit5", version = "4.4.3")
+	testImplementation(group = "io.kotest.extensions", name = "kotest-extensions-spring", version = "1.0.1")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

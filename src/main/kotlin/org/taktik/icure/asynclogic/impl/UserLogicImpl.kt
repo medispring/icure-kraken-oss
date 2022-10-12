@@ -26,10 +26,12 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -38,7 +40,9 @@ import org.apache.commons.lang3.Validate
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.taktik.couchdb.TotalCount
 import org.taktik.couchdb.ViewQueryResultEvent
+import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.couchdb.id.UUIDGenerator
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.RoleDAO
@@ -363,10 +367,13 @@ class UserLogicImpl(
 		userDAO.save(hashPasswordAndTokens(modifiedUser))
 	}
 
-	override suspend fun getToken(user: User, key: String, tokenValidity: Long): String {
+	override suspend fun getToken(user: User, key: String, tokenValidity: Long): String =
+		getToken(user.id, key, tokenValidity)
+
+	override suspend fun getToken(userId: String, key: String, tokenValidity: Long): String {
 		val authenticationToken = uuidGenerator.newGUID().toString()
 
-		userDAO.getUserOnUserDb(user.id, false).let {
+		userDAO.getUserOnUserDb(userId, false).let {
 			userDAO.save(
 				it.copy(authenticationTokens = it.authenticationTokens + (key to AuthenticationToken(encodePassword(authenticationToken), validity = tokenValidity)))
 			) ?: throw IllegalStateException("Cannot create token for user")
@@ -452,8 +459,56 @@ class UserLogicImpl(
 		return userDAO.save(hashPasswordAndTokens(user))
 	}
 
-	override fun listUsers(paginationOffset: PaginationOffset<String>, skipPatients: Boolean): Flow<ViewQueryResultEvent> = flow {
-		emitAll(userDAO.findUsers(paginationOffset, skipPatients))
+	override fun listUsers(paginationOffset: PaginationOffset<String>, skipPatients: Boolean): Flow<ViewQueryResultEvent> = listUsers(paginationOffset, skipPatients, 1f, 0, false)
+	fun listUsers(pagination: PaginationOffset<String>, skipPatients: Boolean, extensionFactor: Float, prevTotalCount: Int, isContinuation: Boolean): Flow<ViewQueryResultEvent> = flow {
+		var seenElements = 0
+		var sentElements = 0
+		var totalCount = 0
+		var latestResult: ViewRowWithDoc<*, *, *>? = null
+		var skipped = false
+		val extendedLimit = (pagination.limit * extensionFactor).toInt()
+
+		emitAll(
+			userDAO.findUsers(pagination, extendedLimit, skipPatients).let { flw ->
+				if (!skipPatients) flw else
+					flw.filter {
+						when (it) {
+							is ViewRowWithDoc<*, *, *> -> {
+								latestResult = it
+								seenElements++
+								if (skipped || !isContinuation) {
+									if (((it.doc as User).patientId === null || (it.doc as User).healthcarePartyId != null) && sentElements < pagination.limit) {
+										sentElements++
+										true
+									} else false
+								} else {
+									skipped = true
+									false
+								}
+							}
+							is TotalCount -> {
+								totalCount = it.total
+								false
+							}
+							else -> true
+						}
+					}.onCompletion {
+						if ((seenElements >= extendedLimit) && (sentElements < seenElements)) {
+							emitAll(
+								listUsers(
+									pagination.copy(startKey = latestResult?.key as? String, startDocumentId = latestResult?.id, limit = pagination.limit - sentElements),
+									true,
+									(if (seenElements == 0) extensionFactor * 2 else (seenElements.toFloat() / sentElements)).coerceAtMost(100f),
+									totalCount + prevTotalCount,
+									true
+								)
+							)
+						} else {
+							emit(TotalCount(totalCount + prevTotalCount))
+						}
+					}
+			}
+		)
 	}
 
 	override fun filterUsers(paginationOffset: PaginationOffset<Nothing>, filter: FilterChain<User>): Flow<ViewQueryResultEvent> = flow {

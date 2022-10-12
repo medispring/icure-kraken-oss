@@ -26,9 +26,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactor.mono
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -82,6 +84,7 @@ class CodeController(
 		@RequestParam(required = false) types: String?,
 		@RequestParam(required = false) language: String?,
 		@RequestParam(required = false) label: String?,
+		@RequestParam(required = false) version: String?,
 		@Parameter(description = "The start key for pagination: a JSON representation of an array containing all the necessary " + "components to form the Complex Key's startKey") @RequestParam(required = false) startKey: String?,
 		@Parameter(description = "A code document ID") @RequestParam(required = false) startDocumentId: String?,
 		@Parameter(description = "Number of rows") @RequestParam(required = false) limit: Int?
@@ -111,7 +114,7 @@ class CodeController(
 				codeLogic.findCodesByLabel(region, language, typesList[0], label, paginationOffset)
 					.paginatedList<Code, CodeDto>(codeToCodeDto, realLimit)
 			}
-		} ?: codeLogic.findCodesByLabel(region, language, label, paginationOffset)
+		} ?: codeLogic.findCodesByLabel(region, language, label, version, paginationOffset)
 			.paginatedList<Code, CodeDto>(codeToCodeDto, realLimit)
 	}
 
@@ -208,6 +211,17 @@ class CodeController(
 		code?.let { codeV2Mapper.map(it) }
 	}
 
+	@Operation(summary = "Create a batch of codes", description = "Create a batch of code entities. Fields Type, Code and Version are required for each code.")
+	@PostMapping("/batch")
+	fun createCodes(@RequestBody codeBatch: List<CodeDto>) = mono {
+		val codes = codeBatch.map { codeV2Mapper.map(it) }
+		try {
+			codeLogic.create(codes)?.map { codeV2Mapper.map(it) }
+		} catch (e: IllegalStateException) {
+			throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+		}
+	}
+
 	@Operation(summary = "Get a list of codes by ids", description = "Keys must be delimited by coma")
 	@PostMapping("/byIds")
 	fun getCodes(@RequestBody codeIds: ListOfIdsDto): Flux<CodeDto> {
@@ -257,6 +271,17 @@ class CodeController(
 		modifiedCode?.let { codeV2Mapper.map(it) }
 	}
 
+	@Operation(summary = "Modify a batch of codes", description = "Modification of (type, code, version) is not allowed.")
+	@PutMapping("/batch")
+	fun modifyCodes(@RequestBody codeBatch: List<CodeDto>) =
+		codeLogic.modify(codeBatch.map { codeV2Mapper.map(it) })
+			.catch { e ->
+				if (e is IllegalStateException) throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+				else throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "A problem regarding modification of the code. Read the app logs: " + e.message)
+			}
+			.map { codeV2Mapper.map(it) }
+			.injectReactorContext()
+
 	@Operation(summary = "Filter codes ", description = "Returns a list of codes along with next start keys and Document ID. If the nextStartKey is Null it means that this is the last page.")
 	@PostMapping("/filter")
 	fun filterCodesBy(
@@ -286,5 +311,7 @@ class CodeController(
 
 	@Operation(summary = "Get ids of code matching the provided filter for the current user (HcParty) ")
 	@PostMapping("/match")
-	fun matchCodesBy(@RequestBody filter: AbstractFilterDto<Code>) = filters.resolve(filter).injectReactorContext()
+	fun matchCodesBy(@RequestBody filter: AbstractFilterDto<Code>) = mono {
+		filters.resolve(filter).toList()
+	}
 }

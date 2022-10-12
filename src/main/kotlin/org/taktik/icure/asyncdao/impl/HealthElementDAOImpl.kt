@@ -57,7 +57,12 @@ internal class HealthElementDAOImpl(
 	override fun listHealthElementsByHcParty(hcPartyId: String) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 
-		emitAll(client.queryView<Array<String>, String>(createQuery(client, "by_hcparty").key(hcPartyId).includeDocs(false)).mapNotNull { it.value })
+		emitAll(client.queryView<Array<String>, String>(
+			createQuery(client, "by_hcparty")
+				.startKey(ComplexKey.of(hcPartyId))
+				.endKey(ComplexKey.of(hcPartyId))
+				.includeDocs(false)
+		).mapNotNull { it.value })
 	}
 
 	override fun listHealthElementIdsByHcPartyAndSecretPatientKeys(

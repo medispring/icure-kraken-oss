@@ -22,28 +22,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.taktik.couchdb.entity.Option
-import org.taktik.couchdb.exception.CouchDbException
 import org.taktik.icure.asyncdao.DocumentDAO
 import org.taktik.icure.asynclogic.DocumentLogic
+import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic.DataAttachmentChange
+import org.taktik.icure.asynclogic.objectstorage.DocumentDataAttachmentModificationLogic
 import org.taktik.icure.entities.Document
-import org.taktik.icure.exceptions.CreationException
 
 @ExperimentalCoroutinesApi
 @Service
-class DocumentLogicImpl(private val documentDAO: DocumentDAO, private val sessionLogic: AsyncSessionLogicImpl) : GenericLogicImpl<Document, DocumentDAO>(sessionLogic), DocumentLogic {
+class DocumentLogicImpl(
+	private val documentDAO: DocumentDAO,
+	sessionLogic: AsyncSessionLogicImpl,
+	private val attachmentModificationLogic: DocumentDataAttachmentModificationLogic
+) : GenericLogicImpl<Document, DocumentDAO>(sessionLogic), DocumentLogic {
 
-	override suspend fun createDocument(document: Document, ownerHealthcarePartyId: String) = fix(document) { document ->
-		try {
-			createEntities(setOf(document)).firstOrNull()
-		} catch (e: Exception) {
-			throw CreationException("Could not create document. ", e)
-		}
+	override suspend fun createDocument(document: Document, strict: Boolean) = fix(document) { fixedDocument ->
+		documentDAO.create(checkNewDocument(fixedDocument, strict))
 	}
 
 	override suspend fun getDocument(documentId: String): Document? {
@@ -60,14 +58,60 @@ class DocumentLogicImpl(private val documentDAO: DocumentDAO, private val sessio
 		emitAll(documentDAO.readAttachment(documentId, attachmentId, null))
 	}
 
-	override suspend fun modifyDocument(document: Document) = fix(document) { document ->
-		try {
-			documentDAO.save(document)
-		} catch (e: CouchDbException) {
-			logger.warn("Documents of class {} with id {} and rev {} could not be merged", document.javaClass.simpleName, document.id, document.rev)
-			throw IllegalStateException(e)
+	override suspend fun modifyDocument(updatedDocument: Document, currentDocument: Document?, strict: Boolean): Document? = fix(updatedDocument) { newDoc ->
+		val baseline = requireNotNull(currentDocument ?: getDocument(newDoc.id)) {
+			"Attempting to modify a non-existing document ${newDoc.id}."
 		}
+		require(newDoc.rev == baseline.rev) { "Updated document has an older revision ${newDoc.rev} -> ${baseline.rev}" }
+		documentDAO.save(
+			newDoc
+				.copy(attachments = baseline.attachments)
+				.let {
+					attachmentModificationLogic.ensureValidAttachmentChanges(
+						baseline,
+						it,
+						if (strict) emptySet() else setOf(updatedDocument.mainAttachmentKey)
+					)
+				}
+		)
 	}
+
+	override fun createOrModifyDocuments(documents: List<DocumentLogic.BatchUpdateDocumentInfo>, strict: Boolean): Flow<Document> = flow {
+		val fixedDocuments = documents.map { (newDoc, prevDoc) ->
+			if (prevDoc != null) {
+				fix(newDoc)
+					.copy(attachments = prevDoc.attachments)
+					.let {
+						attachmentModificationLogic.ensureValidAttachmentChanges(
+							prevDoc,
+							it,
+							if (strict) emptySet() else setOf(newDoc.mainAttachmentKey)
+						)
+					}
+			} else {
+				checkNewDocument(fix(newDoc), strict)
+			}
+		}
+		emitAll(documentDAO.save(fixedDocuments))
+	}
+
+
+	override suspend fun updateAttachments(
+		currentDocument: Document,
+		mainAttachmentChange: DataAttachmentChange?,
+		secondaryAttachmentsChanges: Map<String, DataAttachmentChange>
+	): Document? =
+		attachmentModificationLogic.updateAttachments(
+			currentDocument,
+			mainAttachmentChange?.let {
+				if (it is DataAttachmentChange.CreateOrUpdate && it.utis == null && currentDocument.mainAttachment == null) {
+					// Capture cases where the document has no attachment id set (main attachment is null) but specifies some utis
+					it.copy(utis = listOfNotNull(currentDocument.mainUti) + currentDocument.otherUtis)
+				} else it
+			}?.let {
+				secondaryAttachmentsChanges + (currentDocument.mainAttachmentKey to it)
+			} ?: secondaryAttachmentsChanges
+		)
 
 	override fun listDocumentsByDocumentTypeHCPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document> = flow {
 		emitAll(documentDAO.listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode, hcPartyId, secretForeignKeys))
@@ -79,10 +123,6 @@ class DocumentLogicImpl(private val documentDAO: DocumentDAO, private val sessio
 
 	override fun listDocumentsWithoutDelegation(limit: Int): Flow<Document> = flow {
 		emitAll(documentDAO.listDocumentsWithNoDelegations(limit))
-	}
-
-	override fun modifyDocuments(documents: List<Document>): Flow<Document> = flow {
-		emitAll(documentDAO.save(documents))
 	}
 
 	override fun solveConflicts(ids: List<String>?): Flow<Document> {
@@ -101,7 +141,21 @@ class DocumentLogicImpl(private val documentDAO: DocumentDAO, private val sessio
 		return documentDAO
 	}
 
-	companion object {
-		private val logger = LoggerFactory.getLogger(DocumentLogicImpl::class.java)
+	private fun checkNewDocument(document: Document, strict: Boolean): Document {
+		require(document.secondaryAttachments.isEmpty()) {
+			"New document can't provide any secondary attachments information."
+		}
+		require(document.deletedAttachments.isEmpty()) {
+			"New document can't specify deleted attachments."
+		}
+		if (strict) {
+			require(document.mainAttachment == null && document.mainUti == null && document.otherUtis.isEmpty()) {
+				"New document can't specify any main attachment information"
+			}
+		}
+		require(document.objectStoreReference == null) {
+			"New document can't specify a value for the main attachment object store id."
+		}
+		return if (document.attachmentId != null) document.copy(attachmentId = null) else document
 	}
 }
