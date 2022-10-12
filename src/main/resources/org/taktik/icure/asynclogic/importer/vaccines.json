@@ -6,37 +6,7 @@
     ]
   },
   {
-    "cnk": "0083063",
-    "codes": [
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "0083063",
-    "codes": [
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "0083063",
-    "codes": [
-      "poliomyelitis"
-    ]
-  },
-  {
     "cnk": "3911963",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3911963",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3930179",
     "codes": [
       "seasonalinfluenza"
     ]
@@ -51,54 +21,6 @@
     "cnk": "3926664",
     "codes": [
       "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3926664",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3911963",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3911963",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3930179",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3930179",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3926664",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "3926664",
-    "codes": [
-      "seasonalinfluenza"
-    ]
-  },
-  {
-    "cnk": "2542587",
-    "codes": [
-      "hepatitisa"
     ]
   },
   {
@@ -120,109 +42,7 @@
     ]
   },
   {
-    "cnk": "1345545",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1149939",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
     "cnk": "1321058",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1321058",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3019601",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3020278",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3019601",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3020278",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "2542587",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "2542587",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1345545",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1149939",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1345545",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1149939",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1321058",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "1321058",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3019601",
-    "codes": [
-      "hepatitisa"
-    ]
-  },
-  {
-    "cnk": "3020278",
     "codes": [
       "hepatitisa"
     ]
@@ -252,30 +72,6 @@
     ]
   },
   {
-    "cnk": "2246775",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1657923",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1035849",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "0061358",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
     "cnk": "1035849",
     "codes": [
       "hepatitisb"
@@ -294,90 +90,6 @@
     ]
   },
   {
-    "cnk": "2210151",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "2246775",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1657923",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "2246775",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1657923",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1035849",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "0061358",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1035849",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "0061358",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "2210151",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "2210151",
-    "codes": [
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "2765444",
-    "codes": [
-      "rabies"
-    ]
-  },
-  {
-    "cnk": "2765444",
-    "codes": [
-      "rabies"
-    ]
-  },
-  {
-    "cnk": "2765444",
-    "codes": [
-      "rabies"
-    ]
-  },
-  {
     "cnk": "2765444",
     "codes": [
       "rabies"
@@ -385,42 +97,6 @@
   },
   {
     "cnk": "3906781",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "3906781",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "0064527",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "0064527",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "3906781",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "3906781",
-    "codes": [
-      "varicella"
-    ]
-  },
-  {
-    "cnk": "0064527",
     "codes": [
       "varicella"
     ]
@@ -438,61 +114,7 @@
     ]
   },
   {
-    "cnk": "2324937",
-    "codes": [
-      "zona"
-    ]
-  },
-  {
-    "cnk": "2324937",
-    "codes": [
-      "zona"
-    ]
-  },
-  {
-    "cnk": "2324937",
-    "codes": [
-      "zona"
-    ]
-  },
-  {
     "cnk": "2663532",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2663532",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2322436",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2322436",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2663532",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2663532",
-    "codes": [
-      "rotavirus"
-    ]
-  },
-  {
-    "cnk": "2322436",
     "codes": [
       "rotavirus"
     ]
@@ -510,18 +132,6 @@
     ]
   },
   {
-    "cnk": "3402799",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "2385136",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
     "cnk": "2385136",
     "codes": [
       "papillomavirus"
@@ -531,66 +141,6 @@
     "cnk": "3147410",
     "codes": [
       "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "3147410",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "3402799",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "3402799",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "2385136",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "2385136",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "3147410",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "3147410",
-    "codes": [
-      "papillomavirus"
-    ]
-  },
-  {
-    "cnk": "1152743",
-    "codes": [
-      "yellowfever"
-    ]
-  },
-  {
-    "cnk": "1152743",
-    "codes": [
-      "yellowfever"
-    ]
-  },
-  {
-    "cnk": "1152743",
-    "codes": [
-      "yellowfever"
     ]
   },
   {
@@ -612,81 +162,9 @@
     ]
   },
   {
-    "cnk": "3308277",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
-    "cnk": "3308285",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
-    "cnk": "3308277",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
-    "cnk": "3308285",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
-    "cnk": "3308277",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
-    "cnk": "3308285",
-    "codes": [
-      "tickborneencephalitis"
-    ]
-  },
-  {
     "cnk": "2765469",
     "codes": [
       "ej"
-    ]
-  },
-  {
-    "cnk": "2765469",
-    "codes": [
-      "ej"
-    ]
-  },
-  {
-    "cnk": "2765469",
-    "codes": [
-      "ej"
-    ]
-  },
-  {
-    "cnk": "2765469",
-    "codes": [
-      "ej"
-    ]
-  },
-  {
-    "cnk": "0320879",
-    "codes": [
-      "hib"
-    ]
-  },
-  {
-    "cnk": "0320879",
-    "codes": [
-      "hib"
-    ]
-  },
-  {
-    "cnk": "0320879",
-    "codes": [
-      "hib"
     ]
   },
   {
@@ -744,60 +222,6 @@
     ]
   },
   {
-    "cnk": "3395761",
-    "codes": [
-      "pneumonia23"
-    ]
-  },
-  {
-    "cnk": "3395761",
-    "codes": [
-      "pneumonia23"
-    ]
-  },
-  {
-    "cnk": "3395761",
-    "codes": [
-      "pneumonia23"
-    ]
-  },
-  {
-    "cnk": "2657088",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
-    "cnk": "3813805",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
-    "cnk": "2657088",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
-    "cnk": "3813805",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
-    "cnk": "2657088",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
-    "cnk": "3813805",
-    "codes": [
-      "pneumonia13"
-    ]
-  },
-  {
     "cnk": "2657088",
     "codes": [
       "pneumonia13"
@@ -816,30 +240,6 @@
     ]
   },
   {
-    "cnk": "2620888",
-    "codes": [
-      "pneumonia10"
-    ]
-  },
-  {
-    "cnk": "2620888",
-    "codes": [
-      "pneumonia10"
-    ]
-  },
-  {
-    "cnk": "2620888",
-    "codes": [
-      "pneumonia10"
-    ]
-  },
-  {
-    "cnk": "0069914",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
     "cnk": "0069914",
     "codes": [
       "typhoid"
@@ -852,85 +252,7 @@
     ]
   },
   {
-    "cnk": "2231934",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
-    "cnk": "0069914",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
-    "cnk": "0069914",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
-    "cnk": "2231934",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
-    "cnk": "2231934",
-    "codes": [
-      "typhoid"
-    ]
-  },
-  {
     "cnk": "1358167",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "1358167",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "2324911",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "2324911",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "1358167",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "1358167",
-    "codes": [
-      "mumps",
-      "measles",
-      "rubella"
-    ]
-  },
-  {
-    "cnk": "2324911",
     "codes": [
       "mumps",
       "measles",
@@ -960,56 +282,6 @@
     ]
   },
   {
-    "cnk": "1327485",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1272665",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1327485",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1272665",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1327485",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1272665",
-    "codes": [
-      "hepatitisa",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1734094",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
     "cnk": "1734094",
     "codes": [
       "diphteria",
@@ -1026,101 +298,7 @@
     ]
   },
   {
-    "cnk": "3707767",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
-    "cnk": "1734094",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
-    "cnk": "1734094",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
-    "cnk": "3707767",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
-    "cnk": "3707767",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis"
-    ]
-  },
-  {
     "cnk": "2374429",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2374429",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2374429",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2374429",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2231868",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2231868",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2231868",
     "codes": [
       "diphteria",
       "tetanus",
@@ -1146,97 +324,7 @@
     ]
   },
   {
-    "cnk": "2231900",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2231900",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "poliomyelitis"
-    ]
-  },
-  {
-    "cnk": "2231900",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "poliomyelitis"
-    ]
-  },
-  {
     "cnk": "3050176",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "3050176",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1665363",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1665363",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "3050176",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "3050176",
-    "codes": [
-      "diphteria",
-      "tetanus",
-      "pertussis",
-      "poliomyelitis",
-      "hib",
-      "hepatitisb"
-    ]
-  },
-  {
-    "cnk": "1665363",
     "codes": [
       "diphteria",
       "tetanus",
