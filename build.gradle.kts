@@ -7,6 +7,9 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import java.text.SimpleDateFormat
 import java.util.*
+import com.google.devtools.ksp.gradle.KspTask
+import org.jetbrains.kotlin.incremental.makeIncrementally
+import org.jetbrains.kotlin.utils.alwaysTrue
 
 val ktlint by configurations.creating
 
@@ -72,6 +75,37 @@ repositories {
 
 apply(plugin = "kotlin")
 apply(plugin = "maven-publish")
+
+tasks.register("KspPreCheck") {
+	inputs.dir("src/main/kotlin/org/taktik/icure/domain")
+	inputs.dir("src/main/kotlin/org/taktik/icure/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/entities")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v1/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v1/mapper")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/mapper")
+	outputs.upToDateWhen{ true }
+	doLast {
+		println("Checking for modifications in mappers")
+	}
+}
+
+tasks.withType<KspTask> {
+	dependsOn("KspPreCheck")
+}
+
+// KSP doesn't like incremental compiling
+// If the KspPreCheck task is-up-to date, then it means that the annotated files were not modified
+// So the KSP can be disabled
+gradle.taskGraph.whenReady {
+
+	gradle.taskGraph.beforeTask {
+		if (this.name == "kspKotlin") {
+			this.enabled = tasks.asMap["KspPreCheck"]?.state?.upToDate?.not() ?: true
+		}
+	}
+
+}
 
 tasks.withType<Test> {
     useJUnitPlatform()
@@ -145,6 +179,7 @@ kotlin {
     }
 }
 
+
 dependencies {
     implementation(group = "io.icure", name = "kmap", version = kmapVersion)
     ksp(group = "io.icure", name = "kmap", version = kmapVersion)
@@ -152,6 +187,7 @@ dependencies {
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
     implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.22")
+	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
 
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.6.21")
