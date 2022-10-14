@@ -84,6 +84,7 @@ class TimeTableController(
 
 				//Create a timeTableItem
 				val timeTableItem = TimeTableItem(
+					rrule =null,
 					calendarItemTypeId = "consult",
 					days = mutableListOf("monday"),
 					recurrenceTypes = ArrayList(),
