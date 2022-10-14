@@ -143,6 +143,7 @@ internal class HealthcarePartyDAOImpl(
 		)
 	}
 
+	@Deprecated("A HCP may now have multiple AES Keys. Use getAesExchangeKeysForDelegate instead")
 	@View(name = "by_hcparty_delegate_keys", map = "classpath:js/healthcareparty/By_hcparty_delegate_keys_map.js")
 	override suspend fun getHcPartyKeysForDelegate(healthcarePartyId: String): Map<String, String> {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)

@@ -12,6 +12,6 @@ data class PatientByHcPartyAndTelecomFilter(
 ) : AbstractFilter<Patient>, org.taktik.icure.domain.filter.patient.PatientByHcPartyAndTelecomFilter {
 
 	override fun matches(item: Patient): Boolean {
-		return (healthcarePartyId == null || item.delegations.keys.contains(healthcarePartyId)) && (searchString == null || item.addresses.any {adr -> adr.telecoms?.any { tc -> tc.telecomNumber?.contains(searchString)!! } }  )
+		return (healthcarePartyId == null || item.delegations.keys.contains(healthcarePartyId)) && (searchString == null || item.addresses.any {adr -> adr.telecoms.any { tc -> tc.telecomNumber?.contains(searchString)!! } }  )
 	}
 }

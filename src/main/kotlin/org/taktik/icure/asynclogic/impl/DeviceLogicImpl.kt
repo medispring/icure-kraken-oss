@@ -72,6 +72,7 @@ class DeviceLogicImpl(
 		emitAll(deviceDAO.getDevices(deviceIds))
 	}
 
+	@Deprecated("A DataOwner may now have multiple AES Keys. Use getAesExchangeKeysForDelegate instead")
 	override suspend fun getHcPartyKeysForDelegate(deviceId: String): Map<String, String> {
 		return deviceDAO.getHcPartyKeysForDelegate(deviceId)
 	}
