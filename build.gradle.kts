@@ -8,8 +8,6 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 import java.text.SimpleDateFormat
 import java.util.*
 import com.google.devtools.ksp.gradle.KspTask
-import org.jetbrains.kotlin.incremental.makeIncrementally
-import org.jetbrains.kotlin.utils.alwaysTrue
 
 val ktlint by configurations.creating
 
@@ -19,9 +17,9 @@ val mavenReleasesRepository: String by project
 val kmapVersion = "0.1.27-dc75c6d709"
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.20"
     id("org.sonarqube") version "3.3"
-    id("com.google.devtools.ksp") version "1.6.21-1.0.5"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
     `maven-publish`
 }
 
@@ -42,8 +40,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.13")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-        classpath("org.jetbrains.kotlin:kotlin-allopen:1.6.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:1.7.20")
         classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.4")
         classpath("com.taktik.gradle:gradle-plugin-git-version:2.0.4")
     }
