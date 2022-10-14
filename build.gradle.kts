@@ -14,7 +14,7 @@ val ktlint by configurations.creating
 val repoUsername: String by project
 val repoPassword: String by project
 val mavenReleasesRepository: String by project
-val kmapVersion = "0.1.27-dc75c6d709"
+val kmapVersion = "0.1.52-main.8d4a565b58"
 
 plugins {
     kotlin("jvm") version "1.7.20"
