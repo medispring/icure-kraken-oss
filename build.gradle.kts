@@ -184,7 +184,7 @@ dependencies {
 
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
-    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.22")
+    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.24")
 	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
 
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
@@ -243,7 +243,7 @@ dependencies {
     implementation(group = "javax.el", name = "javax.el-api", version = "3.0.0")
 
     implementation(group = "org.glassfish.jaxb", name = "jaxb-runtime", version = "2.3.1")
-    implementation(group = "org.glassfish", name = "javax.el", version = "3.0.0")
+    implementation(group = "org.glassfish", name = "javax.el", version = "3.0.1-b12")
     implementation(group = "org.reflections", name = "reflections", version = "0.9.12")
 
     // Commons
