@@ -18,11 +18,12 @@
 
 package org.taktik.icure.services.external.rest.v2.mapper.embed
 
+import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
 import org.taktik.icure.entities.embed.PlannedSending
 import org.taktik.icure.services.external.rest.v2.dto.embed.PlannedSendingDto
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface PlannedSendingV2Mapper {
 	fun map(plannedSendingDto: PlannedSendingDto): PlannedSending
 	fun map(plannedSending: PlannedSending): PlannedSendingDto

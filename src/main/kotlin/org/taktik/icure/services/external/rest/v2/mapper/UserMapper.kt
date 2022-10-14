@@ -25,11 +25,10 @@ import org.mapstruct.Mappings
 import org.taktik.icure.entities.User
 import org.taktik.icure.services.external.rest.v2.dto.UserDto
 import org.taktik.icure.services.external.rest.v2.mapper.base.PropertyStubV2Mapper
-import org.taktik.icure.services.external.rest.v2.mapper.embed.DelegationTagV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.security.AuthenticationTokenV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.security.PermissionV2Mapper
 
-@Mapper(componentModel = "spring", uses = [PermissionV2Mapper::class, DelegationTagV2Mapper::class, PropertyStubV2Mapper::class, AuthenticationTokenV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = [PermissionV2Mapper::class, PropertyStubV2Mapper::class, AuthenticationTokenV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface UserV2Mapper {
 	@Mappings(
 		Mapping(target = "lastLoginDate", ignore = true),
@@ -42,10 +41,10 @@ interface UserV2Mapper {
 	fun map(userDto: UserDto): User
 
 	@Mappings(
-		Mapping(target = "passwordHash", expression = "java(user.getPasswordHash() != null ? \"*\" : null)"),
+		Mapping(target = "passwordHash", expression = "kotlin(user.passwordHash?.let { \"*\" })"),
 		Mapping(target = "secret", ignore = true),
-		Mapping(target = "applicationTokens", expression = "java(new java.util.HashMap<>())"),
-		Mapping(target = "authenticationTokens", expression = "java(new java.util.HashMap<>())")
+		Mapping(target = "applicationTokens", expression = "kotlin(emptyMap())"),
+		Mapping(target = "authenticationTokens", expression = "kotlin(emptyMap())")
 	)
 	fun map(user: User): UserDto
 }

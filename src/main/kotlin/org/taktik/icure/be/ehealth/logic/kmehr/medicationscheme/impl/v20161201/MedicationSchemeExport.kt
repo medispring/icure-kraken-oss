@@ -408,16 +408,18 @@ class MedicationSchemeExport(
 
 		var services = filters.resolve(f).toList().let { contactLogic.getServices(it) }.filter { s ->
 			s.endOfLife == null && //Not end of lifed
-				!((((s.status ?: 0) and 1) != 0) || s.tags?.any { it.type == "CD-LIFECYCLE" && (it.code == "inactive" || it.code == "stopped") }) && //Inactive
+				!((((s.status ?: 0) and 1) != 0) || s.tags.any { it.type == "CD-LIFECYCLE" && (it.code == "inactive" || it.code == "stopped") }) && //Inactive
 				(s.content.values.any { null != (it.binaryValue ?: it.booleanValue ?: it.documentId ?: it.instantValue ?: it.measureValue ?: it.medicationValue) || it.stringValue?.length ?: 0 > 0 } || s.encryptedContent?.length ?: 0 > 0 || s.encryptedSelf?.length ?: 0 > 0) //And content
 		}.toList()
 
 		val toBeDecryptedServices = services?.filter { it.encryptedContent?.length ?: 0 > 0 || it.encryptedSelf?.length ?: 0 > 0 }?.toList()
 
-		return if (decryptor != null && toBeDecryptedServices?.size > 0) {
-			val decryptedServices = decryptor.decrypt(toBeDecryptedServices?.map { serviceMapper.map(it) }, ServiceDto::class.java).map { serviceMapper.map(it) }
-			services.map { if (toBeDecryptedServices.contains(it)) decryptedServices[toBeDecryptedServices.indexOf(it)] else it }
-		} else services
+		return toBeDecryptedServices?. let { tbds ->
+			if (decryptor != null && tbds.isNotEmpty()) {
+				val decryptedServices = decryptor.decrypt(tbds.map { serviceMapper.map(it) }, ServiceDto::class.java).map { serviceMapper.map(it) }
+				services.map { if (toBeDecryptedServices.contains(it)) decryptedServices[toBeDecryptedServices.indexOf(it)] else it }
+			} else services
+		} ?: services
 	}
 
 	override fun addServiceCodesAndTags(svc: Service, item: ItemType, skipCdItem: Boolean, restrictedTypes: List<String>?, uniqueTypes: List<String>?, excludedTypes: List<String>?) {

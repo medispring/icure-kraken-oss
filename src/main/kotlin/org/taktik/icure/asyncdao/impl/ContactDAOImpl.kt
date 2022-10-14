@@ -180,8 +180,6 @@ class ContactDAOImpl(
 		emitAll(relink(result))
 	}
 
-	@ExperimentalCoroutinesApi
-	@FlowPreview
 	@View(name = "service_by_linked_id", map = "classpath:js/contact/Service_by_linked_id.js")
 	override fun findServiceIdsByIdQualifiedLink(ids: List<String>, linkType: String?): Flow<String> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
@@ -207,8 +205,6 @@ class ContactDAOImpl(
 		emitAll(client.queryView<String, String>(viewQuery).mapNotNull { it.value })
 	}
 
-	@ExperimentalCoroutinesApi
-	@FlowPreview
 	@View(name = "service_by_association_id", map = "classpath:js/contact/Service_by_association_id.js")
 	override fun findServiceIdsByAssociationId(associationId: String) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)

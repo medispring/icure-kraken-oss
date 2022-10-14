@@ -37,5 +37,8 @@ interface RoleV2Mapper {
 		Mapping(target = "revisionsInfo", ignore = true)
 	)
 	fun map(roleDto: RoleDto): Role
+	@Mappings(
+		Mapping(target = "parents", ignore = true),
+	)
 	fun map(role: Role): RoleDto
 }

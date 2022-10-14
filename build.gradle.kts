@@ -7,17 +7,28 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import java.text.SimpleDateFormat
 import java.util.*
+import com.google.devtools.ksp.gradle.KspTask
 
 val ktlint by configurations.creating
 
 val repoUsername: String by project
 val repoPassword: String by project
 val mavenReleasesRepository: String by project
+val kmapVersion = "0.1.52-main.8d4a565b58"
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.4.32"
+    kotlin("jvm") version "1.7.20"
+    id("org.sonarqube") version "3.3"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
     `maven-publish`
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "icure-io_icure-kotlin-sdk")
+        property("sonar.organization", "icure-io")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 buildscript {
@@ -29,8 +40,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.13")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-        classpath("org.jetbrains.kotlin:kotlin-allopen:1.4.32")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:1.7.20")
         classpath("com.taktik.gradle:gradle-plugin-docker-java:2.1.4")
         classpath("com.taktik.gradle:gradle-plugin-git-version:2.0.4")
     }
@@ -53,6 +64,7 @@ java {
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
     maven { url = uri("https://maven.taktik.be/content/groups/public") }
     maven { url = uri("https://www.e-contract.be/maven2/") }
@@ -61,6 +73,37 @@ repositories {
 
 apply(plugin = "kotlin")
 apply(plugin = "maven-publish")
+
+tasks.register("KspPreCheck") {
+	inputs.dir("src/main/kotlin/org/taktik/icure/domain")
+	inputs.dir("src/main/kotlin/org/taktik/icure/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/entities")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v1/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v1/mapper")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/dto")
+	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/mapper")
+	outputs.upToDateWhen{ true }
+	doLast {
+		println("Checking for modifications in mappers")
+	}
+}
+
+tasks.withType<KspTask> {
+	dependsOn("KspPreCheck")
+}
+
+// KSP doesn't like incremental compiling
+// If the KspPreCheck task is-up-to date, then it means that the annotated files were not modified
+// So the KSP can be disabled
+gradle.taskGraph.whenReady {
+
+	gradle.taskGraph.beforeTask {
+		if (this.name == "kspKotlin") {
+			this.enabled = tasks.asMap["KspPreCheck"]?.state?.upToDate?.not() ?: true
+		}
+	}
+
+}
 
 tasks.withType<Test> {
     useJUnitPlatform()
@@ -126,21 +169,31 @@ configurations {
     }
 }
 
+kotlin {
+    sourceSets {
+        main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+    }
+}
+
+
 dependencies {
-    api("com.github.pozo:mapstruct-kotlin:1.3.1.2")
-    kapt("com.github.pozo:mapstruct-kotlin-processor:1.3.1.2")
+    implementation(group = "io.icure", name = "kmap", version = kmapVersion)
+    ksp(group = "io.icure", name = "kmap", version = kmapVersion)
 
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
-    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.22")
+    implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.24")
+	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
 
-    implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.4.32")
-    implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.4.32")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.4.3")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version = "1.4.3")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version = "1.4.3")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version = "1.4.3")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version = "0.3")
+    implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
+    implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.6.21")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.1")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version = "1.6.1")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version = "1.6.1")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version = "1.6.1")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version = "0.3.5")
 
     //Jackson
 	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.7")
@@ -151,7 +204,9 @@ dependencies {
     //Krouch
     implementation(group = "org.taktik.couchdb", name = "krouch", version = "main-1.0.2-111-g34b8dc36d9")
     implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
+    implementation(group = "io.icure", name = "mapper-processor", version = "0.1.1-32d45af2a6")
 
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-mail", version = "2.5.5")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-webflux", version = "2.5.14")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-security", version = "2.5.14")
 	implementation(group = "org.springframework.boot", name= "spring-boot-starter-cache", version = "2.5.14")
@@ -166,16 +221,16 @@ dependencies {
     implementation(group = "org.hibernate.validator", name = "hibernate-validator-annotation-processor", version = "6.1.5.Final")
     implementation(group = "org.hibernate.validator", name = "hibernate-validator-cdi", version = "6.1.5.Final")
 
-    implementation(group = "com.github.ben-manes.caffeine", name = "caffeine", version = "3.0.4")
+    implementation(group = "com.github.ben-manes.caffeine", name = "caffeine", version = "3.0.6")
 
     // Logging
-    implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.9")
-    implementation(group = "ch.qos.logback", name = "logback-access", version = "1.2.9")
+    implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.11")
+    implementation(group = "ch.qos.logback", name = "logback-access", version = "1.2.11")
 
-    implementation(group = "org.slf4j", name = "slf4j-api", version = "1.7.32")
+    implementation(group = "org.slf4j", name = "slf4j-api", version = "1.7.36")
     implementation(group = "org.slf4j", name = "jul-to-slf4j", version = "1.7.32")
     implementation(group = "org.slf4j", name = "jcl-over-slf4j", version = "1.7.32")
-    implementation(group = "org.slf4j", name = "log4j-over-slf4j", version = "1.7.32")
+    implementation(group = "org.slf4j", name = "log4j-over-slf4j", version = "1.7.36")
 
     // Java Commons
     implementation(group = "org.taktik.commons", name = "commons-uti", version = "1.0")
@@ -183,16 +238,16 @@ dependencies {
     // APIs
     implementation(group = "javax.servlet", name = "javax.servlet-api", version = "3.1.0")
     implementation(group = "javax.annotation", name = "jsr250-api", version = "1.0")
-    implementation(group = "javax.activation", name = "activation", version = "1.1")
+    implementation(group = "javax.activation", name = "activation", version = "1.1.1")
     implementation(group = "javax.xml.bind", name = "jaxb-api", version = "2.3.1")
     implementation(group = "javax.el", name = "javax.el-api", version = "3.0.0")
 
     implementation(group = "org.glassfish.jaxb", name = "jaxb-runtime", version = "2.3.1")
-    implementation(group = "org.glassfish", name = "javax.el", version = "3.0.0")
+    implementation(group = "org.glassfish", name = "javax.el", version = "3.0.1-b12")
     implementation(group = "org.reflections", name = "reflections", version = "0.9.12")
 
     // Commons
-    implementation(group = "com.google.guava", name = "guava", version = "30.1.1-jre")
+    implementation(group = "com.google.guava", name = "guava", version = "31.1-jre")
     implementation(group = "commons-io", name = "commons-io", version = "2.11.0")
     implementation(group = "org.apache.commons", name = "commons-lang3", version = "3.12.0")
     implementation(group = "org.apache.commons", name = "commons-compress", version = "1.21")
@@ -200,14 +255,14 @@ dependencies {
     implementation(group = "commons-beanutils", name = "commons-beanutils", version = "1.9.4")
 
     // Bouncy Castle
-    implementation(group = "org.bouncycastle", name = "bcprov-jdk15on", version = "1.69")
-    implementation(group = "org.bouncycastle", name = "bcmail-jdk15on", version = "1.69")
+    implementation(group = "org.bouncycastle", name = "bcprov-jdk15on", version = "1.70")
+    implementation(group = "org.bouncycastle", name = "bcmail-jdk15on", version = "1.70")
 
     //2FA
     implementation(group = "org.jboss.aerogear", name = "aerogear-otp-java", version = "1.0.0")
 
     // Swagger
-    implementation(group = "org.springdoc", name = "springdoc-openapi-webflux-ui", version = "1.5.13")
+    implementation(group = "org.springdoc", name = "springdoc-openapi-webflux-ui", version = "1.6.7")
     implementation(group = "org.springdoc", name = "springdoc-openapi-kotlin", version = "1.5.13")
 
     //Saxon
@@ -304,3 +359,8 @@ publishing {
         }
     }
 }
+
+tasks.withType<JavaCompile>().configureEach {
+    options.isIncremental = true
+}
+

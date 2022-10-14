@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.icure.asyncjacksonhttpclient.net.web.WebClient
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.apache.http.client.utils.URIBuilder
 import org.springframework.cache.caffeine.CaffeineCache
 import org.taktik.couchdb.Client
@@ -40,7 +39,7 @@ class CouchDbDispatcher(
 	private val password: String,
 	private val createdReplicasIfNotExists: Int? = null
 ) {
-	@ExperimentalCoroutinesApi
+
 	private val connectors = AsyncSafeCache<CouchDbConnectorReference, Client>(
 		CaffeineCache(
 			"Connectors",
@@ -51,7 +50,6 @@ class CouchDbDispatcher(
 		)
 	)
 
-	@ExperimentalCoroutinesApi
 	private suspend fun attemptConnection(dbInstanceUrl: URI, trials: Int): Client = try {
 		connectors.get(
 			CouchDbConnectorReference(dbInstanceUrl.toString()),
@@ -71,7 +69,6 @@ class CouchDbDispatcher(
 		if (trials > 1) attemptConnection(dbInstanceUrl, trials - 1) else throw e
 	}
 
-	@ExperimentalCoroutinesApi
 	suspend fun getClient(dbInstanceUrl: URI, retry: Int = 5) = attemptConnection(dbInstanceUrl, retry)
 
 	private data class CouchDbConnectorReference(val dbInstanceUrl: String)

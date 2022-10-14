@@ -6,7 +6,7 @@ map = function(doc) {
                 atc.code && (atcs[atc.code] = true)
             })
         })
-        Object.keys(atcs).forEach(function (atcCode) {
+        Object.keys(atcs).forEach(function(atcCode) {
             emit(atcCode, 1)
         })
     }

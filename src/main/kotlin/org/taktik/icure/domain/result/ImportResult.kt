@@ -18,7 +18,7 @@
 
 package org.taktik.icure.domain.result
 
-import org.taktik.icure.dto.common.MimeAttachment
+import org.taktik.icure.dto.result.MimeAttachment
 import org.taktik.icure.entities.Contact
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.Form

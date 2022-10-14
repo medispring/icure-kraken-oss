@@ -49,7 +49,6 @@ import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.InsuranceLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
-import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic
 import org.taktik.icure.asynclogic.objectstorage.DataAttachmentModificationLogic.DataAttachmentChange
 import org.taktik.icure.be.ehealth.dto.kmehr.v20170901.Utils
 import org.taktik.icure.be.ehealth.logic.kmehr.validNihiiOrNull
@@ -58,7 +57,7 @@ import org.taktik.icure.db.StringUtils
 import org.taktik.icure.domain.mapping.ImportMapping
 import org.taktik.icure.domain.result.CheckSMFPatientResult
 import org.taktik.icure.domain.result.ImportResult
-import org.taktik.icure.dto.common.MimeAttachment
+import org.taktik.icure.dto.result.MimeAttachment
 import org.taktik.icure.entities.Contact
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.Form
@@ -364,9 +363,7 @@ class SoftwareMedicalFileImport(
 			lnk.mediatype?.value()?.let {
 				v.attachments.put(
 					documentId,
-					MimeAttachment().apply {
-						data = lnk.value
-					}
+					MimeAttachment(lnk.value)
 				)
 			}
 

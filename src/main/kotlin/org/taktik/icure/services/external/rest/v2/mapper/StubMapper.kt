@@ -29,9 +29,10 @@ import org.taktik.icure.entities.HealthElement
 import org.taktik.icure.entities.Invoice
 import org.taktik.icure.entities.Message
 import org.taktik.icure.services.external.rest.v2.dto.IcureStubDto
+import org.taktik.icure.services.external.rest.v2.mapper.base.CodeStubV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.DelegationV2Mapper
 
-@Mapper(componentModel = "spring", uses = [DelegationV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = [DelegationV2Mapper::class, CodeStubV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface StubV2Mapper {
 	fun mapToStub(contact: Contact): IcureStubDto
 	fun mapToStub(calendarItem: CalendarItem): IcureStubDto

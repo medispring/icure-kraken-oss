@@ -70,6 +70,7 @@ class HealthcarePartyLogicImpl(
 		emitAll(healthcarePartyDAO.listHealthcareParties(searchString, offset, limit))
 	}
 
+	@Deprecated("A HCP may now have multiple AES Keys. Use getAesExchangeKeysForDelegate instead")
 	override suspend fun getHcPartyKeysForDelegate(healthcarePartyId: String): Map<String, String> {
 		return healthcarePartyDAO.getHcPartyKeysForDelegate(healthcarePartyId)
 	}
