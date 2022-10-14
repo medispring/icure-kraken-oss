@@ -88,7 +88,7 @@ class FormTemplateLogicImpl(
 			val formColumns = section.formColumns
 			formColumns.forEach { column ->
 				val formDataList = column.formDataList
-				formDataList.forEach { formData -> fieldNames.add(formData.name) }
+				formDataList.forEach { formData -> formData.name?.let { fieldNames.add(it) } }
 			}
 		}
 		return fieldNames

@@ -18,11 +18,12 @@
 
 package org.taktik.icure.services.external.rest.v2.mapper.embed
 
+import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
 import org.taktik.icure.entities.embed.Insurability
 import org.taktik.icure.services.external.rest.v2.dto.embed.InsurabilityDto
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface InsurabilityV2Mapper {
 	fun map(insurabilityDto: InsurabilityDto): Insurability
 	fun map(insurability: Insurability): InsurabilityDto

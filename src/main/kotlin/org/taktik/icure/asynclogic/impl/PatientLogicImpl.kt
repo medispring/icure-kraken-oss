@@ -469,6 +469,7 @@ class PatientLogicImpl(
 			}
 		}
 
+	@Deprecated("A DataOwner may now have multiple AES Keys. Use getAesExchangeKeysForDelegate instead")
 	override suspend fun getHcPartyKeysForDelegate(healthcarePartyId: String): Map<String, String> {
 		return patientDAO.getHcPartyKeysForDelegate(healthcarePartyId)
 	}

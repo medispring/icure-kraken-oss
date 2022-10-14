@@ -141,7 +141,7 @@ class IncapacityExport(
 				this.patient.profession = null
 				this.patient.telecoms.clear()
 			} else if (!job.isNullOrBlank()) {
-				if(this.patient.profession == null){
+				if (this.patient.profession == null) {
 					this.patient.profession = ProfessionType()
 				}
 				this.patient.profession.text = TextType().apply {
@@ -159,7 +159,7 @@ class IncapacityExport(
 			this.patient.birthlocation = null
 			this.patient.deathlocation = null
 			if (diagnoseServices.isEmpty()) {
-				this.patient.telecoms.clear();
+				this.patient.telecoms.clear()
 			}
 		}.also { folder ->
 			var itemsIdx = 1

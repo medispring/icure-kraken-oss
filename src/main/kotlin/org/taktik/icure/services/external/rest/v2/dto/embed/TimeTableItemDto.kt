@@ -32,7 +32,10 @@ import com.github.pozo.KotlinBuilder
  */
 
 data class TimeTableItemDto(
-	val rrule: String? =null,
+	val rrule: String? = null,
+	@Deprecated("Will be replaced by rrule") val days: List<String> = emptyList(),
+	@Deprecated("Will be replaced by rrule") val recurrenceTypes: List<String> = emptyList(),
+
 	val hours: List<TimeTableHourDto> = emptyList(),
 	val calendarItemTypeId: String? = null,
 	val homeVisit: Boolean = false,

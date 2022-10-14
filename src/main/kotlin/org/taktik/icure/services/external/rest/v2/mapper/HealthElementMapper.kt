@@ -25,13 +25,13 @@ import org.mapstruct.Mappings
 import org.taktik.icure.entities.HealthElement
 import org.taktik.icure.services.external.rest.v2.dto.HealthElementDto
 import org.taktik.icure.services.external.rest.v2.mapper.base.CodeStubV2Mapper
+import org.taktik.icure.services.external.rest.v2.mapper.base.IdentifierV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.CareTeamMemberV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.DelegationV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.EpisodeV2Mapper
-import org.taktik.icure.services.external.rest.v2.mapper.embed.LateralityV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.PlanOfActionV2Mapper
 
-@Mapper(componentModel = "spring", uses = [LateralityV2Mapper::class, PlanOfActionV2Mapper::class, EpisodeV2Mapper::class, CodeStubV2Mapper::class, DelegationV2Mapper::class, CareTeamMemberV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = [IdentifierV2Mapper::class, PlanOfActionV2Mapper::class, EpisodeV2Mapper::class, CodeStubV2Mapper::class, DelegationV2Mapper::class, CareTeamMemberV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface HealthElementV2Mapper {
 	@Mappings(
 		Mapping(target = "attachments", ignore = true),

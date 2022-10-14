@@ -28,20 +28,14 @@ import org.taktik.icure.services.external.rest.v2.mapper.base.CodeStubV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.DataAttachmentV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.DelegationV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.embed.DeletedAttachmentV2Mapper
-import org.taktik.icure.services.external.rest.v2.mapper.embed.DocumentLocationV2Mapper
-import org.taktik.icure.services.external.rest.v2.mapper.embed.DocumentStatusV2Mapper
-import org.taktik.icure.services.external.rest.v2.mapper.embed.DocumentTypeV2Mapper
 
 @Mapper(
 	componentModel = "spring",
 	uses = [
-		DocumentTypeV2Mapper::class,
-		DocumentLocationV2Mapper::class,
 		CodeStubV2Mapper::class,
-		DelegationV2Mapper::class,
-		DocumentStatusV2Mapper::class,
 		DataAttachmentV2Mapper::class,
-		DeletedAttachmentV2Mapper::class
+		DeletedAttachmentV2Mapper::class,
+		DelegationV2Mapper::class,
 	],
 	injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )

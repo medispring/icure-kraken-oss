@@ -20,7 +20,6 @@ package org.taktik.icure.asyncdao.impl
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
@@ -272,7 +271,6 @@ class CodeDAOImpl(
 
 	// Recursive function to filter results by version
 	// If the filtered results are not enough to fill a page, it does the recusive step
-	@OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 	fun findCodesByLabel(from: ComplexKey, to: ComplexKey, version: String?, viewName: String, mapIndex: Int, paginationOffset: PaginationOffset<List<String?>>, extensionFactor: Float, prevTotalCount: Int, isContinue: Boolean): Flow<ViewQueryResultEvent> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val extendedLimit = (paginationOffset.limit * extensionFactor).toInt()
@@ -403,8 +401,6 @@ class CodeDAOImpl(
 		return findCodesByLabel(from, to, version, "by_language_label", 2, paginationOffset, 1f, 0, false)
 	}
 
-	@ExperimentalCoroutinesApi
-	@FlowPreview
 	@View(name = "by_language_type_label", map = "classpath:js/code/By_language_type_label.js")
 	override fun findCodesByLabel(region: String?, language: String?, type: String?, label: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>): Flow<ViewQueryResultEvent> {
 		val sanitizedLabel = label?.let { StringUtils.sanitizeString(it) }
@@ -425,8 +421,6 @@ class CodeDAOImpl(
 		return findCodesByLabel(from, to, version, "by_language_type_label", 3, paginationOffset, 1f, 0, false)
 	}
 
-	@ExperimentalCoroutinesApi
-	@FlowPreview
 	@View(name = "by_qualifiedlink_id", map = "classpath:js/code/By_qualifiedlink_id.js")
 	override fun findCodesByQualifiedLinkId(region: String?, linkType: String, linkedId: String?, paginationOffset: PaginationOffset<List<String>>): Flow<ViewQueryResultEvent> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
@@ -555,7 +549,6 @@ class CodeDAOImpl(
 
 	override suspend fun isValid(codeType: String, codeCode: String, codeVersion: String?) = listCodesBy(codeType, codeCode, codeVersion).firstOrNull() != null
 
-	@InternalCoroutinesApi
 	override suspend fun getCodeByLabel(region: String, label: String, ofType: String, labelLang: List<String>): Code? {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val sanitizedLabel = label.let { StringUtils.sanitizeString(it) }

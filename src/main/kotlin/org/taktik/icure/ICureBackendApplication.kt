@@ -81,6 +81,7 @@ import org.taktik.icure.utils.suspendRetry
 		"org.taktik.icure.be.format.logic",
 		"org.taktik.icure.properties",
 		"org.taktik.icure.services.external.http",
+		"org.taktik.icure.services.external.rest.mapper.utils",
 		"org.taktik.icure.services.external.rest.v1.controllers",
 		"org.taktik.icure.services.external.rest.v1.mapper",
 		"org.taktik.icure.services.external.rest.v1.wscontrollers",

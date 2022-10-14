@@ -23,7 +23,9 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
 import org.taktik.icure.domain.result.ImportResult
+import org.taktik.icure.dto.result.MimeAttachment
 import org.taktik.icure.services.external.rest.v2.dto.ImportResultDto
+import org.taktik.icure.services.external.rest.v2.dto.base.MimeAttachmentDto
 import org.taktik.icure.services.external.rest.v2.mapper.ContactV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.DocumentV2Mapper
 import org.taktik.icure.services.external.rest.v2.mapper.FormV2Mapper
@@ -39,4 +41,6 @@ interface ImportResultV2Mapper {
 	)
 	fun map(importResultDto: ImportResultDto): ImportResult
 	fun map(importResult: ImportResult): ImportResultDto
+	fun map(mimeAttachmentDto: MimeAttachmentDto): MimeAttachment
+	fun map(mimeAttachment: MimeAttachment): MimeAttachmentDto
 }

@@ -22,7 +22,6 @@ import java.io.Serializable
 import javax.servlet.http.HttpSession
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import kotlinx.coroutines.reactive.awaitSingleOrNull
 import org.slf4j.LoggerFactory
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -134,10 +133,10 @@ class AsyncSessionLogicImpl(
 		const val SESSION_LOCALE_ATTRIBUTE = "locale"
 
 		private suspend fun getCurrentAuthentication() =
-			loadSecurityContext()?.map { it.authentication }?.awaitSingleOrNull()
+			loadSecurityContext()?.map { it.authentication }?.awaitFirstOrNull()
 
 		private suspend fun invalidateCurrentAuthentication() {
-			loadSecurityContext()?.map { it.authentication.isAuthenticated = false }?.awaitSingleOrNull()
+			loadSecurityContext()?.map { it.authentication.isAuthenticated = false }?.awaitFirstOrNull()
 				?: throw AuthenticationServiceException("Could not find authentication object in ReactorContext")
 		}
 
