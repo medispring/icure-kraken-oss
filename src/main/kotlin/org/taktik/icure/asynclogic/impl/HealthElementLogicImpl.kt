@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.toSet
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.taktik.couchdb.DocIdentifier
+import org.taktik.couchdb.TotalCount
 import org.taktik.couchdb.ViewQueryResultEvent
 import org.taktik.couchdb.entity.Option
 import org.taktik.couchdb.id.UUIDGenerator
@@ -184,6 +185,7 @@ class HealthElementLogicImpl(
 				supplier = { healthElementIds: Collection<String> -> healthElementDAO.findHealthElementsByIds(healthElementIds.asFlow()) },
 				startDocumentId = paginationOffset.startDocumentId
 			).forEach { emit(it) }
+			emit(TotalCount(ids.size))
 		}
 
 	companion object {

@@ -21,12 +21,15 @@ package org.taktik.icure.asyncdao.impl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.transform
 import org.springframework.beans.factory.annotation.Qualifier
@@ -51,9 +54,19 @@ data class QueryResultAccumulator(
 	val seenElements: Int = 0,
 	val sentElements: Int = 0,
 	val elementsFound: Int? = null,
-	val offset: Int? = null,
 	val toEmit: ViewQueryResultEvent? = null,
-	val lastVisited: ViewRowWithDoc<*, *, *>? = null
+	val lastVisited: ViewRowWithDoc<*, *, *>? = null,
+	val offset: Int? = null
+)
+
+data class ResultsWithAccumulator(
+	val results: Map<String, ViewRowWithDoc<*,*,*>> = mapOf(),
+	val accumulator: QueryResultAccumulator = QueryResultAccumulator()
+)
+
+data class CodeAccumulator(
+	val code: Code? = null,
+	val toEmit: Code? = null
 )
 
 @Repository("codeDAO")
@@ -113,6 +126,7 @@ class CodeDAOImpl(
 	@View(name = "by_region_type_code_version", map = "classpath:js/code/By_region_type_code_version.js", reduce = "_count")
 	override fun listCodesBy(region: String?, type: String?, code: String?, version: String?): Flow<Code> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		var lastCode: Code? = null
 		emitAll(
 			client.queryViewIncludeDocsNoValue<Array<String>, Code>(
 				createQuery(client, "by_region_type_code_version")
@@ -123,7 +137,7 @@ class CodeDAOImpl(
 							region ?: SMALLEST_CHAR,
 							type ?: SMALLEST_CHAR,
 							code ?: SMALLEST_CHAR,
-							version ?: SMALLEST_CHAR
+							if (version == null || version == "latest") SMALLEST_CHAR else version
 						)
 					)
 					.endKey(
@@ -134,8 +148,23 @@ class CodeDAOImpl(
 							version ?: ComplexKey.emptyObject()
 						)
 					)
-			).map { it.doc }
-
+			).map {
+				it.doc
+			}.let { flw ->
+				if (version == "latest") {
+					flw.scan(CodeAccumulator()) { acc, code ->
+						acc.code?.let {
+							lastCode = code
+							if (code.type != it.type || code.code != it.code) CodeAccumulator(code, it)
+							else CodeAccumulator(code)
+						} ?: CodeAccumulator(code)
+					}.mapNotNull{
+						it.toEmit
+					}
+				} else flw
+			}.onCompletion {
+				if (lastCode != null) emit(lastCode!!)
+			}
 		)
 	}
 
@@ -153,29 +182,7 @@ class CodeDAOImpl(
 		)
 	}
 
-	override fun findCodesBy(region: String?, type: String?, code: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>): Flow<ViewQueryResultEvent> = flow {
-		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-
-		val from = ComplexKey.of(region, type, code, version)
-		val to = ComplexKey.of(
-			region ?: ComplexKey.emptyObject(),
-			type ?: ComplexKey.emptyObject(),
-			if (code == null) ComplexKey.emptyObject() else code + "\ufff0",
-			if (version == null) ComplexKey.emptyObject() else version + "\ufff0"
-		)
-
-		val viewQuery = pagedViewQuery<Code, ComplexKey>(
-			client,
-			"by_region_type_code_version",
-			from,
-			to,
-			paginationOffset.toPaginationOffset { ComplexKey.of(*it.toTypedArray()) },
-			false
-		)
-		emitAll(client.queryView(viewQuery, Array<String>::class.java, String::class.java, Code::class.java))
-	}
-
-	fun accumulateLatestVersionOrNull(acc: QueryResultAccumulator, row: ViewRowWithDoc<*, *, *>, limit: Int): QueryResultAccumulator {
+	fun accumulateLatestVersionOrNull(acc: QueryResultAccumulator, row: ViewRowWithDoc<*, *, *>, limit: Int,): QueryResultAccumulator {
 		return if (acc.lastVisited != null && // If I have something to emit
 			acc.sentElements < limit && // And I still have space on the page
 			(
@@ -183,17 +190,83 @@ class CodeDAOImpl(
 					(acc.lastVisited.doc as Code).type != (row.doc as Code).type
 				)
 		)
-			QueryResultAccumulator(acc.seenElements + 1, acc.sentElements + 1, acc.elementsFound, acc.offset, acc.lastVisited, row)
-		else QueryResultAccumulator(acc.seenElements + 1, acc.sentElements, acc.elementsFound, acc.offset, null, row)
+			QueryResultAccumulator(acc.seenElements + 1, acc.sentElements + 1, acc.elementsFound, acc.lastVisited, row, acc.offset)
+		else QueryResultAccumulator(acc.seenElements + 1, acc.sentElements, acc.elementsFound, null, row, acc.offset)
 	}
 
-	fun accumulateVersionOrNull(acc: QueryResultAccumulator, row: ViewRowWithDoc<*, *, *>, limit: Int, version: String, skip: Boolean): QueryResultAccumulator {
+	fun accumulateVersionOrNull(acc: QueryResultAccumulator, row: ViewRowWithDoc<*, *, *>, version: String, skip: Boolean): QueryResultAccumulator {
 		return if ((acc.lastVisited != null || !skip) && // If it is the second or later call, I have to skip the first result (otherwise is repeated)
-			(row.doc as Code).version == version && // And the version is correct
-			acc.sentElements < limit // And I still have space on the page
+			(row.doc as Code).version == version // And the version is correct
 		)
-			QueryResultAccumulator(acc.seenElements + 1, acc.sentElements + 1, acc.elementsFound, acc.offset, row, row)
-		else QueryResultAccumulator(acc.seenElements + 1, acc.sentElements, acc.elementsFound, acc.offset, null, row)
+			QueryResultAccumulator(acc.seenElements + 1, acc.sentElements + 1, acc.elementsFound, row, row)
+		else QueryResultAccumulator(acc.seenElements + 1, acc.sentElements, acc.elementsFound,null, row)
+	}
+
+	@ExperimentalCoroutinesApi
+	@FlowPreview
+	override fun findCodesBy(region: String?, type: String?, code: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>, extensionFactor: Float?): Flow<ViewQueryResultEvent> = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+
+		val from = ComplexKey.of(
+			region ?: SMALLEST_CHAR,
+			type ?: SMALLEST_CHAR,
+			code ?: SMALLEST_CHAR,
+			if (version == null || version == "latest") SMALLEST_CHAR else version
+		)
+		val to = ComplexKey.of(
+			region ?: ComplexKey.emptyObject(),
+			type ?: ComplexKey.emptyObject(),
+			if (code == null) ComplexKey.emptyObject() else if (version == null) code + "\ufff0" else code,
+			if (version == null || version == "latest") ComplexKey.emptyObject() else version + "\ufff0"
+		)
+
+		val extendedLimit = (paginationOffset.limit * ( extensionFactor ?: 1f) ).toInt()
+		val viewQuery = pagedViewQuery<Code, ComplexKey>(
+			client,
+			"by_region_type_code_version",
+			from,
+			to,
+			paginationOffset.toPaginationOffset { ComplexKey.of(*it.toTypedArray())}.copy(limit = extendedLimit),
+			false
+		)
+		var versionAccumulator = QueryResultAccumulator()
+		emitAll(
+			client.queryView(viewQuery, Array<String>::class.java, String::class.java, Code::class.java).let { flw ->
+				if (version == null || version != "latest") flw
+				else flw.scan(QueryResultAccumulator()) { acc, it ->
+					when (it) {
+						is ViewRowWithDoc<*, *, *> -> accumulateLatestVersionOrNull(acc, it, paginationOffset.limit)
+						is TotalCount -> QueryResultAccumulator(acc.seenElements, acc.sentElements, it.total, null, acc.lastVisited, acc.offset)
+						is Offset -> QueryResultAccumulator(acc.seenElements, acc.sentElements, acc.elementsFound, null, acc.lastVisited, it.offset)
+						else -> QueryResultAccumulator(acc.seenElements, acc.sentElements, acc.elementsFound,null, acc.lastVisited, acc.offset)
+					}
+				}.transform {
+					if (it.toEmit != null) emit(it.toEmit) // If I have something to emit, I emit it
+					versionAccumulator = it
+				}.onCompletion {
+					// If it viewed all the elements there can be more
+					// AND it did not fill the page
+					// it does the recursive call
+					if (versionAccumulator.seenElements >= extendedLimit && versionAccumulator.sentElements < paginationOffset.limit)
+						emitAll(
+							findCodesBy(
+								region,
+								type,
+								code,
+								version,
+								paginationOffset.copy(startKey = (versionAccumulator.lastVisited?.key as? Array<String>)?.toList(), startDocumentId = versionAccumulator.lastVisited?.id, limit = paginationOffset.limit - versionAccumulator.sentElements),
+								(if (versionAccumulator.seenElements == 0) ( extensionFactor ?: 1f) * 2 else (versionAccumulator.seenElements.toFloat() / versionAccumulator.sentElements)).coerceAtMost(100f)
+							)
+						)
+					else {
+						// If the version filter is latest and there are no more elements to visit and the page is not full, I emit the last element
+						if (versionAccumulator.lastVisited != null && versionAccumulator.sentElements < paginationOffset.limit)
+							emit(versionAccumulator.lastVisited as ViewQueryResultEvent) //If the version filter is "latest" then the last code must be always emitted
+						emit(TotalCount(versionAccumulator.elementsFound ?: 0))
+					}
+				}
+			}
+		)
 	}
 
 	// Recursive function to filter results by version
@@ -210,53 +283,101 @@ class CodeDAOImpl(
 			false
 		)
 
+		var versionAccumulator = QueryResultAccumulator()
 		emitAll(
 			client.queryView(viewQuery, Array<String>::class.java, String::class.java, Code::class.java).let { flw ->
-				if (version == null) flw
-				else flw.scan(QueryResultAccumulator()) { acc, it ->
-					when (it) {
-						is ViewRowWithDoc<*, *, *> -> {
-							if (version == "latest") accumulateLatestVersionOrNull(acc, it, paginationOffset.limit)
-							else accumulateVersionOrNull(acc, it, paginationOffset.limit, version, isContinue)
+				if (version == null) flw//If I have no version filter, I just return the flow
+				else {
+					val flowToEmit = if (version != "latest")
+						flw.scan(QueryResultAccumulator()) { acc, it ->
+							when (it) {
+								is ViewRowWithDoc<*, *, *> ->
+									if (acc.sentElements < paginationOffset.limit)
+										accumulateVersionOrNull(acc, it, version, isContinue)
+									else QueryResultAccumulator(acc.seenElements+1, acc.sentElements, acc.elementsFound, null, acc.lastVisited)
+								is TotalCount -> QueryResultAccumulator(acc.seenElements, acc.sentElements, it.total, null, acc.lastVisited)
+								else -> QueryResultAccumulator(acc.seenElements, acc.sentElements, acc.elementsFound, null, acc.lastVisited)
+							}
+						} else {
+						// Here I have to get all the latest version of the codes
+
+						//First, I iterate over the flow results and I keep only the latest version of each code
+						//NOTE: Codes are ordered lexicographically
+						val codeMap = flw.fold(ResultsWithAccumulator()) { acc, it ->
+							if (it is ViewRowWithDoc<*, *, *>) {
+								val currentCode = it.doc as Code
+								if (currentCode.type != null && currentCode.code != null)
+									acc.results["${currentCode.type}|${currentCode.code}"]?.let { oldRow ->
+										if ((oldRow.doc as Code).id.lowercase() >= currentCode.id.lowercase()) ResultsWithAccumulator(acc.results, QueryResultAccumulator(acc.accumulator.seenElements + 1))
+										else ResultsWithAccumulator(acc.results + ("${currentCode.type}|${currentCode.code}" to it), QueryResultAccumulator(acc.accumulator.seenElements + 1))
+									} ?: ResultsWithAccumulator(acc.results + ("${currentCode.type}|${currentCode.code}" to it), QueryResultAccumulator(acc.accumulator.seenElements + 1))
+								else acc
+							} else acc
 						}
-						is TotalCount -> QueryResultAccumulator(acc.seenElements, acc.sentElements, it.total, acc.offset, null, acc.lastVisited)
-						is Offset -> QueryResultAccumulator(acc.seenElements, acc.sentElements, acc.elementsFound, it.offset, null, acc.lastVisited)
-						else -> QueryResultAccumulator(acc.seenElements, acc.sentElements, acc.elementsFound, acc.offset, null, acc.lastVisited)
+						val orderedKeys = codeMap.results.keys.sorted()
+						val (startType, startCode) = orderedKeys.first().split('|')
+						val (endType, endCode) = orderedKeys.last().split('|')
+						// Then, I check If a more recent version of the code exists.
+						// If it wasn't in the previous result, it means that the new version does not match the label
+						val latestVersions = listCodeIdsByTypeCodeVersionInterval(
+							startType = startType,
+							startCode = startCode,
+							startVersion = null,
+							endType = endType,
+							endCode = endCode,
+							endVersion = null
+						).fold(mapOf<String, String>()) { acc, it ->
+							val (type, code, _) = it.split('|')
+							if (codeMap.results.containsKey("${type}|${code}")) {
+								acc["${type}|${code}"]?.let { oldCode ->
+									if (oldCode.lowercase() >= it.lowercase()) acc
+									else acc + ("${type}|${code}" to it)
+								} ?: (acc + ("${type}|${code}" to it))
+							} else acc
+						}
+						//Finally, I filter and emit the results
+						codeMap.results.keys.asFlow().scan(codeMap.accumulator) { acc, it ->
+							if (acc.sentElements < paginationOffset.limit) {
+								latestVersions[it]?.let { oldCode ->
+									val newCode = codeMap.results[it]?.doc as Code
+									//If this condition is true, it means that the code I found it is at its latest version AND the label matches the filter
+									// SO I want to emit it
+									if ( newCode.id == oldCode ) {
+										QueryResultAccumulator(acc.seenElements, acc.sentElements + 1, acc.elementsFound, codeMap.results[it]!!, codeMap.results[it])
+									} else acc.copy(toEmit = null)
+									// If the condition is false, I can be in one of 2 cases
+									// 1) The latest version of the code is in another page, so I want to emit it later
+									// 2) The label of the latest version of the code does not match the filter, so I do not want to emit it
+								}?: acc.copy(toEmit = null)
+							} else acc.copy(toEmit = null)
+						}
+
+					}
+
+					flowToEmit.transform {
+						if (it.toEmit != null) emit(it.toEmit) //If I have something to emit, I emit it
+						versionAccumulator = it
+					}.onCompletion {
+						// If it viewed all the elements there can be more
+						// AND it did not fill the page
+						// it does the recursive call
+						if (versionAccumulator.seenElements >= extendedLimit && versionAccumulator.sentElements < paginationOffset.limit)
+							emitAll(
+								findCodesByLabel(
+									from,
+									to,
+									version,
+									viewName,
+									mapIndex,
+									paginationOffset.copy(startKey = (versionAccumulator.lastVisited?.key as? Array<String>)?.toList(), startDocumentId = versionAccumulator.lastVisited?.id, limit = paginationOffset.limit - versionAccumulator.sentElements),
+									(if (versionAccumulator.seenElements == 0) extensionFactor * 2 else (versionAccumulator.seenElements.toFloat() / versionAccumulator.sentElements)).coerceAtMost(100f),
+									versionAccumulator.sentElements + prevTotalCount,
+									true
+								)
+							)
+						else emit(TotalCount(versionAccumulator.elementsFound ?: 0))
 					}
 				}
-					.transform {
-						if (it.toEmit != null) {
-							emit(it.toEmit)
-						} // If I have something to emit, I emit it
-
-						// Condition to check if I arrived at the end of the page
-						if (it.seenElements >= extendedLimit || (it.elementsFound != null && it.offset != null && it.seenElements >= (it.elementsFound - it.offset))) {
-
-							// If it viewed all the elements there can be more
-							// AND it did not fill the page
-							// it does the recursive call
-							if (it.seenElements >= extendedLimit && it.sentElements < paginationOffset.limit)
-								emitAll(
-									findCodesByLabel(
-										from,
-										to,
-										version,
-										viewName,
-										mapIndex,
-										paginationOffset.copy(startKey = (it.lastVisited?.key as? Array<String>)?.toList(), startDocumentId = it.lastVisited?.id, limit = paginationOffset.limit - it.sentElements),
-										(if (it.seenElements == 0) extensionFactor * 2 else (it.seenElements.toFloat() / it.sentElements)).coerceAtMost(100f),
-										it.sentElements + prevTotalCount,
-										true
-									)
-								)
-							else {
-								// If the version filter is latest and there are no more elements to visit and the page is not full, I emit the last element
-								if (version == "latest" && it.lastVisited != null && it.sentElements < paginationOffset.limit)
-									emit(it.lastVisited) //If the version filter is "latest" then the last code must be always emitted
-								emit(TotalCount(it.elementsFound ?: 0))
-							}
-						}
-					}
 			}
 		)
 	}

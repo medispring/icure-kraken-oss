@@ -28,7 +28,7 @@ interface CodeDAO : GenericDAO<Code> {
 	fun listCodesByRegionAndType(region: String?, type: String?): Flow<String>
 	fun listCodesBy(type: String?, code: String?, version: String?): Flow<Code>
 	fun listCodesBy(region: String?, type: String?, code: String?, version: String?): Flow<Code>
-	fun findCodesBy(region: String?, type: String?, code: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>): Flow<ViewQueryResultEvent>
+	fun findCodesBy(region: String?, type: String?, code: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>, extensionFactor: Float? = null): Flow<ViewQueryResultEvent>
 	fun findCodesByLabel(region: String?, language: String?, label: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>): Flow<ViewQueryResultEvent>
 	fun findCodesByLabel(region: String?, language: String?, type: String?, label: String?, version: String?, paginationOffset: PaginationOffset<List<String?>>): Flow<ViewQueryResultEvent>
 	fun listCodeIdsByLabel(region: String?, language: String?, label: String?): Flow<String>
