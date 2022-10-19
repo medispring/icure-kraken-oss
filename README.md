@@ -34,3 +34,20 @@ For controllers, logic and DAOs:
 | Get objects by ids            | getObjects     | POST /rest/v?/object/batch (ids pass in body)                                        |
 | Delete an object              | deleteObject   | DELETE /rest/v?/object/:id                                                           |
 | Delete objects                | deleteObjects  | POST /rest/v?/object/delete/batch (ids pass in body)                                 |
+
+## Migrating from Kotlin 1.4.32 to Kotlin 1.7.20
+
+To build the OSS Version of the Kraken for Kotlin version 1.7.20 you have to following steps:
+
+### Build and Run Using Gradle
+
+On IntelliJ, go to `Preferences > Build, Execution, Deployment > Build Tools > Gradle` and set both `Build and run using` and `Run tests using` option to "Gradle"
+
+![Build and run menu](readme/build_and_run_menu.png)
+
+### Run kspKotlin instead of kaptKotlin
+
+On the IntelliJ Gradle menu, you will now have the `kspKotlin` task instead of the `kaptKotlin` task.<br>
+This task will be automatically invoked during the build phase and will be skipped if the file that are needed for the automatic generation of classes were not modified.
+
+![Ksp tasks](readme/ksp_tasks.png)
