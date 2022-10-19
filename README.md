@@ -35,7 +35,7 @@ This task will be automatically invoked during the build phase and will be skipp
 ![Ksp tasks](readme/ksp_tasks.png)
 
 
-### Naming convention in this project
+## Naming convention in this project
 
 For controllers, logic and DAOs:
 
