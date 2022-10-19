@@ -1,5 +1,6 @@
 package org.taktik.icure.asynclogic.objectstorage.impl
 
+import java.io.File
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.AsynchronousFileChannel
@@ -11,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -19,11 +19,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
@@ -35,12 +34,12 @@ import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.utils.toByteArray
 
-interface ScheduledLocalObjectStorage<T : HasDataAttachments<T>> : LocalObjectStorage<T>, DisposableBean
+interface LocalObjectStorageBean<T : HasDataAttachments<T>> : LocalObjectStorage<T>, DisposableBean, InitializingBean
 
 private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 	private val objectStorageProperties: ObjectStorageProperties,
 	private val entityPath: String
-) : ScheduledLocalObjectStorage<T> {
+) : LocalObjectStorageBean<T> {
 	companion object {
 		private val log = LoggerFactory.getLogger(LocalObjectStorageImpl::class.java)
 	}
@@ -51,6 +50,13 @@ private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 	 * waiting on the job won't be affected.
 	 */
 	private val writeTasksScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+	override fun afterPropertiesSet() {
+		val cacheLocation = objectStorageProperties.cacheLocation
+		require(cacheLocation.isNotBlank() && File(cacheLocation).also { it.mkdirs() }.let { it.isDirectory && it.canRead() && it.canWrite() }) {
+			"cacheLocation=\"$cacheLocation\" must be a folder where the icure application has read/write access"
+		}
+	}
 
 	override fun destroy() {
 		writeTasksScope.cancel()
@@ -158,7 +164,7 @@ private class LocalObjectStorageImpl<T : HasDataAttachments<T>>(
 @Service
 class DocumentLocalObjectStorageImpl(
 	objectStorageProperties: ObjectStorageProperties
-) : DocumentLocalObjectStorage, ScheduledLocalObjectStorage<Document> by LocalObjectStorageImpl(
+) : DocumentLocalObjectStorage, LocalObjectStorageBean<Document> by LocalObjectStorageImpl(
 	objectStorageProperties,
 	"documents"
 )

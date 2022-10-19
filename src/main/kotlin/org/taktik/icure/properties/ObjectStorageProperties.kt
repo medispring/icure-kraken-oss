@@ -41,14 +41,5 @@ final data class ObjectStorageProperties(
 		require(migrationSizeLimit >= sizeLimit) {
 			"Migration size limit must be greater than or equal to sizeLimit"
 		}
-		try {
-			require(icureCloudUrl.isNotBlank()) { "icureCloudUrl can't be blank" }
-			URI(icureCloudUrl)
-		} catch (e: URISyntaxException) {
-			throw IllegalArgumentException("icureCloudUrl=\"$icureCloudUrl\" must be a valid uri", e)
-		}
-		require(cacheLocation.isNotBlank() && File(cacheLocation).also { it.mkdirs() }.let { it.isDirectory && it.canRead() && it.canWrite() }) {
-			"cacheLocation=\"$cacheLocation\" must be a folder where the icure application has read/write access"
-		}
 	}
 }
