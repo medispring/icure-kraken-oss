@@ -13,6 +13,11 @@ import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.utils.CloudAuthenticationLogic
 import org.taktik.icure.asynclogic.utils.InstallationConstantLogic
 
+/**
+ * Implementation of [CloudAuthenticationLogic] which uses iCure authentication tokens.
+ * This implementation only works if the synchronisation between the local couchdb instance
+ * and the cloud couchdb instance is properly set up.
+ */
 @Service
 class CloudAuthenticationLogicImpl(
 	private val installationConstantLogic: InstallationConstantLogic,

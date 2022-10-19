@@ -1,6 +1,7 @@
 package org.taktik.icure.asynclogic.objectstorage.impl
 
 import java.io.Serializable
+import java.lang.IllegalArgumentException
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.Base64
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asPublisher
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.http.HttpHeaders
@@ -41,12 +43,14 @@ import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Mono
 
+interface ObjectStorageClientBean<T : HasDataAttachments<T>> : ObjectStorageClient<T>, InitializingBean {}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 	private val objectStorageProperties: ObjectStorageProperties,
 	private val cloudAuthenticationLogic: CloudAuthenticationLogic,
 	override val entityGroupName: String
-) : ObjectStorageClient<T> {
+) : ObjectStorageClientBean<T> {
 	companion object {
 		private const val NEXT_BYTE_HEADER = "Next-Byte"
 		private val log = LoggerFactory.getLogger(ObjectStorageClientImpl::class.java)
@@ -59,6 +63,16 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 			.build()
 	}
 	private val nextBytesMap = ConcurrentHashMap<Pair<String, String>, Int>()
+
+	override fun afterPropertiesSet() {
+		val icureCloudUrl = objectStorageProperties.icureCloudUrl
+		try {
+			require(icureCloudUrl.isNotBlank()) { "icureCloudUrl can't be blank" }
+			URI(icureCloudUrl)
+		} catch (e: URISyntaxException) {
+			throw IllegalArgumentException("icureCloudUrl=\"$icureCloudUrl\" must be a valid uri", e)
+		}
+	}
 
 	override suspend fun upload(entity: T, attachmentId: String, content: Flow<DataBuffer>, userId: String): Boolean =
 		unsafeUpload(entity.id, attachmentId, content, userId)
@@ -185,7 +199,7 @@ private class ObjectStorageClientImpl<T : HasDataAttachments<T>>(
 class DocumentObjectStorageClientImpl(
 	objectStorageProperties: ObjectStorageProperties,
 	cloudAuthenticationLogic: CloudAuthenticationLogic
-) : DocumentObjectStorageClient, ObjectStorageClient<Document> by ObjectStorageClientImpl(
+) : DocumentObjectStorageClient, ObjectStorageClientBean<Document> by ObjectStorageClientImpl(
 	objectStorageProperties,
 	cloudAuthenticationLogic,
 	"documents"
