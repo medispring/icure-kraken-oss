@@ -1,14 +1,12 @@
 package org.taktik.icure.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 /**
  * Properties for external services such as icure-cloud for object storage.
  */
 @Component
-@Profile("app")
 @ConfigurationProperties("icure.externalservices")
 data class ExternalServicesProperties(
 	/**
