@@ -82,7 +82,7 @@ tasks.register("KspPreCheck") {
 	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v1/mapper")
 	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/dto")
 	inputs.dir("src/main/kotlin/org/taktik/icure/services/external/rest/v2/mapper")
-	outputs.upToDateWhen{ true }
+	outputs.dir("build/generated/ksp/main/kotlin")
 	doLast {
 		println("Checking for modifications in mappers")
 	}
