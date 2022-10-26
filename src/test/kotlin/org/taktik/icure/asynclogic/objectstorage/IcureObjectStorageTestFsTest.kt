@@ -181,7 +181,7 @@ fun StringSpec.testObjectSTorageWith(externalServicesProperties: ExternalService
 		}
 		// Task has completed
 		var clientCallCount = 0
-		while (eventsChannel.poll() != null) clientCallCount += 1
+		while (eventsChannel.tryReceive().getOrNull() != null) clientCallCount += 1
 		clientCallCount shouldBe 1
 		// Latest task is upload
 		icureObjectStorage.readAttachment(document1, attachment1).toByteArray(true) shouldContainExactly bytes1
