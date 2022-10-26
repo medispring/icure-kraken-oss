@@ -20,6 +20,7 @@ package org.taktik.icure.entities
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.github.pozo.KotlinBuilder
 import org.taktik.couchdb.entity.Attachment
 import org.taktik.icure.entities.base.CodeStub
@@ -42,6 +43,7 @@ import org.taktik.icure.entities.embed.PersonName
 import org.taktik.icure.entities.embed.RevisionInfo
 import org.taktik.icure.entities.embed.TelecomType
 import org.taktik.icure.entities.utils.MergeUtil.mergeListsDistinct
+import org.taktik.icure.handlers.JacksonLenientCollectionDeserializer
 import org.taktik.icure.utils.DynamicInitializer
 import org.taktik.icure.utils.invoke
 import org.taktik.icure.validation.AutoFix
@@ -138,7 +140,7 @@ data class HealthcareParty(
 	val statuses: Set<HealthcarePartyStatus> = emptySet(),
 	val statusHistory: List<HealthcarePartyHistoryStatus> = emptyList(),
 	val descr: Map<String, String>? = emptyMap(),
-	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) val specialityCodes: Set<CodeStub> = emptySet(), //Speciality codes, default is first
+	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) @JsonDeserialize(using = JacksonLenientCollectionDeserializer::class) val specialityCodes: Set<CodeStub> = emptySet(), //Speciality codes, default is first
 
 	val sendFormats: Map<TelecomType, String> = emptyMap(),
 	val notes: String? = null,
