@@ -37,7 +37,7 @@ class PatientByHcPartyAndAddressFilter(
 
 	override fun resolve(filter: PatientByHcPartyAndAddressFilter, context: Filters) = flow {
 		try {
-			emitAll(patientLogic.listPatientIdsByHcPartyAndAddressOnly(filter.searchString, filter.healthcarePartyId ?: getLoggedHealthCarePartyId(sessionLogic)))
+			emitAll(patientLogic.listPatientIdsByHcPartyAndAddressOnly(filter.searchString, filter.postalCode, filter.houseNumber, filter.healthcarePartyId ?: getLoggedHealthCarePartyId(sessionLogic)))
 		} catch (e: LoginException) {
 			throw IllegalArgumentException(e)
 		}

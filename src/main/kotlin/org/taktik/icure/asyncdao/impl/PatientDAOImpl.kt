@@ -264,8 +264,8 @@ class PatientDAOImpl(
 		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
 	}
 
-	@View(name = "by_hcparty_address", map = "classpath:js/patient/By_hcparty_address.js")
-	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, healthcarePartyId: String): Flow<String> = flow {
+	@View(name = "by_hcparty_address_postalcode_housenumber", map = "classpath:js/patient/By_hcparty_address_postalcode_housenumber.js")
+	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val startKey: ComplexKey
 		val endKey: ComplexKey
@@ -279,29 +279,10 @@ class PatientDAOImpl(
 			endKey = ComplexKey.of(healthcarePartyId, "\ufff0")
 		}
 
-		val viewQuery = createQuery(client, "by_hcparty_address").startKey(startKey).endKey(endKey).includeDocs(false)
-
-		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
-	}
-
-	@View(name = "by_hcparty_address_postalcode_housenumber", map = "classpath:js/patient/By_hcparty_address_postalcode_housenumber.js")
-	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> = flow {
-		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-		val startKey: ComplexKey
-		val endKey: ComplexKey
-
-		if (searchString != null) {
-			val csearchString = searchString.replace(" ".toRegex(), "").replace("\\W".toRegex(), "")
-			startKey = ComplexKey.of(healthcarePartyId, csearchString, postalCode, houseNumber)
-			endKey = ComplexKey.of(healthcarePartyId, csearchString + "\ufff0", postalCode, houseNumber)
-		} else {
-			startKey = ComplexKey.of(healthcarePartyId, null)
-			endKey = ComplexKey.of(healthcarePartyId, "\ufff0")
-		}
-
-		val viewQuery = createQuery(client, "by_hcparty_address").startKey(startKey).endKey(endKey).includeDocs(false)
-
-		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
+		val viewQuery = createQuery(client, "by_hcparty_address_postalcode_housenumber").startKey(startKey).endKey(endKey).includeDocs(false)
+		emitAll(client.queryView<Array<String>, String>(viewQuery).filter {
+			(houseNumber.isNullOrEmpty() || it.key?.get(3) == houseNumber)
+			&& (postalCode.isNullOrEmpty() || it.key?.get(2) == postalCode) }.mapNotNull { it.value })
 	}
 
 	override fun findPatientIdsByHcParty(healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent> = flow {
