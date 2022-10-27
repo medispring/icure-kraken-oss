@@ -56,7 +56,6 @@ import org.taktik.icure.entities.embed.Delegation
 import org.taktik.icure.entities.embed.Gender
 import org.taktik.icure.entities.embed.Identifier
 import org.taktik.icure.entities.embed.PatientHealthCareParty
-import org.taktik.icure.entities.embed.PostalCode
 import org.taktik.icure.entities.embed.ReferralPeriod
 import org.taktik.icure.exceptions.MissingRequirementsException
 import org.taktik.icure.services.external.rest.v1.dto.PatientDto
