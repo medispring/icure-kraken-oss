@@ -185,7 +185,6 @@ dependencies {
     implementation(group = "io.projectreactor", name = "reactor-core", version = "3.4.17")
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
     implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.24")
-	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
 
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.6.21")
@@ -278,7 +277,15 @@ dependencies {
     //Sendgrid
     implementation(group = "com.sendgrid", name = "sendgrid-java", version = "4.4.7")
 
-    ktlint("com.pinterest:ktlint:0.45.2") {
+	// JWT
+	implementation(group = "io.jsonwebtoken", name = "jjwt-api", version = "0.11.5")
+	implementation(group = "io.jsonwebtoken", name = "jjwt-impl", version = "0.11.5")
+	implementation(group = "io.jsonwebtoken", name = "jjwt-jackson", version = "0.11.5")
+
+	//Apple Silicon Compatibility
+	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
+
+	ktlint("com.pinterest:ktlint:0.45.2") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }

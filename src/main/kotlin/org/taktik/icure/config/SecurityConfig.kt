@@ -21,15 +21,22 @@ package org.taktik.icure.config
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.firewall.StrictHttpFirewall
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter
+import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler
+import org.springframework.security.web.server.authentication.ServerHttpBasicAuthenticationConverter
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository
 import org.springframework.security.web.server.util.matcher.AndServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher
@@ -42,6 +49,8 @@ import org.taktik.icure.security.CustomAuthenticationManager
 import org.taktik.icure.security.TokenWebExchangeMatcher
 import org.taktik.icure.security.UnauthorizedEntryPoint
 import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
+import org.taktik.icure.security.jwt.JwtAuthenticationConverter
+import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
 
 @ExperimentalCoroutinesApi
@@ -61,9 +70,10 @@ class SecurityConfig {
 		couchDbProperties: CouchDbProperties,
 		userDAO: UserDAO,
 		permissionLogic: PermissionLogic,
-		passwordEncoder: PasswordEncoder
+		passwordEncoder: PasswordEncoder,
+		jwtUtils: JwtUtils
 	) =
-		CustomAuthenticationManager(couchDbProperties, userDAO, permissionLogic, passwordEncoder)
+		CustomAuthenticationManager(couchDbProperties, userDAO, permissionLogic, passwordEncoder, jwtUtils = jwtUtils)
 }
 
 @ExperimentalCoroutinesApi
@@ -76,16 +86,14 @@ class SecurityConfigAdapter(
 	private val authenticationManager: CustomAuthenticationManager
 ) {
 
+	@Value("\${spring.session.enabled}")
+	private val sessionEnabled: Boolean = false
+
 	val log: Logger = LoggerFactory.getLogger(javaClass)
 
 	@Bean
 	fun securityWebFilterChain(http: ServerHttpSecurity, asyncCacheManager: AsyncCacheManager): SecurityWebFilterChain {
 		return http
-			.csrf().disable()
-			.httpBasic().authenticationEntryPoint(UnauthorizedEntryPoint()).securityContextRepository(WebSessionServerSecurityContextRepository())
-			//.securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) //See https://stackoverflow.com/questions/50954018/prevent-session-creation-when-using-basic-auth-in-spring-security to prevent sessions creation // https://stackoverflow.com/questions/56056404/disable-websession-creation-when-using-spring-security-with-spring-webflux for webflux (TODO SH later: necessary?)
-			.authenticationManager(authenticationManager)
-			.and()
 			.authorizeExchange()
 			.pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			.pathMatchers("/v3/api-docs/v*").permitAll()
@@ -111,7 +119,24 @@ class SecurityConfigAdapter(
 				)
 			).hasRole("USER")
 			.pathMatchers("/**").hasRole("USER")
-			.and().build()
+			.and()
+			.csrf().disable()
+			.httpBasic().authenticationEntryPoint(UnauthorizedEntryPoint())//.securityContextRepository(WebSessionServerSecurityContextRepository())
+			//.securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) //See https://stackoverflow.com/questions/50954018/prevent-session-creation-when-using-basic-auth-in-spring-security to prevent sessions creation // https://stackoverflow.com/questions/56056404/disable-websession-creation-when-using-spring-security-with-spring-webflux for webflux (TODO SH later: necessary?)
+			.and()
+			.addFilterAfter(
+				AuthenticationWebFilter(authenticationManager).apply {
+					this.setAuthenticationFailureHandler(ServerAuthenticationEntryPointFailureHandler(UnauthorizedEntryPoint()))
+					if (sessionEnabled) this.setSecurityContextRepository(WebSessionServerSecurityContextRepository())
+					else this.setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+
+					// TODO: When SESSION ID will be dismissed, change it back to JwtAuthenticationConverter
+					this.setServerAuthenticationConverter(JwtAuthenticationConverter())
+				},
+				SecurityWebFiltersOrder.REACTOR_CONTEXT
+			)
+			.and()
+			.build()
 	}
 }
 

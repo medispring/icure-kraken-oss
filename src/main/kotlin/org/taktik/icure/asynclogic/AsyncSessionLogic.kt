@@ -19,6 +19,7 @@
 package org.taktik.icure.asynclogic
 
 import java.io.Serializable
+import java.net.URI
 import javax.servlet.http.HttpSession
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.Authentication
@@ -27,14 +28,20 @@ import org.taktik.icure.entities.User
 import org.taktik.icure.security.UserDetails
 
 interface AsyncSessionLogic {
-	suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession): Authentication?
+	suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession? = null): Authentication?
+
+	suspend fun refreshToken(details: JwtRefreshDetails): JwtDetails
 
 	suspend fun logout()
+
+	suspend fun checkLogin(fullGroupAndId: String, password: String)
+
 	fun getSessionContext(authentication: Authentication?): AsyncSessionContext?
 
 	suspend fun getCurrentSessionContext(): AsyncSessionContext
 
 	fun getOrCreateSession(): HttpSession?
+	suspend fun getCurrentUser(): User
 	suspend fun getCurrentUserId(): String
 	suspend fun getCurrentHealthcarePartyId(): String
 	suspend fun getCurrentDataOwnerId(): String
@@ -46,6 +53,12 @@ interface AsyncSessionLogic {
 		fun isAuthenticated(): Boolean
 		fun isAnonymous(): Boolean
 		suspend fun getUser(): User
+		suspend fun getDbInstanceUrl(): String
+		suspend fun getDbInstanceUri(): URI
+		fun getGroupIdUserId(): String
+		fun getPatientId(): String?
+		fun getHealthcarePartyId(): String?
+		fun getDeviceId(): String?
 	}
 
 	suspend fun getCurrentPatientId(): String?
