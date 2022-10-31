@@ -110,6 +110,8 @@ class SecurityConfigAdapter(
 			.pathMatchers("/api/**").permitAll()
 			.pathMatchers("/rest/*/replication/group/**").hasAnyRole("USER", "BOOTSTRAP")
 			.pathMatchers("/rest/*/auth/login").permitAll()
+			.pathMatchers("/rest/*/auth/refresh").permitAll()
+			.pathMatchers("/rest/*/auth/invalidate").permitAll()
 			.pathMatchers("/rest/*/user/forgottenPassword/*").permitAll()
 			.pathMatchers("/rest/*/pubsub/auth/recover/*").permitAll()
 			.pathMatchers("/rest/*/icure/v").permitAll()
