@@ -19,6 +19,7 @@
 package org.taktik.icure.asynclogic.impl
 
 import java.io.Serializable
+import java.net.URI
 import javax.servlet.http.HttpSession
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.awaitFirstOrNull
@@ -38,14 +39,17 @@ import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.entities.User
 import org.taktik.icure.properties.CouchDbProperties
+import org.taktik.icure.security.CustomReactiveAuthenticationManager
 import org.taktik.icure.security.PermissionSetIdentifier
 import org.taktik.icure.security.UserDetails
+import org.taktik.icure.security.jwt.JwtDetails
+import org.taktik.icure.security.jwt.JwtRefreshDetails
 import org.taktik.icure.security.loadSecurityContext
 
 @ExperimentalCoroutinesApi
 @Service
 class AsyncSessionLogicImpl(
-	private val authenticationManager: ReactiveAuthenticationManager,
+	private val authenticationManager: CustomReactiveAuthenticationManager,
 	private val userDAO: UserDAO,
 	private val couchDbProperties: CouchDbProperties,
 ) : AsyncSessionLogic {
@@ -70,10 +74,6 @@ class AsyncSessionLogicImpl(
 	}
 
 	override suspend fun refreshToken(details: JwtRefreshDetails) = authenticationManager.regenerateJwtDetails(details)
-
-	override suspend fun checkLogin(fullGroupAndId: String, password: String) {
-		authenticationManager.checkAuthentication(fullGroupAndId, password)
-	}
 
 	override suspend fun logout() {
 		invalidateCurrentAuthentication()
@@ -129,8 +129,6 @@ class AsyncSessionLogicImpl(
 			else null
 		}
 
-		override fun getUserId(): String? = permissionSetIdentifier.getPrincipalIdOfClass(User::class.java)
-
 		override fun getAuthentication(): Authentication = authentication
 
 		override fun getUserDetails(): UserDetails = userDetails
@@ -141,15 +139,9 @@ class AsyncSessionLogicImpl(
 
 		override suspend fun getUser(): User {
 			val userId = getUserId()
-			return userId?.let { userDAO.getUserOnUserDb(userId, false) }
-				?: throw AuthenticationServiceException("Failed getting the user from session context : userId=$userId")
+			return userId.let { userDAO.getUserOnUserDb(userId, false) }
 		}
 
-		override suspend fun getDbInstanceUrl(): String = groupDAO.get(getGroupId())?.dbInstanceUrl() ?: URI(couchDbProperties.url).toASCIIString()
-
-		override suspend fun getDbInstanceUri(): URI = URI(getDbInstanceUrl())
-
-		override fun getGroupIdUserId(): String = "${getGroupId()}:${getUserId()}"
 		}
 
 	companion object {

@@ -10,8 +10,7 @@ class JwtDetails(
 	userId: String,
 	val refreshTokenId: String? = null,
 	val dataOwnerId: String?,
-	val dataOwnerType: String?,
-	val groupIdUserIdMatching: List<String> = emptyList()
+	val dataOwnerType: String?
 ): AbstractUserDetails(
 	userId, authorities, principalPermissions
 ) {

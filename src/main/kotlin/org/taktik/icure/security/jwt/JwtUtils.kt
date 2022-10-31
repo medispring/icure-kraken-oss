@@ -26,7 +26,6 @@ class JwtUtils(
 					"userId" to details.userId,
 					"dataOwnerId" to details.dataOwnerId,
 					"dataOwnerType" to details.dataOwnerType,
-					"groupIdUserIdMatching" to details.groupIdUserIdMatching,
 					"authorities" to details.authorities
 				)
 			)
@@ -48,8 +47,7 @@ class JwtUtils(
 			.setClaims(
 				mapOf(
 					"userId" to details.userId,
-					"tokenId" to details.refreshTokenId,
-					"groupIdUserIdMatching" to details.groupIdUserIdMatching,
+					"tokenId" to details.refreshTokenId
 				)
 			)
 			.setExpiration(Date(System.currentTimeMillis() + refreshExpirationTimeMillis))

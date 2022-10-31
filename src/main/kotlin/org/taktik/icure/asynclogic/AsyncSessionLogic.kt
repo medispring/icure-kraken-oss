@@ -19,13 +19,14 @@
 package org.taktik.icure.asynclogic
 
 import java.io.Serializable
-import java.net.URI
 import javax.servlet.http.HttpSession
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.Authentication
 import org.springframework.web.server.WebSession
 import org.taktik.icure.entities.User
 import org.taktik.icure.security.UserDetails
+import org.taktik.icure.security.jwt.JwtDetails
+import org.taktik.icure.security.jwt.JwtRefreshDetails
 
 interface AsyncSessionLogic {
 	suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession? = null): Authentication?
@@ -33,8 +34,6 @@ interface AsyncSessionLogic {
 	suspend fun refreshToken(details: JwtRefreshDetails): JwtDetails
 
 	suspend fun logout()
-
-	suspend fun checkLogin(fullGroupAndId: String, password: String)
 
 	fun getSessionContext(authentication: Authentication?): AsyncSessionContext?
 
@@ -53,9 +52,6 @@ interface AsyncSessionLogic {
 		fun isAuthenticated(): Boolean
 		fun isAnonymous(): Boolean
 		suspend fun getUser(): User
-		suspend fun getDbInstanceUrl(): String
-		suspend fun getDbInstanceUri(): URI
-		fun getGroupIdUserId(): String
 		fun getPatientId(): String?
 		fun getHealthcarePartyId(): String?
 		fun getDeviceId(): String?

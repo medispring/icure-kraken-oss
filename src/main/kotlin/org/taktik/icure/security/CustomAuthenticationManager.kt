@@ -18,7 +18,7 @@
 
 package org.taktik.icure.security
 
-import java.net.URI
+import java.util.UUID
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.security.SecurityException
@@ -50,6 +50,8 @@ import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.jwt.JwtDetails
 import org.taktik.icure.security.jwt.JwtRefreshDetails
 import org.taktik.icure.security.jwt.JwtUtils
+import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import org.taktik.icure.spring.asynccache.Cache
 import reactor.core.publisher.Mono
 
 data class GlobalClusterAccumulator(
@@ -84,6 +86,7 @@ class CustomAuthenticationManager(
 	private val passwordEncoder: PasswordEncoder,
 	private val messageSourceAccessor: MessageSourceAccessor = SpringSecurityMessageSource.getAccessor(),
 	private val jwtUtils: JwtUtils,
+	private val jwtRefreshMap: Cache<String, String>
 ) : CustomReactiveAuthenticationManager {
 	private val log = LogFactory.getLog(javaClass)
 
@@ -208,6 +211,10 @@ class CustomAuthenticationManager(
 			throw BadCredentialsException("Invalid username or password")
 		}
 
+		val refreshTokenId = UUID.randomUUID().toString()
+
+		jwtRefreshMap.put(user.id, refreshTokenId)
+
 		// Build permissionSetIdentifier
 		val authorities = getAuthorities(user)
 		val userDetails = JwtDetails(
@@ -218,7 +225,8 @@ class CustomAuthenticationManager(
 			dataOwnerType = if (user.healthcarePartyId != null) JwtDetails.DATA_OWNER_HCP
 			else if (user.patientId != null) JwtDetails.DATA_OWNER_PATIENT
 			else if (user.deviceId != null) JwtDetails.DATA_OWNER_DEVICE
-			else null
+			else null,
+			refreshTokenId = refreshTokenId,
 		)
 
 		UsernamePasswordAuthenticationToken(
@@ -232,6 +240,7 @@ class CustomAuthenticationManager(
 		val user = userDAO.findUserOnUserDb(jwtRefreshDetails.userId, false)
 		return user?.let {
 			if (it.status != Users.Status.ACTIVE || it.deletionDate != null) throw InvalidJwtException("Cannot create access token for non-active user")
+			if (jwtRefreshMap.get(it.id) != jwtRefreshDetails.tokenId) throw InvalidJwtException("This refresh token was invalidated")
 			JwtDetails(
 				authorities = getAuthorities(user),
 				principalPermissions = it.permissions,
@@ -242,8 +251,7 @@ class CustomAuthenticationManager(
 				dataOwnerType = if (it.healthcarePartyId != null) JwtDetails.DATA_OWNER_HCP
 				else if (it.patientId != null) JwtDetails.DATA_OWNER_PATIENT
 				else if (it.deviceId != null) JwtDetails.DATA_OWNER_DEVICE
-				else null,
-				groupIdUserIdMatching = jwtRefreshDetails.groupIdUserIdMatching
+				else null
 			)
 		} ?: throw InvalidJwtException("Cannot refresh authentication token for this user")
 	}

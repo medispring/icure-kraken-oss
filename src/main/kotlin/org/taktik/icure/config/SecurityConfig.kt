@@ -49,9 +49,11 @@ import org.taktik.icure.security.CustomAuthenticationManager
 import org.taktik.icure.security.TokenWebExchangeMatcher
 import org.taktik.icure.security.UnauthorizedEntryPoint
 import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
+import org.taktik.icure.security.jwt.EncodedJwtAuthenticationToken
 import org.taktik.icure.security.jwt.JwtAuthenticationConverter
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import reactor.core.publisher.Mono
 
 @ExperimentalCoroutinesApi
 @Configuration
@@ -71,9 +73,17 @@ class SecurityConfig {
 		userDAO: UserDAO,
 		permissionLogic: PermissionLogic,
 		passwordEncoder: PasswordEncoder,
-		jwtUtils: JwtUtils
+		jwtUtils: JwtUtils,
+		asyncCacheManager: AsyncCacheManager
 	) =
-		CustomAuthenticationManager(couchDbProperties, userDAO, permissionLogic, passwordEncoder, jwtUtils = jwtUtils)
+		CustomAuthenticationManager(
+			couchDbProperties,
+			userDAO,
+			permissionLogic,
+			passwordEncoder,
+			jwtUtils = jwtUtils,
+			jwtRefreshMap = asyncCacheManager.getCache("org.taktik.icure.security.RefreshJWT")
+		)
 }
 
 @ExperimentalCoroutinesApi
@@ -121,8 +131,7 @@ class SecurityConfigAdapter(
 			.pathMatchers("/**").hasRole("USER")
 			.and()
 			.csrf().disable()
-			.httpBasic().authenticationEntryPoint(UnauthorizedEntryPoint())//.securityContextRepository(WebSessionServerSecurityContextRepository())
-			//.securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) //See https://stackoverflow.com/questions/50954018/prevent-session-creation-when-using-basic-auth-in-spring-security to prevent sessions creation // https://stackoverflow.com/questions/56056404/disable-websession-creation-when-using-spring-security-with-spring-webflux for webflux (TODO SH later: necessary?)
+			.httpBasic()
 			.and()
 			.addFilterAfter(
 				AuthenticationWebFilter(authenticationManager).apply {
@@ -131,11 +140,29 @@ class SecurityConfigAdapter(
 					else this.setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 
 					// TODO: When SESSION ID will be dismissed, change it back to JwtAuthenticationConverter
-					this.setServerAuthenticationConverter(JwtAuthenticationConverter())
+					this.setServerAuthenticationConverter { exchange ->
+						// First I check for the JWT Header
+						exchange?.request?.headers?.get("Authorization")
+							?.filterNotNull()
+							?.firstOrNull { it.contains("Bearer") }
+							?.let {
+								Mono.just(EncodedJwtAuthenticationToken(encodedJwt = it.replace("Bearer ", "")))
+							} ?: if (sessionEnabled) exchange.session.flatMap { webSession -> //Otherwise, I check the session
+							ServerHttpBasicAuthenticationConverter().convert(exchange).flatMap { auth ->
+								//Ignore basic auth if SPRING_SECURITY_CONTEXT was loaded from session
+								webSession.attributes[WebSessionServerSecurityContextRepository.DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME]?.let {
+									(it as? SecurityContext)?.let { context ->
+										if (context.authentication.principal != auth.principal) Mono.just(auth)
+										else Mono.empty()
+									}
+								} ?: Mono.just(auth)
+							}
+						}
+						else Mono.empty()
+					}
 				},
 				SecurityWebFiltersOrder.REACTOR_CONTEXT
 			)
-			.and()
 			.build()
 	}
 }
