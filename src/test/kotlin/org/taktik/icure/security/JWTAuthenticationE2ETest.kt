@@ -645,14 +645,24 @@ private suspend fun StringSpec.testJwtAuthentication(
 			mapOf("Refresh-Token" to authResponse.refreshToken!!))
 	}
 
-	"If the user performs the login, the old refresh token is invalidated" {
+	"If the user performs the login again, a new valid refresh token is issued and the old one stays valid" {
 		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
 		authenticateAndExpectSuccess(users.patUser, users.patPwd)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
-			401,
+			200,
 			mapOf("Refresh-Token" to authResponse.refreshToken!!))
+	}
+
+	"If the user performs the login again, a new valid refresh token is issued and the new one stays valid" {
+		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val newResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		makePostRequestAndExpectResult(
+			"",
+			"${baseUrl}/auth/refresh",
+			200,
+			mapOf("Refresh-Token" to newResponse.refreshToken!!))
 	}
 
 	"If the user calls the invalidate method with a valid refresh token, the refresh token is invalidated" {
@@ -668,6 +678,22 @@ private suspend fun StringSpec.testJwtAuthentication(
 			"${baseUrl}/auth/refresh",
 			401,
 			mapOf("Refresh-Token" to authResponse.refreshToken!!))
+	}
+
+	"If the user calls the invalidate method with a valid refresh token, the other refresh tokens stays valid" {
+		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val secondAuth = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		makePostRequestAndExpectResult(
+			"",
+			"${baseUrl}/auth/invalidate",
+			200,
+			mapOf("Refresh-Token" to authResponse.refreshToken!!))
+
+		makePostRequestAndExpectResult(
+			"",
+			"${baseUrl}/auth/refresh",
+			200,
+			mapOf("Refresh-Token" to secondAuth.refreshToken!!))
 	}
 
 	"A User should not be able of invalidating a refresh token with a non-valid refresh token" {

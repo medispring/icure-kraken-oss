@@ -77,7 +77,7 @@ class LoginController(
 	asyncCacheManager: AsyncCacheManager
 ) {
 	val cache = asyncCacheManager.getCache<String, SecurityToken>("spring.security.tokens")
-	val refreshJwtCache = asyncCacheManager.getCache<String, String>("org.taktik.icure.security.RefreshJWT")
+	val refreshJwtCache = asyncCacheManager.getCache<String, Boolean>("org.taktik.icure.security.RefreshJWT")
 
 	@Value("\${spring.session.enabled}")
 	private val sessionEnabled: Boolean = false
@@ -172,8 +172,8 @@ class LoginController(
 				?: throw InvalidJwtException("Invalid refresh token")
 			val userId = claims["userId"] as String
 			val tokenId = claims["tokenId"] as String
-			if (refreshJwtCache.get(userId) != tokenId) throw throw InvalidJwtException("Invalid refresh token")
-			refreshJwtCache.evict(userId)
+			if (refreshJwtCache.get("$userId:$tokenId") != true) throw throw InvalidJwtException("Invalid refresh token")
+			refreshJwtCache.evict("$userId:$tokenId")
 			response.statusCode = HttpStatus.OK
 			response.writeWith(Flux.just()).awaitFirstOrNull()
 		} catch (e: Exception) {

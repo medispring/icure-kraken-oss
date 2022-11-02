@@ -50,7 +50,6 @@ import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.jwt.JwtDetails
 import org.taktik.icure.security.jwt.JwtRefreshDetails
 import org.taktik.icure.security.jwt.JwtUtils
-import org.taktik.icure.spring.asynccache.AsyncCacheManager
 import org.taktik.icure.spring.asynccache.Cache
 import reactor.core.publisher.Mono
 
@@ -86,7 +85,7 @@ class CustomAuthenticationManager(
 	private val passwordEncoder: PasswordEncoder,
 	private val messageSourceAccessor: MessageSourceAccessor = SpringSecurityMessageSource.getAccessor(),
 	private val jwtUtils: JwtUtils,
-	private val jwtRefreshMap: Cache<String, String>
+	private val jwtRefreshMap: Cache<String, Boolean>
 ) : CustomReactiveAuthenticationManager {
 	private val log = LogFactory.getLog(javaClass)
 
@@ -213,7 +212,7 @@ class CustomAuthenticationManager(
 
 		val refreshTokenId = UUID.randomUUID().toString()
 
-		jwtRefreshMap.put(user.id, refreshTokenId)
+		jwtRefreshMap.put("${user.id}:$refreshTokenId", true)
 
 		// Build permissionSetIdentifier
 		val authorities = getAuthorities(user)
@@ -240,7 +239,7 @@ class CustomAuthenticationManager(
 		val user = userDAO.findUserOnUserDb(jwtRefreshDetails.userId, false)
 		return user?.let {
 			if (it.status != Users.Status.ACTIVE || it.deletionDate != null) throw InvalidJwtException("Cannot create access token for non-active user")
-			if (jwtRefreshMap.get(it.id) != jwtRefreshDetails.tokenId) throw InvalidJwtException("This refresh token was invalidated")
+			if (jwtRefreshMap.get("${it.id}:${jwtRefreshDetails.tokenId}") != true) throw InvalidJwtException("This refresh token was invalidated")
 			JwtDetails(
 				authorities = getAuthorities(user),
 				principalPermissions = it.permissions,
