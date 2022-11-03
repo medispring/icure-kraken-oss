@@ -75,6 +75,7 @@ import org.taktik.icure.utils.suspendRetry
 		"org.springframework.boot.autoconfigure.validation",
 		"org.springframework.boot.autoconfigure.websocket",
 		"org.taktik.icure.config",
+		"org.taktik.icure.security",
 		"org.taktik.icure.asyncdao",
 		"org.taktik.icure.asynclogic",
 		"org.taktik.icure.be.ehealth.logic",

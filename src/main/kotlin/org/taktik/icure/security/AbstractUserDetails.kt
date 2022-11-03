@@ -7,11 +7,11 @@ import org.springframework.security.core.GrantedAuthority
 import org.taktik.icure.entities.security.Permission
 
 abstract class AbstractUserDetails(
-	override val permissionSetIdentifier: PermissionSetIdentifier,
+	val userId: String,
 	authorities: Set<GrantedAuthority>,
-	protected var principalPermissions: Set<Permission>
+	private var principalPermissions: Set<Permission>
 ) : UserDetails {
-	val authoritiesSet: Set<GrantedAuthority> = authorities
+	private val authoritiesSet: Set<GrantedAuthority> = authorities
 
 	fun getPermissions(): Set<Permission> = principalPermissions
 
@@ -20,9 +20,7 @@ abstract class AbstractUserDetails(
 	override var isRealAuth = true
 	override var locale: String? = null
 	override var logoutURL: String? = null
-	override fun getUsername(): String {
-		return permissionSetIdentifier.principalClass.name + ":" + permissionSetIdentifier.principalId
-	}
+	override fun getUsername(): String = userId
 
 	override fun getPassword(): String? {
 		return null
@@ -48,14 +46,11 @@ abstract class AbstractUserDetails(
 		if (this === o) return true
 		if (o == null || javaClass != o.javaClass) return false
 		val that = o as AbstractUserDetails
-		if (authorities != that.authorities) return false
-		return permissionSetIdentifier == that.permissionSetIdentifier
+		return authorities == that.authorities
 	}
 
 	override fun hashCode(): Int {
-		var result = permissionSetIdentifier.hashCode()
-		result = 31 * result + authorities.hashCode()
-		return result
+		return authorities.hashCode()
 	}
 
 	companion object {
