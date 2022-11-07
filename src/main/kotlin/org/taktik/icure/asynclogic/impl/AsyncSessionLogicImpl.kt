@@ -19,9 +19,11 @@
 package org.taktik.icure.asynclogic.impl
 
 import java.io.Serializable
+import java.net.URI
 import javax.servlet.http.HttpSession
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -36,19 +38,24 @@ import org.springframework.web.server.WebSession
 import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.entities.User
+import org.taktik.icure.properties.CouchDbProperties
+import org.taktik.icure.security.CustomReactiveAuthenticationManager
 import org.taktik.icure.security.PermissionSetIdentifier
 import org.taktik.icure.security.UserDetails
+import org.taktik.icure.security.jwt.JwtDetails
+import org.taktik.icure.security.jwt.JwtRefreshDetails
 import org.taktik.icure.security.loadSecurityContext
 
 @ExperimentalCoroutinesApi
 @Service
 class AsyncSessionLogicImpl(
-	private val authenticationManager: ReactiveAuthenticationManager,
-	private val userDAO: UserDAO
+	private val authenticationManager: CustomReactiveAuthenticationManager,
+	private val userDAO: UserDAO,
+	private val couchDbProperties: CouchDbProperties,
 ) : AsyncSessionLogic {
 	/* Generic */
 
-	val log = LoggerFactory.getLogger(this::class.java)
+	val log: Logger = LoggerFactory.getLogger(this::class.java)
 
 	override fun getOrCreateSession(): HttpSession? {
 		val requestAttributes = RequestContextHolder.getRequestAttributes()
@@ -59,18 +66,14 @@ class AsyncSessionLogicImpl(
 		return null
 	}
 
-	override suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession): Authentication? {
-		try {
-			val token = UsernamePasswordAuthenticationToken(username, password)
-			val authentication = authenticationManager.authenticate(token).awaitFirstOrNull()
-			session.attributes[SESSION_LOCALE_ATTRIBUTE] = "fr" // TODO MB : add locale support
-			return authentication
-		} catch (e: AuthenticationException) {
-			// Ignore
-		}
-
-		return null
+	override suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession?): Authentication? {
+		val token = UsernamePasswordAuthenticationToken(username, password)
+		val authentication = authenticationManager.authenticateWithUsernameAndPassword(token).awaitFirstOrNull()
+		if (session != null) session.attributes[SESSION_LOCALE_ATTRIBUTE] = "fr" // TODO MB : add locale support
+		return authentication
 	}
+
+	override suspend fun refreshToken(details: JwtRefreshDetails) = authenticationManager.regenerateJwtDetails(details)
 
 	override suspend fun logout() {
 		invalidateCurrentAuthentication()
@@ -84,35 +87,47 @@ class AsyncSessionLogicImpl(
 		getCurrentAuthentication()?.let { SessionContextImpl(it) }
 			?: throw AuthenticationServiceException("getCurrentAuthentication() returned null, no SecurityContext in the coroutine context?")
 
+	override suspend fun getCurrentUser(): User {
+		return getCurrentSessionContext().getUser()
+	}
+
 	override suspend fun getCurrentUserId(): String {
 		return getCurrentSessionContext().getUser().id
 	}
 
 	override suspend fun getCurrentHealthcarePartyId(): String {
-		return getCurrentSessionContext().getUser().healthcarePartyId
-			?: throw AuthenticationServiceException("Failed to extract current healthCareParty id")
+		return getCurrentSessionContext().getHealthcarePartyId() ?: throw AuthenticationServiceException("Invalid user")
 	}
 
 	override suspend fun getCurrentDataOwnerId(): String {
-		return getCurrentSessionContext().getUser().let {
-			it.healthcarePartyId ?: it.patientId ?: it.deviceId
+		return getCurrentSessionContext().let {
+			it.getHealthcarePartyId() ?: it.getPatientId() ?: it.getDeviceId()
 		} ?: throw AuthenticationServiceException("Failed to extract current data owner id")
 	}
 
 	override suspend fun getCurrentPatientId(): String? {
-		return getCurrentSessionContext().getUser().patientId
+		return getCurrentSessionContext().getPatientId()
 	}
 
 	private inner class SessionContextImpl(private val authentication: Authentication) :
 		AsyncSessionLogic.AsyncSessionContext, Serializable {
 		private var userDetails: UserDetails = extractUserDetails(authentication)
-		private var permissionSetIdentifier: PermissionSetIdentifier
 
-		init {
-			this.permissionSetIdentifier = userDetails.permissionSetIdentifier
+		override fun getUserId(): String = (userDetails as JwtDetails).userId
+		override fun getPatientId(): String? {
+			return if ((userDetails as JwtDetails).dataOwnerType == JwtDetails.DATA_OWNER_PATIENT) (userDetails as JwtDetails).dataOwnerId
+				else null
 		}
 
-		override fun getUserId(): String? = permissionSetIdentifier.getPrincipalIdOfClass(User::class.java)
+		override fun getHealthcarePartyId(): String? {
+			return if ((userDetails as JwtDetails).dataOwnerType == JwtDetails.DATA_OWNER_HCP) (userDetails as JwtDetails).dataOwnerId
+			else null
+		}
+
+		override fun getDeviceId(): String? {
+			return if ((userDetails as JwtDetails).dataOwnerType == JwtDetails.DATA_OWNER_DEVICE) (userDetails as JwtDetails).dataOwnerId
+			else null
+		}
 
 		override fun getAuthentication(): Authentication = authentication
 
@@ -124,10 +139,10 @@ class AsyncSessionLogicImpl(
 
 		override suspend fun getUser(): User {
 			val userId = getUserId()
-			return userId?.let { userDAO.getUserOnUserDb(userId, false) }
-				?: throw AuthenticationServiceException("Failed getting the user from session context : userId=$userId")
+			return userId.let { userDAO.getUserOnUserDb(userId, false) }
 		}
-	}
+
+		}
 
 	companion object {
 		const val SESSION_LOCALE_ATTRIBUTE = "locale"

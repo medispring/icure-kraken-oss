@@ -306,7 +306,12 @@ class DocumentController(
 			"Attachment size must be specified in the content-length header"
 		)
 		documentLogic.updateAttachmentsWrappingExceptions(
-			documentLogic.getOr404(documentId).also { checkRevision(rev, it) },
+			documentLogic.getOr404(documentId).also {
+				checkRevision(rev, it)
+				require(key != it.mainAttachmentKey) {
+					"Secondary attachments can't use $key as key: this key is reserved for the main attachment."
+				}
+			},
 			secondaryAttachmentsChanges = mapOf(
 				key to DataAttachmentChange.CreateOrUpdate(
 					payload,
@@ -330,7 +335,11 @@ class DocumentController(
 		response: ServerHttpResponse
 	) = response.writeWith(
 		flow {
-			val document = documentLogic.getOr404(documentId)
+			val document = documentLogic.getOr404(documentId).also {
+				require(key != it.mainAttachmentKey) {
+					"Secondary attachments can't use $key as key: this key is reserved for the main attachment."
+				}
+			}
 			val attachment = attachmentLoader.contentFlowOfNullable(document, key) ?: throw ResponseStatusException(
 				HttpStatus.NOT_FOUND,
 				"No secondary attachment with key $key for document $documentId"
@@ -355,7 +364,12 @@ class DocumentController(
 		rev: String,
 	): Mono<DocumentDto> = mono {
 		documentLogic.updateAttachments(
-			documentLogic.getOr404(documentId).also { checkRevision(rev, it) },
+			documentLogic.getOr404(documentId).also {
+				checkRevision(rev, it)
+				require(key != it.mainAttachmentKey) {
+					"Secondary attachments can't use $key as key: this key is reserved for the main attachment."
+				}
+			},
 			secondaryAttachmentsChanges = mapOf(key to DataAttachmentChange.Delete)
 		).let { documentV2Mapper.map(checkNotNull(it) { "Could not update document" }) }
 	}

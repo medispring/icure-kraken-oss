@@ -25,16 +25,22 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.server.WebSession
 import org.taktik.icure.entities.User
 import org.taktik.icure.security.UserDetails
+import org.taktik.icure.security.jwt.JwtDetails
+import org.taktik.icure.security.jwt.JwtRefreshDetails
 
 interface AsyncSessionLogic {
-	suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession): Authentication?
+	suspend fun login(username: String, password: String, request: ServerHttpRequest, session: WebSession? = null): Authentication?
+
+	suspend fun refreshToken(details: JwtRefreshDetails): JwtDetails
 
 	suspend fun logout()
+
 	fun getSessionContext(authentication: Authentication?): AsyncSessionContext?
 
 	suspend fun getCurrentSessionContext(): AsyncSessionContext
 
 	fun getOrCreateSession(): HttpSession?
+	suspend fun getCurrentUser(): User
 	suspend fun getCurrentUserId(): String
 	suspend fun getCurrentHealthcarePartyId(): String
 	suspend fun getCurrentDataOwnerId(): String
@@ -46,6 +52,9 @@ interface AsyncSessionLogic {
 		fun isAuthenticated(): Boolean
 		fun isAnonymous(): Boolean
 		suspend fun getUser(): User
+		fun getPatientId(): String?
+		fun getHealthcarePartyId(): String?
+		fun getDeviceId(): String?
 	}
 
 	suspend fun getCurrentPatientId(): String?

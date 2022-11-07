@@ -5,6 +5,7 @@
 package org.taktik.icure.config
 
 import java.util.concurrent.ConcurrentHashMap
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.session.MapSession
@@ -14,6 +15,7 @@ import org.springframework.session.config.annotation.web.server.EnableSpringWebS
 import org.springframework.web.server.session.CookieWebSessionIdResolver
 
 @Configuration
+@ConditionalOnProperty(prefix = "spring", name = ["session.enabled"], havingValue = "true", matchIfMissing = false)
 @EnableSpringWebSession
 class SessionConfig {
 	@Bean

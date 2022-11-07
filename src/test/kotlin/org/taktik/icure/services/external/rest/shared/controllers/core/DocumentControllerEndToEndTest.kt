@@ -353,4 +353,17 @@ fun <DTO : Any, METADTO : Any> StringSpec.documentControllerSharedEndToEndTests(
 			testUserId
 		).toByteArray(true) shouldContainExactly attachment
 	}
+
+	"Secondary attachment endpoints should not allow to use the main attachment key" {
+		val doc = createDocument(dataFactory.newDocumentNoAttachment()).document
+		shouldRespondErrorStatus(HttpStatus.BAD_REQUEST) {
+			updateSecondaryAttachment(doc.id, doc.mainAttachmentKey, doc.rev, randomSmallAttachment(), emptyList())
+		}
+		shouldRespondErrorStatus(HttpStatus.BAD_REQUEST) {
+			deleteSecondaryAttachment(doc.id, doc.mainAttachmentKey, doc.rev)
+		}
+		shouldRespondErrorStatus(HttpStatus.BAD_REQUEST) {
+			getSecondaryAttachment(doc.id, doc.mainAttachmentKey).toByteArray(true)
+		}
+	}
 }
