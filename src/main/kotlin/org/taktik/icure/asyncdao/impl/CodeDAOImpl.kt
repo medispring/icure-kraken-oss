@@ -489,7 +489,7 @@ class CodeDAOImpl(
 		)
 
 		emitAll(
-			client.queryView<String, String>(
+			client.queryView<Array<String>, Int>(
 				createQuery(client, "by_language_type_label")
 					.includeDocs(false)
 					.startKey(from)
