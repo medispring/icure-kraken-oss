@@ -28,6 +28,10 @@ import org.taktik.icure.services.external.rest.v2.dto.embed.TimeTableItemDto
 
 @Mapper(componentModel = "spring", uses = [TimeTableHourV2Mapper::class], injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface TimeTableItemV2Mapper {
+	@Mappings(
+		Mapping(target = "days", ignore = true),
+		Mapping(target = "recurrenceTypes", ignore = true)
+	)
 	fun map(timeTableItemDto: TimeTableItemDto): TimeTableItem
 
 	@BeanMapping(ignoreUnmappedSourceProperties = [ "days", "recurrenceTypes" ] )
