@@ -66,7 +66,6 @@ abstract class GenericDAOImpl<T : StoredDocument>(
 ) : GenericDAO<T>, VersionedDesignDocumentQueries<T>(entityClass, couchDbProperties) {
 	private val log = LoggerFactory.getLogger(this.javaClass)
 	protected val dbInstanceUrl = URI(couchDbProperties.url)
-	private val designDocIdsWithHash = mutableMapOf<String, String>()
 
 	override suspend fun contains(id: String): Boolean {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
@@ -84,7 +83,7 @@ abstract class GenericDAOImpl<T : StoredDocument>(
 
 	private suspend fun designDocContainsAllView(dbInstanceUrl: URI): Boolean {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-		return client.get<DesignDocument>(designDocIdsWithHash[designDocName(entityClass)] ?: designDocName(entityClass))?.views?.containsKey("all")
+		return client.get<DesignDocument>(designDocName(entityClass, this))?.views?.containsKey("all")
 			?: false
 	}
 
@@ -354,7 +353,7 @@ abstract class GenericDAOImpl<T : StoredDocument>(
 		val fromDatabase = client.get(generated.id, DesignDocument::class.java) ?: client.get(designDocId, DesignDocument::class.java)
 
 		val (merged, changed) = fromDatabase?.mergeWith(generated, true) ?: generated to true
-		designDocIdsWithHash[designDocName(this.entityClass)] = merged.id
+
 		if (changed && (updateIfExists || fromDatabase == null)) {
 			client.update(fromDatabase?.let { if (it.id == generated.id) merged.copy(rev = it.rev) else merged } ?: merged)
 		}
