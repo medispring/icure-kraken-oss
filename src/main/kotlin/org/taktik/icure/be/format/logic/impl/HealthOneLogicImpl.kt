@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asFlow
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils.lowerCase
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.buffer.DataBuffer
@@ -237,7 +238,7 @@ class HealthOneLogicImpl(
 	}
 
 	protected fun importNumericLaboResult(language: String, d: Double?, lrl: LaboResultLine, position: Long, ril: ResultsInfosLine, comment: String?): org.taktik.icure.entities.embed.Service {
-		val r = lrl.referenceValues?.let { tryToGetReferenceValues(it) }
+		val r = lrl.referenceValues?.let { tryToGetReferenceValues(humanLanguageReplacer(it)) }
 		val severity = lrl.severity?.trim { it <= ' ' }
 		return org.taktik.icure.entities.embed.Service(
 			codes = if (severity?.isNotEmpty() == true) setOf(CodeStub.from("CD-SEVERITY", "abnormal", "1")) else setOf(),
@@ -269,6 +270,20 @@ class HealthOneLogicImpl(
 		} catch (e: Exception) { //System.out.println("--------- Failed to parse '" + numberS + "'");
 			null
 		}
+	}
+
+	protected fun humanLanguageReplacer(refValues: String): String{
+		val lessThanStrings = listOf("moins de", "minder dan", "less than", "kleiner dan", "lager dan", "lower than");
+		val greaterThanStrings = listOf("plus de", "au moins", "minstens", "tenminste", "meer dan", "groter dan", "larger than", "greater than", "hoger dan", "higher than")
+		val separatorStrings = listOf(" ", ":", "-")
+		var cleanedString = lowerCase(refValues)
+		lessThanStrings.forEach{cleanedString = cleanedString.replace(it, "<")}
+		greaterThanStrings.forEach{cleanedString = cleanedString.replace(it, ">")}
+		if(cleanedString !== lowerCase(refValues)) { //only remove separator if there were string replacements
+			separatorStrings.forEach {cleanedString = cleanedString.replace(it, "") }
+			return cleanedString
+		}
+		return refValues
 	}
 
 	protected fun tryToGetReferenceValues(refValues: String): Reference? {
