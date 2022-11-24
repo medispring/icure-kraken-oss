@@ -27,11 +27,13 @@ import reactor.netty.http.client.HttpClient
 
 private const val TEST_CACHE = "build/tests/icureCache"
 
-interface ResponseWithJwt {
-	val token: String?
+data class ResponseWithJwt (
+	val token: String?,
 	val refreshToken: String?
-	val successful: Boolean
-}
+)
+
+fun JwtResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshToken)
+fun AuthenticationResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshToken)
 
 data class AuthenticationUsers(
 	val hcp1User: String,
@@ -154,30 +156,19 @@ class JWTAuthenticationE2ETest(
 		System.getenv("ICURE_TEST_ADMIN_USER"),
 		System.getenv("ICURE_TEST_ADMIN_PWD")
 	)
-	val apiVersion = "v1"
+	val apiVersion = "v2"
 
 	init {
 		runBlocking {
-			if (apiVersion == "v1")
-				testJwtAuthentication<AuthenticationResponse>(
-					port,
-					jwtUtils,
-					userDAO,
-					apiVersion,
-					objectMapper,
-					users,
-					listOf("Set-Cookie")
-				)
-			else
-				testJwtAuthentication<JwtResponse>(
-					port,
-					jwtUtils,
-					userDAO,
-					apiVersion,
-					objectMapper,
-					users,
-					listOf("Set-Cookie")
-				)
+			testJwtAuthentication(
+				port,
+				jwtUtils,
+				userDAO,
+				apiVersion,
+				objectMapper,
+				users,
+				listOf("Set-Cookie")
+			)
 			testSessionAuthentication(
 				port,
 				apiVersion,
@@ -450,7 +441,7 @@ private fun StringSpec.testSessionAuthentication(
 
 }
 
-private suspend fun <T> StringSpec.testJwtAuthentication(
+private suspend fun StringSpec.testJwtAuthentication(
 	port: Int,
 	jwtUtils: JwtUtils,
 	userDAO: UserDAO,
@@ -465,19 +456,29 @@ private suspend fun <T> StringSpec.testJwtAuthentication(
 	fun authenticateAndExpectSuccess(username: String, password: String): ResponseWithJwt {
 		val body = objectMapper.writeValueAsString(mapOf("username" to username, "password" to password))
 		val responseString = makePostRequestAndExpectResult(body, "${baseUrl}/auth/login", 200, mapOf(), responseHeaders)
-		val response = objectMapper.readValue(responseString!!, object : TypeReference<T>() {})
-		if (response is JwtResponse) {
-			response.successful shouldBe true
-			response.token shouldNotBe null
-			response.refreshToken shouldNotBe null
-		} else if (response is AuthenticationResponse) {
-			response.successful shouldBe true
-			response.token shouldNotBe null
-			response.refreshToken shouldNotBe null
-			response.healthcarePartyId shouldNotBe null
-			response.username shouldBe username
+
+		val response = if (apiVersion == "v1")
+			objectMapper.readValue(responseString!!, object : TypeReference<AuthenticationResponse>() {})
+		else objectMapper.readValue(responseString!!, object : TypeReference<JwtResponse>() {})
+
+		return when (response) {
+			is JwtResponse -> {
+				response.successful shouldBe true
+				response.token shouldNotBe null
+				response.refreshToken shouldNotBe null
+				response.toResponseWithJwt()
+			}
+
+			is AuthenticationResponse -> {
+				response.successful shouldBe true
+				response.token shouldNotBe null
+				response.refreshToken shouldNotBe null
+				response.username shouldBe username
+				response.toResponseWithJwt()
+			}
+
+			else -> throw IllegalStateException("Response type not valid")
 		}
-		return response as ResponseWithJwt
 	}
 
 	fun regenerateAuthenticationToken(refreshToken: String): JwtResponse {
