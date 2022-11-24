@@ -17,6 +17,7 @@
  */
 package org.taktik.icure.services.external.rest.v1.dto
 
+@Deprecated("Use JwtResponse instead")
 class AuthenticationResponse(
 	var healthcarePartyId: String? = null,
 	var reason: String? = null,
