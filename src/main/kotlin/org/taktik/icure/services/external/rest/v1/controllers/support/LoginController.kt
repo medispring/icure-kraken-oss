@@ -93,10 +93,12 @@ class LoginController(
 				val securityContext = kotlin.coroutines.coroutineContext[ReactorContext]?.context?.put(SecurityContext::class.java, Mono.just(secContext))
 				withContext(kotlin.coroutines.coroutineContext.plus(securityContext?.asCoroutineContext() as CoroutineContext)) {
 					ResponseEntity.ok().body(
-						JwtResponse(
+						AuthenticationResponse(
 							successful = true,
 							token = jwtUtils.createJWT(authentication.principal as JwtDetails),
-							refreshToken = jwtUtils.createRefreshJWT(authentication.principal as JwtDetails)
+							refreshToken = jwtUtils.createRefreshJWT(authentication.principal as JwtDetails),
+							healthcarePartyId = (authentication.principal as JwtDetails).dataOwnerId.takeIf { (authentication.principal as JwtDetails).dataOwnerType == JwtDetails.DATA_OWNER_HCP },
+							username = loginCredentials.username
 						).also {
 							if (session != null) {
 								session.attributes["SPRING_SECURITY_CONTEXT"] = secContext
@@ -106,10 +108,12 @@ class LoginController(
 				}
 			} else if (authentication != null && authentication.isAuthenticated && !sessionEnabled) {
 				ResponseEntity.ok().body(
-					JwtResponse(
+					AuthenticationResponse(
 						successful = true,
 						token = jwtUtils.createJWT(authentication.principal as JwtDetails),
-						refreshToken = jwtUtils.createRefreshJWT(authentication.principal as JwtDetails)
+						refreshToken = jwtUtils.createRefreshJWT(authentication.principal as JwtDetails),
+						healthcarePartyId = (authentication.principal as JwtDetails).dataOwnerId.takeIf { (authentication.principal as JwtDetails).dataOwnerType == JwtDetails.DATA_OWNER_HCP },
+						username = loginCredentials.username
 					)
 				)
 			} else {
