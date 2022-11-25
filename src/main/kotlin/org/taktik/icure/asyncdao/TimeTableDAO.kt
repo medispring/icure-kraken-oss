@@ -23,7 +23,9 @@ import org.taktik.icure.entities.TimeTable
 
 interface TimeTableDAO : GenericDAO<TimeTable> {
 	fun listTimeTableByAgendaId(agendaId: String): Flow<TimeTable>
+	fun listTimeTableByAgendaIds(agendaIds: Collection<String>): Flow<TimeTable>
 	fun listTimeTableByStartDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
 	fun listTimeTableByEndDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
 	fun listTimeTableByPeriodAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
+	fun listTimeTableByPeriodAndAgendaIds(startDate: Long?, endDate: Long?, agendaIds: Set<String>): Flow<TimeTable>
 }
