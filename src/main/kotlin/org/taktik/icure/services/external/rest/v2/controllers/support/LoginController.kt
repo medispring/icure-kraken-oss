@@ -70,7 +70,8 @@ class LoginController(
 
 	@Operation(summary = "login", description = "Login using username and password")
 	@PostMapping("/login")
-	fun login(request: ServerHttpRequest, @RequestBody loginCredentials: LoginCredentials, @Parameter(hidden = true) session: WebSession) = mono {
+	fun login(request: ServerHttpRequest, @RequestBody loginCredentials: LoginCredentials, @Parameter(hidden = true) session: WebSession?
+	) = mono {
 		try {
 			val authentication = sessionLogic.login(loginCredentials.username!!, loginCredentials.password!!, request, if (sessionEnabled) session else null)
 			if (authentication != null && authentication.isAuthenticated && sessionEnabled) {
@@ -82,7 +83,11 @@ class LoginController(
 							successful = true,
 							token = jwtUtils.createJWT(authentication.principal as JwtDetails),
 							refreshToken = jwtUtils.createRefreshJWT(authentication.principal as JwtDetails)
-						).also { session.attributes["SPRING_SECURITY_CONTEXT"] = secContext }
+						).also {
+							if (session != null) {
+								session.attributes["SPRING_SECURITY_CONTEXT"] = secContext
+							}
+						}
 					)
 				}
 			} else if (authentication != null && authentication.isAuthenticated && !sessionEnabled) {
