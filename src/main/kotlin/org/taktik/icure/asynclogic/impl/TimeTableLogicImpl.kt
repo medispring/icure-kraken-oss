@@ -79,7 +79,6 @@ class TimeTableLogicImpl(private val timeTableDAO: TimeTableDAO, private val ses
 				filtered
 			} else {
 				val slotDtEnd = slotDtStart + duration
-				val dow = slotDtStart.dayOfWeek
 				val slotSecStart = slotDtStart.hour * 3600 + slotDtStart.minute * 60 + slotDtStart.second
 				val slotSecEnd = (slotDtEnd.hour * 3600 + slotDtEnd.minute * 60 + slotDtEnd.second).let { t ->
 					t.takeIf { it > slotSecStart } ?: (t + 24 * 3600)
