@@ -43,7 +43,7 @@ class TimeTableLogicTest : StringSpec({
 		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), agendaId) } answers { flowOf() }
 		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), any(), agendaId) } answers { flowOf() }
 		val calendarItemTypeLogic = mockk<CalendarItemTypeLogic>()
-		every { calendarItemTypeLogic.getAnonymousCalendarItemTypes(any(), any()) } answers { secondArg<Collection<String>>().map { CalendarItemType(id = it) }.asFlow() }
+		every { calendarItemTypeLogic.getAnonymousCalendarItemTypes(any(), any()) } answers { secondArg<Collection<String>>().map { CalendarItemType(id = it, duration = 15) }.asFlow() }
 		sessionMock = SessionMock()
 		timeTableLogic = TimeTableLogicImpl(
 			CouchDbProperties(),
@@ -71,8 +71,8 @@ class TimeTableLogicTest : StringSpec({
 		TimeTable(
 			id = newId(),
 			agendaId = agendaId,
-			startTime = 20221015170000L,
-			endTime = 20321006170000L,
+			startTime = 20221015000000L,
+			endTime = 20321006000000L,
 			items = listOf(
 				TimeTableItem(
 					rrule = "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO",
@@ -89,7 +89,7 @@ class TimeTableLogicTest : StringSpec({
 		).create()
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016100000L, 20221018220000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 1
 		}
 	}

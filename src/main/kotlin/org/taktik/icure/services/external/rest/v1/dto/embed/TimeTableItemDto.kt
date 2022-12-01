@@ -32,6 +32,7 @@ import com.github.pozo.KotlinBuilder
  */
 
 data class TimeTableItemDto(
+	val occurenceStartDate: Long? = null, // YYYYMMDD
 	val rrule: String? = null,
 	@Deprecated("Will be replaced by rrule") val days: List<String> = emptyList(),
 	@Deprecated("Will be replaced by rrule") val recurrenceTypes: List<String> = emptyList(),
