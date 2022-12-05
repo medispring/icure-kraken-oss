@@ -121,7 +121,7 @@ class PatientLogicImpl(
 		emitAll(patientDAO.listPatientIdsByHcPartyAndTelecom(searchString, healthcarePartyId))
 	}
 
-	override fun listPatientIdsByHcPartyAndAddressOnly(searchString: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String) = flow<String> {
+	override fun listPatientIdsByHcPartyAndAddressOnly(searchString: String?, healthcarePartyId: String) = flow<String> {
 		emitAll(patientDAO.listPatientIdsByHcPartyAndAddress(searchString, postalCode, houseNumber, healthcarePartyId))
 	}
 	override fun listPatientIdsByHcPartyAndAddressOnly(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String) = flow<String> {
