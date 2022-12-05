@@ -24,6 +24,8 @@ import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.io.StringReader
 import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -231,7 +233,8 @@ class MedidocLogicImpl(
 				val demandDate = getResultDate(lines, i, isStandardFormat)
 				val code = getProtocolCode(lines, i, isStandardFormat, demandDate)
 				i += if (isStandardFormat) 6 else 9
-				if (protocolIds.contains(code) || protocolIds.size == 1 && protocolIds[0] != null && protocolIds[0].startsWith("***")) {
+				val dec = protocolIds.mapNotNull{ URLDecoder.decode(it, StandardCharsets.UTF_8)}
+				if (dec.contains(code) || protocolIds.size == 1 && protocolIds[0] != null && protocolIds[0].startsWith("***")) {
 					val (ii, s) = fillService(language, lines, i, demandDate)
 					i = ii
 					val labo = lines[1].replace("  +".toRegex(), " ")

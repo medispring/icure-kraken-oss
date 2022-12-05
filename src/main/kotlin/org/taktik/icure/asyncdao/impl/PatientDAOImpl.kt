@@ -264,8 +264,8 @@ class PatientDAOImpl(
 		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
 	}
 
-	@View(name = "by_hcparty_address_postalcode_housenumber", map = "classpath:js/patient/By_hcparty_address_postalcode_housenumber.js")
-	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> = flow {
+	@View(name = "by_hcparty_address", map = "classpath:js/patient/By_hcparty_address.js")
+	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, healthcarePartyId: String): Flow<String> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val startKey: ComplexKey
 		val endKey: ComplexKey
@@ -274,6 +274,26 @@ class PatientDAOImpl(
 			val csearchString = searchString.replace(" ".toRegex(), "").replace("\\W".toRegex(), "")
 			startKey = ComplexKey.of(healthcarePartyId, csearchString)
 			endKey = ComplexKey.of(healthcarePartyId, csearchString + "\ufff0")
+		} else {
+			startKey = ComplexKey.of(healthcarePartyId, null)
+			endKey = ComplexKey.of(healthcarePartyId, "\ufff0")
+		}
+
+		val viewQuery = createQuery(client, "by_hcparty_address").startKey(startKey).endKey(endKey).includeDocs(false)
+
+		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
+	}
+
+	@View(name = "by_hcparty_address_postalcode_housenumber", map = "classpath:js/patient/By_hcparty_address_postalcode_housenumber.js")
+	override fun listPatientIdsByHcPartyAndAddress(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val startKey: ComplexKey
+		val endKey: ComplexKey
+
+		if (streetAndCity != null) {
+			val cstreetAndCity = streetAndCity.replace(" ".toRegex(), "").replace("\\W".toRegex(), "")
+			startKey = ComplexKey.of(healthcarePartyId, cstreetAndCity, postalCode, houseNumber)
+			endKey = ComplexKey.of(healthcarePartyId, cstreetAndCity + "\ufff0", postalCode + "\ufff0", houseNumber + "\ufff0")
 		} else {
 			startKey = ComplexKey.of(healthcarePartyId, null)
 			endKey = ComplexKey.of(healthcarePartyId, "\ufff0")
