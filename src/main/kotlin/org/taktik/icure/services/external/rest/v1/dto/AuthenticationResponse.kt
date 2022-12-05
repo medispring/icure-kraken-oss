@@ -17,4 +17,12 @@
  */
 package org.taktik.icure.services.external.rest.v1.dto
 
-class AuthenticationResponse(var healthcarePartyId: String? = null, var reason: String? = null, var successful: Boolean = false, var username: String? = null)
+@Deprecated("Use JwtResponse instead")
+class AuthenticationResponse(
+	var healthcarePartyId: String? = null,
+	var reason: String? = null,
+	var successful: Boolean = false,
+	var username: String? = null,
+	var token: String? = null,
+	var refreshToken: String? = null
+)
