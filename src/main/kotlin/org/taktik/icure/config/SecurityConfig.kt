@@ -41,6 +41,7 @@ import org.springframework.security.web.server.context.WebSessionServerSecurityC
 import org.springframework.security.web.server.util.matcher.AndServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
+import org.springframework.web.server.ServerWebExchange
 import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.PermissionLogic
@@ -50,7 +51,6 @@ import org.taktik.icure.security.TokenWebExchangeMatcher
 import org.taktik.icure.security.UnauthorizedEntryPoint
 import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
 import org.taktik.icure.security.jwt.EncodedJwtAuthenticationToken
-import org.taktik.icure.security.jwt.JwtAuthenticationConverter
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
 import reactor.core.publisher.Mono
@@ -138,7 +138,10 @@ class SecurityConfigAdapter(
 			.addFilterAfter(
 				AuthenticationWebFilter(authenticationManager).apply {
 					this.setAuthenticationFailureHandler(ServerAuthenticationEntryPointFailureHandler(UnauthorizedEntryPoint()))
-					if (sessionEnabled) this.setSecurityContextRepository(WebSessionServerSecurityContextRepository())
+					if (sessionEnabled) this.setSecurityContextRepository(object:WebSessionServerSecurityContextRepository() {
+						override fun save(exchange: ServerWebExchange, context: SecurityContext) = exchange.request.headers["X-Bypass-Session"]?.let { Mono.empty() } ?: super.save(exchange, context)
+						override fun load(exchange: ServerWebExchange) = exchange.request.headers["X-Bypass-Session"]?.let { Mono.empty() } ?: super.load(exchange)
+					})
 					else this.setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 
 					// TODO: When SESSION ID will be dismissed, change it back to JwtAuthenticationConverter

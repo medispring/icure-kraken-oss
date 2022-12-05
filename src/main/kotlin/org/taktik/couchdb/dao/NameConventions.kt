@@ -18,5 +18,13 @@
 
 package org.taktik.couchdb.dao
 
-fun designDocName(clazz: Class<*>) = designDocName(clazz.simpleName)
+import org.taktik.couchdb.support.StdDesignDocumentFactory
+
+fun designDocName(clazz: Class<*>, metaDataSource: Any? = null) =
+	metaDataSource?.let {
+		StdDesignDocumentFactory()
+			.generateFrom(designDocName(clazz.simpleName), it)
+			.id
+	} ?: designDocName(clazz.simpleName)
+
 fun designDocName(name: String) = "_design/$name"

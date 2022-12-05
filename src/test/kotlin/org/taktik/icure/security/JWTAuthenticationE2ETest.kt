@@ -18,6 +18,7 @@ import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.security.jwt.JwtDetails
 import org.taktik.icure.security.jwt.JwtResponse
 import org.taktik.icure.security.jwt.JwtUtils
+import org.taktik.icure.services.external.rest.v1.dto.AuthenticationResponse
 import org.taktik.icure.test.ICureTestApplication
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -25,6 +26,14 @@ import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
 
 private const val TEST_CACHE = "build/tests/icureCache"
+
+data class ResponseWithJwt (
+	val token: String?,
+	val refreshToken: String?
+)
+
+fun JwtResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshToken)
+fun AuthenticationResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshToken)
 
 data class AuthenticationUsers(
 	val hcp1User: String,
@@ -147,7 +156,7 @@ class JWTAuthenticationE2ETest(
 		System.getenv("ICURE_TEST_ADMIN_USER"),
 		System.getenv("ICURE_TEST_ADMIN_PWD")
 	)
-	val apiVersion = "v1"
+	val apiVersion = "v2"
 
 	init {
 		runBlocking {
@@ -444,14 +453,32 @@ private suspend fun StringSpec.testJwtAuthentication(
 
 	val baseUrl = "http://localhost:$port/rest/$apiVersion"
 
-	fun authenticateAndExpectSuccess(username: String, password: String): JwtResponse {
+	fun authenticateAndExpectSuccess(username: String, password: String): ResponseWithJwt {
 		val body = objectMapper.writeValueAsString(mapOf("username" to username, "password" to password))
 		val responseString = makePostRequestAndExpectResult(body, "${baseUrl}/auth/login", 200, mapOf(), responseHeaders)
-		val jwtResponse = objectMapper.readValue(responseString!!, object : TypeReference<JwtResponse>() {})
-		jwtResponse.successful shouldBe true
-		jwtResponse.token shouldNotBe null
-		jwtResponse.refreshToken shouldNotBe null
-		return jwtResponse
+
+		val response = if (apiVersion == "v1")
+			objectMapper.readValue(responseString!!, object : TypeReference<AuthenticationResponse>() {})
+		else objectMapper.readValue(responseString!!, object : TypeReference<JwtResponse>() {})
+
+		return when (response) {
+			is JwtResponse -> {
+				response.successful shouldBe true
+				response.token shouldNotBe null
+				response.refreshToken shouldNotBe null
+				response.toResponseWithJwt()
+			}
+
+			is AuthenticationResponse -> {
+				response.successful shouldBe true
+				response.token shouldNotBe null
+				response.refreshToken shouldNotBe null
+				response.username shouldBe username
+				response.toResponseWithJwt()
+			}
+
+			else -> throw IllegalStateException("Response type not valid")
+		}
 	}
 
 	fun regenerateAuthenticationToken(refreshToken: String): JwtResponse {
