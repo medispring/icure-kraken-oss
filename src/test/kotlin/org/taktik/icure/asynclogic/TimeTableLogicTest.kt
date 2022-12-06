@@ -1,7 +1,10 @@
 package org.taktik.icure.asynclogic
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -66,8 +69,13 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
-	"Legacy timetables should return results" {
-		val calendarItemTypeId = newId()
+	suspend fun makeTimeTable(
+		calendarItemTypeId: String,
+		agendaId: String,
+		rrule: String?,
+		days: List<String>?,
+		recurrenceTypes: List<String>?
+	) {
 		TimeTable(
 			id = newId(),
 			agendaId = agendaId,
@@ -75,7 +83,9 @@ class TimeTableLogicTest : StringSpec({
 			endTime = 20321006000000L,
 			items = listOf(
 				TimeTableItem(
-					rrule = "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO",
+					rrule = rrule,
+					days = days ?: emptyList(),
+					recurrenceTypes = recurrenceTypes ?: emptyList(),
 					hours = listOf(
 						TimeTableHour(
 							startHour = 80000,
@@ -87,11 +97,50 @@ class TimeTableLogicTest : StringSpec({
 				)
 			),
 		).create()
+	}
 
+	"Rrule timetables should return results" {
+		val calendarItemTypeId = newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			result.size shouldBe 1
+			result.size shouldBe 100
+			result[0] shouldBe 20221017080000L
+			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
 		}
 	}
 
+	"Legacy timetables should return results" {
+		val calendarItemTypeId = newId()
+
+		makeTimeTable(calendarItemTypeId, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			result.size shouldBe 100
+			result[0] shouldBe 20221017080000L
+			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
+		}
+	}
+
+	"Rrule and legacy time tables should return the same results" {
+		val calendarItemTypeId1 = newId()
+		val calendarItemTypeId2 = newId()
+
+		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null)
+		makeTimeTable(calendarItemTypeId2, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
+
+		withAuthenticatedHcpContext(hcpId) {
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			result1 shouldBe result2
+		}
+
+	}
+})
+
+infix fun <E, T:Collection<E>> T.shouldNotHaveElement(test: (E) -> Boolean) = should(object:Matcher<T> {
+	override fun test(value: T): MatcherResult {
+		val result = value.any { test(it) }
+		return MatcherResult(!result, "Collection should not have element matching $test", "Collection should have element matching $test")
+	}
 })

@@ -18,19 +18,10 @@
 package org.taktik.icure.entities.embed
 
 import java.io.Serializable
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
-import java.util.TimeZone
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.pozo.KotlinBuilder
-import org.dmfs.rfc5545.recur.RecurrenceRule
-import org.taktik.icure.utils.FuzzyValues
-import org.taktik.icure.utils.isXDayweekOfMonthInRange
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,7 +33,7 @@ import org.taktik.icure.utils.isXDayweekOfMonthInRange
  */
 
 data class TimeTableItem(
-	val occurenceStartDate: Long? = null, // YYYYMMDD
+	val occurrenceStartDate: Long? = null, // YYYYMMDD
 	val rrule: String? = null,
 	@Deprecated("Will be replaced by rrule") val days: List<String> = emptyList(),
 	@Deprecated("Will be replaced by rrule") val recurrenceTypes: List<String> = emptyList(),

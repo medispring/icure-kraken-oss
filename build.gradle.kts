@@ -50,6 +50,7 @@ buildscript {
 apply(plugin = "git-version")
 
 val gitVersion: String? by project
+
 group = "com.icure"
 version = gitVersion ?: "0.0.1-SNAPSHOT"
 
