@@ -285,6 +285,9 @@ dependencies {
 	//Apple Silicon Compatibility
 	implementation("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
 
+	//RRules
+	implementation(group = "org.dmfs", name = "lib-recur", version = "0.13.0")
+
 	ktlint("com.pinterest:ktlint:0.45.2") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
