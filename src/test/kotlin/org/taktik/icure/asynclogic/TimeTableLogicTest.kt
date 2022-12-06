@@ -21,9 +21,7 @@ import org.taktik.icure.entities.CalendarItemType
 import org.taktik.icure.entities.TimeTable
 import org.taktik.icure.entities.embed.TimeTableHour
 import org.taktik.icure.entities.embed.TimeTableItem
-import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.test.SessionMock
-import org.taktik.icure.test.fakedaos.FakeGroupDAO
 import org.taktik.icure.test.fakedaos.FakeTimeTableDAO
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.randomUri
@@ -41,20 +39,19 @@ class TimeTableLogicTest : StringSpec({
 		clearAllMocks()
 		val agendaLogic = mockk<AgendaLogic>()
 		coEvery { agendaLogic.getAgenda(any()) } answers { Agenda(id = firstArg()) }
-		every { agendaLogic.getAnonymousAgendasByUser(any(), any()) } answers { flowOf(Agenda(id = agendaId, userId = secondArg())) }
+		every { agendaLogic.getAgendasByUser(any()) } answers {
+			flowOf(Agenda(id = agendaId, userId = firstArg()))
+		}
 		val calendarItemLogic = mockk<CalendarItemLogic>()
 		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), agendaId) } answers { flowOf() }
-		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), any(), agendaId) } answers { flowOf() }
 		val calendarItemTypeLogic = mockk<CalendarItemTypeLogic>()
-		every { calendarItemTypeLogic.getAnonymousCalendarItemTypes(any(), any()) } answers { secondArg<Collection<String>>().map { CalendarItemType(id = it, duration = 15) }.asFlow() }
+		every { calendarItemTypeLogic.getCalendarItemTypes(any()) } answers { firstArg<Collection<String>>().map { CalendarItemType(id = it, duration = 15) }.asFlow() }
 		sessionMock = SessionMock()
 		timeTableLogic = TimeTableLogicImpl(
-			CouchDbProperties(),
 			FakeTimeTableDAO(),
-			FakeGroupDAO(),
 			agendaLogic,
-			calendarItemLogic,
 			calendarItemTypeLogic,
+			calendarItemLogic,
 			sessionMock.sessionLogic
 		)
 	}
@@ -103,7 +100,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId = newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
 			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
@@ -115,7 +112,7 @@ class TimeTableLogicTest : StringSpec({
 
 		makeTimeTable(calendarItemTypeId, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
 			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
@@ -130,8 +127,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId2, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
-			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId, newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
 			result1 shouldBe result2
 		}
 

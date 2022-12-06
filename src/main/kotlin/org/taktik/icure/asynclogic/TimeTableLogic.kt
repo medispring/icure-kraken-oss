@@ -29,4 +29,15 @@ interface TimeTableLogic : EntityPersister<TimeTable, String> {
 	fun getTimeTablesByPeriodAndAgendaId(startDate: Long, endDate: Long, agendaId: String): Flow<TimeTable>
 	fun getTimeTablesByAgendaId(agendaId: String): Flow<TimeTable>
 	suspend fun modifyTimeTable(timeTable: TimeTable): TimeTable?
+    fun getAvailabilitiesByPeriodAndCalendarItemTypeId(
+        userId: String,
+        startDate: Long,
+        endDate: Long,
+        calendarItemTypeId: String,
+        placeId: String?,
+        isNewPatient: Boolean,
+        publicTimeTablesOnly: Boolean,
+        hcpId: String,
+        limit: Int = 100
+    ): Flow<Long>
 }

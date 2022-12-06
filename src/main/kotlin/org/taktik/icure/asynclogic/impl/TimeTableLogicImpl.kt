@@ -17,24 +17,26 @@
  */
 package org.taktik.icure.asynclogic.impl
 
-import java.net.URI
 import java.time.Duration
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flattenConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.toSet
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.taktik.couchdb.DocIdentifier
 import org.taktik.icure.asyncdao.TimeTableDAO
+import org.taktik.icure.asynclogic.AgendaLogic
 import org.taktik.icure.asynclogic.AsyncSessionLogic
+import org.taktik.icure.asynclogic.CalendarItemLogic
+import org.taktik.icure.asynclogic.CalendarItemTypeLogic
 import org.taktik.icure.asynclogic.TimeTableLogic
 import org.taktik.icure.entities.TimeTable
-import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.utils.FuzzyValues
 import org.taktik.icure.utils.distinct
 import org.taktik.icure.utils.entities.embed.iterator
@@ -48,7 +50,13 @@ class SlotAndAgenda(val slot: Long, val agendaId: String?): Comparable<SlotAndAg
 }
 
 @Service
-class TimeTableLogicImpl(private val timeTableDAO: TimeTableDAO, private val sessionLogic: AsyncSessionLogic) : GenericLogicImpl<TimeTable, TimeTableDAO>(sessionLogic), TimeTableLogic {
+class TimeTableLogicImpl(
+	private val timeTableDAO: TimeTableDAO,
+	private val agendaLogic: AgendaLogic,
+	private val calendarItemTypeLogic: CalendarItemTypeLogic,
+	private val calendarItemLogic: CalendarItemLogic,
+	sessionLogic: AsyncSessionLogic
+) : GenericLogicImpl<TimeTable, TimeTableDAO>(sessionLogic), TimeTableLogic {
 	override suspend fun createTimeTable(timeTable: TimeTable) = fix(timeTable) { timeTable ->
 		timeTableDAO.create(timeTable)
 	}
@@ -62,34 +70,22 @@ class TimeTableLogicImpl(private val timeTableDAO: TimeTableDAO, private val ses
 	}
 
 	override fun getTimeTablesByPeriodAndAgendaId(startDate: Long, endDate: Long, agendaId: String): Flow<TimeTable> = flow {
-		val (dbInstanceUri, groupId) = sessionLogic.getInstanceAndGroupInformationFromSecurityContext()
-		emitAll(timeTableDAO.listTimeTablesByPeriodAndAgendaId(dbInstanceUri, groupId, startDate, endDate, agendaId))
-	}
-
-	override fun getCalendarItemTypeIdsAndLocationsByGroupIdAndAgendaIds(groupId: String, startDate: Long, endDate: Long, agendaIds: Collection<String>) = flow {
-		val group = groupDAO.get(groupId) ?: throw IllegalArgumentException("Invalid groupId")
-		val uri = group.servers?.firstOrNull()?.let { URI(it) } ?: dbInstanceUri
-		timeTableDAO.listTimeTablesByPeriodAndAgendaIds(uri, groupId, startDate, endDate, agendaIds).collect { tt ->
-			tt.items.filter { tti -> tti.publicTimeTableItem }.mapNotNull { tti -> tti.calendarItemTypeId?.let { Triple(it, tti.placeId, tti.acceptsNewPatient) } }.toSet().forEach { emit(it) }
-		}
+		emitAll(timeTableDAO.listTimeTableByPeriodAndAgendaId(startDate, endDate, agendaId))
 	}
 
 	//This method is supposed to be insecure because it is the only way an anonymous user can list the availabilities of a hcp
-	override fun getAvailabilitiesByPeriodAndCalendarItemTypeId(groupId: String, userId: String, startDate: Long, endDate: Long, calendarItemTypeId: String, placeId: String?, isNewPatient: Boolean, publicTimeTablesOnly: Boolean, hcpId: String, limit: Int): Flow<Long> = flow {
-		val group = groupDAO.get(groupId) ?: throw IllegalArgumentException("Invalid groupId")
-		val uri = group.servers?.firstOrNull()?.let { URI(it) } ?: dbInstanceUri
-
+	override fun getAvailabilitiesByPeriodAndCalendarItemTypeId(userId: String, startDate: Long, endDate: Long, calendarItemTypeId: String, placeId: String?, isNewPatient: Boolean, publicTimeTablesOnly: Boolean, hcpId: String, limit: Int): Flow<Long> = flow {
 		val roundedStartDate = startDate - (startDate % 100)
 		val roundedEndDate = endDate - (endDate % 100)
 
 		val startLdt = FuzzyValues.getDateTime(roundedStartDate)
 		val endLdt = FuzzyValues.getDateTime(roundedEndDate)
 
-		val agendaIds = agendaLogic.getAnonymousAgendasByUser(groupId, userId).map { it.id }.distinct()
+		val agendaIds = agendaLogic.getAgendasByUser(userId).map { it.id }.distinct()
 
-		val cit = calendarItemTypeLogic.getAnonymousCalendarItemTypes(groupId, listOf(calendarItemTypeId)).firstOrNull() ?: throw IllegalArgumentException("Invalid calendar item type id")
-		val cis = agendaIds.map { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(groupId, startDate, endDate, it) }.flattenConcat().toList()
-		val tts = timeTableDAO.listTimeTablesByPeriodAndAgendaIds(uri, groupId, startDate, endDate, agendaIds.toSet()).filter {
+		val cit = calendarItemTypeLogic.getCalendarItemTypes(listOf(calendarItemTypeId)).firstOrNull() ?: throw IllegalArgumentException("Invalid calendar item type id")
+		val cis = agendaIds.map { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(startDate, endDate, it) }.flattenConcat().toList()
+		val tts = timeTableDAO.listTimeTableByPeriodAndAgendaIds(startDate, endDate, agendaIds.toSet()).filter {
 			!publicTimeTablesOnly || it.items.any { tti -> tti.publicTimeTableItem }
 		}.toList()
 
