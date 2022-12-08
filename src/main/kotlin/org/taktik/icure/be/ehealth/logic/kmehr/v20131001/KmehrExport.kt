@@ -175,7 +175,7 @@ open class KmehrExport(
 			}
 			m.ssin?.let { ssin ->
 				if (!ssin.isNullOrEmpty()) {
-					ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.INSS; sv = "1.6"; value = ssin })
+					ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.INSS; sv = "1.6"; value = ssin.replace("[^0-9]".toRegex(), "") })
 				}
 			}
 			cds?.let { this.cds.addAll(it) }
