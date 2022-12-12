@@ -1,6 +1,5 @@
 package org.taktik.icure.asynclogic.codelogic
 
-import java.sql.Struct
 import kotlin.random.Random.Default.nextInt
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -17,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
-import org.taktik.icure.test.CodeBatchGenerator
 import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.generateInBetweenCode
+import org.taktik.icure.test.generators.CodeBatchGenerator
 import org.taktik.icure.test.removeEntities
 
 @SpringBootTest(

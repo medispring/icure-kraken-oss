@@ -1,10 +1,7 @@
 package org.taktik.icure.services.external.rest.v1.controllers.core
 
-import java.nio.charset.StandardCharsets
+import java.net.URI
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.SingletonSupport
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,15 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
-import org.taktik.icure.asynclogic.CodeLogic
+import org.taktik.icure.asyncdao.CodeDAO
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
-import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
-import org.taktik.icure.test.CodeBatchGenerator
 import org.taktik.icure.test.ICureTestApplication
-import reactor.core.publisher.Flux
-import reactor.netty.ByteBufFlux
-import reactor.netty.http.client.HttpClient
+import org.taktik.icure.test.generators.CodeBatchGenerator
+import org.taktik.icure.test.makePostRequest
+import org.taktik.icure.test.objectMapper
 
 @SpringBootTest(
 	classes = [ICureTestApplication::class],
@@ -33,55 +28,23 @@ import reactor.netty.http.client.HttpClient
 @ActiveProfiles("app")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CodeBatchCreationEndToEndTest @Autowired constructor(
-	private val codeLogic: CodeLogic,
-	private val codeMapper: CodeMapper,
-	private val couchDbProperties: CouchDbProperties,
+	private val codeDAO: CodeDAO,
+	private val couchDbProperties: CouchDbProperties
 ) {
+
 	@LocalServerPort
 	var port = 0
-	val apiHost = System.getenv("ICURE_BE_URL") ?: "http://localhost"
-	val apiVersion: String = System.getenv("ENDPOINT_TO_TEST") ?: "v1"
+	val apiHost = System.getenv("ICURE_URL") ?: "http://localhost"
+	val apiVersion: String = System.getenv("API_VERSION") ?: "v1"
 	val codeGenerator = CodeBatchGenerator()
 	val batchSize = 1001
 
-	val objectMapper: ObjectMapper by lazy {
-		ObjectMapper().registerModule(
-			KotlinModule.Builder()
-				.nullIsSameAsDefault(nullIsSameAsDefault = false)
-				.reflectionCacheSize(reflectionCacheSize = 512)
-				.nullToEmptyMap(nullToEmptyMap = false)
-				.nullToEmptyCollection(nullToEmptyCollection = false)
-				.singletonSupport(singletonSupport = SingletonSupport.DISABLED)
-				.strictNullChecks(strictNullChecks = false)
-				.build()
-		)
-	}
-
-	fun createHttpClient(): HttpClient {
-		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${couchDbProperties.username!!}:${couchDbProperties.password!!}".toByteArray())}"
-		return HttpClient.create().headers { h ->
-			h.set("Authorization", auth) //
-			h.set("Content-type", "application/json")
-		}
-	}
-
-	fun makePostRequest(url: String, payload: String, expectedCode: Int = 200): String? {
-		val client = createHttpClient()
-
-		val responseBody = client
-			.post()
-			.uri(url)
-			.send(ByteBufFlux.fromString(Flux.just(payload)))
-			.responseSingle { response, buffer ->
-				assertNotNull(response)
-				assertEquals(expectedCode, response.status().code())
-				buffer.asString(StandardCharsets.UTF_8)
-			}.block()
-
-		return responseBody
-	}
+	fun createHttpClient() = org.taktik.icure.test.createHttpClient(ICureTestApplication.masterHcp!!.login, ICureTestApplication.masterHcp!!.password)
 
 	private fun codeApiEndpoint() = "$apiHost:$port/rest/$apiVersion/code"
+
+	private fun findCodesBy(type: String? = null, code: String? = null, version: String? = null) = codeDAO.listCodesBy(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, type, code, version)
+	private fun getCodes(codeIds: List<String>) = codeDAO.getEntities(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, codeIds)
 
 	@Test
 	fun onEmptyBatchTheResponseIsEmptyAndNoCodeIsAdded() {
@@ -89,15 +52,15 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 			val batch = listOf<CodeDto>()
 
 			// Get all the codes before the creation
-			val before = codeLogic.findCodesBy(null, null, null)
+			val before = findCodesBy(null, null, null)
 
-			val responseString = makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch))
+			val responseString = makePostRequest(createHttpClient(), "${codeApiEndpoint()}/batch", objectMapper.writeValueAsString(batch))
 			assertNotNull(responseString)
 			val response = objectMapper.readValue(responseString!!, object : TypeReference<List<CodeDto>>() {})
 			assertEquals(0, response.size)
 
 			// Get all the codes after the creation and compare
-			val after = codeLogic.findCodesBy(null, null, null)
+			val after = findCodesBy(null, null, null)
 			assertEquals(before.count(), after.count())
 		}
 	}
@@ -105,7 +68,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	@Test
 	fun batchCreationInEmptyDatabaseExecutesSuccessfully() {
 		val batch = codeGenerator.createBatchOfUniqueCodes(batchSize)
-		val responseString = makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch))
+		val responseString = makePostRequest(createHttpClient(), "${codeApiEndpoint()}/batch", objectMapper.writeValueAsString(batch))
 		assertNotNull(responseString)
 		val response = objectMapper.readValue(responseString!!, object : TypeReference<List<CodeDto>>() {})
 
@@ -116,7 +79,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		}
 
 		// Check that all the new codes are in the database
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
+		val newCodesInDB = getCodes(batch.map { it.id })
 		runBlocking {
 			assertEquals(batch.size, newCodesInDB.count())
 		}
@@ -128,13 +91,13 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 
 		runBlocking {
 			// Insert one code in the db
-			codeLogic.create(codeMapper.map(batch[0]))
+			makePostRequest(createHttpClient(), codeApiEndpoint(), objectMapper.writeValueAsString(batch[0]))
 
 			// Try creating the codes
-			makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch), 400)
+			makePostRequest(createHttpClient(), "${codeApiEndpoint()}/batch", objectMapper.writeValueAsString(batch), 400)
 
 			// Check that only the single code exists in the db
-			val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
+			val newCodesInDB = getCodes(batch.map { it.id })
 			runBlocking {
 				assertEquals(1, newCodesInDB.count())
 			}
@@ -142,11 +105,11 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	}
 
 	fun batchCreationThatFails(batch: List<CodeDto>) {
-		makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch), 400)
+		makePostRequest(createHttpClient(), "${codeApiEndpoint()}/batch", objectMapper.writeValueAsString(batch), 400)
 
 		// Check that none of the new codes exist in the DB
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
 		runBlocking {
+			val newCodesInDB = getCodes(batch.map { it.id })
 			assertEquals(0, newCodesInDB.count())
 		}
 	}
@@ -194,15 +157,15 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		)
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
-		makePostRequest(
-			codeApiEndpoint(),
+		makePostRequest(createHttpClient(),
+			"${codeApiEndpoint()}/batch",
 			stringBatch.replace("\\{ *\"DUMMY_LANG\" *: *\"DUMMY_VAL\" *}".toRegex(), "\"DUMMY\""),
 			400
 		)
 
 		// Check that none of the new codes exist in the DB
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
 		runBlocking {
+			val newCodesInDB = getCodes(batch.map { it.id })
 			assertEquals(0, newCodesInDB.count())
 		}
 	}
@@ -218,14 +181,14 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		)
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
-		makePostRequest(
-			codeApiEndpoint(),
+		makePostRequest(createHttpClient(),
+			"${codeApiEndpoint()}/batch",
 			stringBatch.replace("\\[ *\"DUMMY_REGION\" *]".toRegex(), "\"DUMMY\""), 400
 		)
 
 		// Check that none of the new codes exist in the DB
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
 		runBlocking {
+			val newCodesInDB = getCodes(batch.map { it.id })
 			assertEquals(0, newCodesInDB.count())
 		}
 	}
@@ -241,14 +204,14 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		)
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
-		makePostRequest(
-			codeApiEndpoint(),
+		makePostRequest(createHttpClient(),
+			"${codeApiEndpoint()}/batch",
 			stringBatch.replace("\\{ *\"DUMMY_TYPE\" *: *\\[ *\"DUMMY_CODE\" *] *}".toRegex(), "\"DUMMY\""), 400
 		)
 
 		// Check that none of the new codes exist in the DB
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
 		runBlocking {
+			val newCodesInDB = getCodes(batch.map { it.id })
 			assertEquals(0, newCodesInDB.count())
 		}
 	}
@@ -264,14 +227,14 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		)
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
-		makePostRequest(
-			codeApiEndpoint(),
+		makePostRequest(createHttpClient(),
+			"${codeApiEndpoint()}/batch",
 			stringBatch.replace("\\{ *\"DUMMY_LANG\" *: *\\[ *\"DUMMY_TERM\" *] *}".toRegex(), "\"DUMMY\""), 400
 		)
 
 		// Check that none of the new codes exist in the DB
-		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
 		runBlocking {
+			val newCodesInDB = getCodes(batch.map { it.id })
 			assertEquals(0, newCodesInDB.count())
 		}
 	}

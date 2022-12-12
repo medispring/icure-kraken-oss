@@ -15,7 +15,7 @@ import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.impl.filter.Filters
 import org.taktik.icure.services.external.rest.v1.mapper.UserMapper
 import org.taktik.icure.test.ICureTestApplication
-import org.taktik.icure.test.UserGenerator
+import org.taktik.icure.test.generators.UserGenerator
 
 @SpringBootTest(
 	classes = [ICureTestApplication::class],

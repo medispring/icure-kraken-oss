@@ -18,8 +18,8 @@ import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.asynclogic.impl.filter.Filters
 import org.taktik.icure.services.external.rest.v1.dto.filter.code.CodeIdsByTypeCodeVersionIntervalFilter
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
-import org.taktik.icure.test.CodeBatchGenerator
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.generators.CodeBatchGenerator
 import org.taktik.icure.test.removeEntities
 
 @SpringBootTest(
