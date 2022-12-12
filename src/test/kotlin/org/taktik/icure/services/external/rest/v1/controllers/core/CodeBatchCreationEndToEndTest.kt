@@ -35,11 +35,10 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	private val codeLogic: CodeLogic,
 	private val codeMapper: CodeMapper
 ) {
-
 	@LocalServerPort
 	var port = 0
 	val apiHost = System.getenv("ICURE_BE_URL") ?: "http://localhost"
-	val apiEndpoint: String = System.getenv("ENDPOINT_TO_TEST") ?: "/rest/v1"
+	val apiVersion: String = System.getenv("ENDPOINT_TO_TEST") ?: "v1"
 	val codeGenerator = CodeBatchGenerator()
 	val batchSize = 1001
 
@@ -57,7 +56,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	}
 
 	fun createHttpClient(): HttpClient {
-		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())}"
+		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
 		return HttpClient.create().headers { h ->
 			h.set("Authorization", auth) //
 			h.set("Content-type", "application/json")
@@ -80,6 +79,8 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		return responseBody
 	}
 
+	private fun codeApiEndpoint() = "$apiHost:$port/rest/$apiVersion/code"
+
 	@Test
 	fun onEmptyBatchTheResponseIsEmptyAndNoCodeIsAdded() {
 		runBlocking {
@@ -88,7 +89,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 			// Get all the codes before the creation
 			val before = codeLogic.findCodesBy(null, null, null)
 
-			val responseString = makePostRequest("$apiHost:$port$apiEndpoint", objectMapper.writeValueAsString(batch))
+			val responseString = makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch))
 			assertNotNull(responseString)
 			val response = objectMapper.readValue(responseString!!, object : TypeReference<List<CodeDto>>() {})
 			assertEquals(0, response.size)
@@ -102,7 +103,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	@Test
 	fun batchCreationInEmptyDatabaseExecutesSuccessfully() {
 		val batch = codeGenerator.createBatchOfUniqueCodes(batchSize)
-		val responseString = makePostRequest("$apiHost:$port$apiEndpoint", objectMapper.writeValueAsString(batch))
+		val responseString = makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch))
 		assertNotNull(responseString)
 		val response = objectMapper.readValue(responseString!!, object : TypeReference<List<CodeDto>>() {})
 
@@ -128,7 +129,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 			codeLogic.create(codeMapper.map(batch[0]))
 
 			// Try creating the codes
-			makePostRequest("$apiHost:$port$apiEndpoint", objectMapper.writeValueAsString(batch), 400)
+			makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch), 400)
 
 			// Check that only the single code exists in the db
 			val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
@@ -139,7 +140,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	}
 
 	fun batchCreationThatFails(batch: List<CodeDto>) {
-		makePostRequest("$apiHost:$port$apiEndpoint", objectMapper.writeValueAsString(batch), 400)
+		makePostRequest(codeApiEndpoint(), objectMapper.writeValueAsString(batch), 400)
 
 		// Check that none of the new codes exist in the DB
 		val newCodesInDB = codeLogic.getCodes(batch.map { it.id })
@@ -192,7 +193,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
 		makePostRequest(
-			"$apiHost:$port$apiEndpoint",
+			codeApiEndpoint(),
 			stringBatch.replace("\\{ *\"DUMMY_LANG\" *: *\"DUMMY_VAL\" *}".toRegex(), "\"DUMMY\""),
 			400
 		)
@@ -216,7 +217,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
 		makePostRequest(
-			"$apiHost:$port$apiEndpoint",
+			codeApiEndpoint(),
 			stringBatch.replace("\\[ *\"DUMMY_REGION\" *]".toRegex(), "\"DUMMY\""), 400
 		)
 
@@ -239,7 +240,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
 		makePostRequest(
-			"$apiHost:$port$apiEndpoint",
+			codeApiEndpoint(),
 			stringBatch.replace("\\{ *\"DUMMY_TYPE\" *: *\\[ *\"DUMMY_CODE\" *] *}".toRegex(), "\"DUMMY\""), 400
 		)
 
@@ -262,7 +263,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 		val stringBatch = objectMapper.writeValueAsString(batch)
 
 		makePostRequest(
-			"$apiHost:$port$apiEndpoint",
+			codeApiEndpoint(),
 			stringBatch.replace("\\{ *\"DUMMY_LANG\" *: *\\[ *\"DUMMY_TERM\" *] *}".toRegex(), "\"DUMMY\""), 400
 		)
 

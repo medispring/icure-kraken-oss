@@ -1,12 +1,11 @@
 package org.taktik.icure.test
 
-import javax.annotation.PreDestroy
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.retry
-import kotlinx.coroutines.reactive.asFlow
+import java.net.URI
+import java.util.UUID
+import com.icure.test.setup.ICureTestSetup
+import com.icure.test.setup.ICureTestSetup.MasterHcpCredentials
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -17,24 +16,13 @@ import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfigurati
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.springframework.context.annotation.PropertySource
-import org.springframework.core.task.TaskExecutor
-import org.springframework.scheduling.TaskScheduler
+import org.taktik.couchdb.Client
 import org.taktik.icure.asyncdao.GenericDAO
 import org.taktik.icure.asyncdao.InternalDAO
-import org.taktik.icure.asynclogic.CodeLogic
-import org.taktik.icure.asynclogic.ICureLogic
-import org.taktik.icure.asynclogic.PropertyLogic
-import org.taktik.icure.asynclogic.UserLogic
-import org.taktik.icure.asynclogic.objectstorage.DocumentObjectStorageClient
-import org.taktik.icure.asynclogic.objectstorage.ObjectStorageClient
-import org.taktik.icure.asynclogic.objectstorage.impl.fake.FakeObjectStorageClient
-import org.taktik.icure.constants.Users
-import org.taktik.icure.entities.Document
-import org.taktik.icure.exceptions.DuplicateDocumentException
+import org.taktik.icure.asyncdao.impl.CouchDbDispatcher
 import org.taktik.icure.properties.CouchDbProperties
-import reactor.netty.http.client.HttpClient
 
 @SpringBootApplication(
 	scanBasePackages = [
@@ -48,6 +36,8 @@ import reactor.netty.http.client.HttpClient
 		"org.taktik.icure.be.ehealth.logic",
 		"org.taktik.icure.be.format.logic",
 		"org.taktik.icure.properties",
+		"org.taktik.icure.db",
+		"org.taktik.icure.dao",
 		"org.taktik.icure.services.external.http",
 		"org.taktik.icure.services.external.rest.v1.controllers",
 		"org.taktik.icure.services.external.rest.v1.mapper",
@@ -70,77 +60,65 @@ import reactor.netty.http.client.HttpClient
 @TestConfiguration
 class ICureTestApplication {
 
-	private val log = LoggerFactory.getLogger(this.javaClass)
+	companion object {
+		var masterHcp: MasterHcpCredentials? = null
+	}
 
 	@Bean
-	fun performStartupTasks(@Qualifier("threadPoolTaskExecutor") taskExecutor: TaskExecutor, taskScheduler: TaskScheduler, iCureLogic: ICureLogic, codeLogic: CodeLogic, propertyLogic: PropertyLogic, allDaos: List<GenericDAO<*>>, internalDaos: List<InternalDAO<*>>, couchDbProperties: CouchDbProperties, userLogic: UserLogic) = ApplicationRunner {
-		val client = HttpClient.create()
-		val dbPort = System.getenv("ICURE_COUCHDB_URL").split(":")[2]
-		try { // Check if I already have a database running
-			client.get().uri(System.getenv("ICURE_COUCHDB_URL"))
-				.response()
-				.block()
-		} catch (e: Exception) { // If not, I use docker to create a container
-			println("Starting docker")
-			ProcessBuilder(
-				(
-					"docker run " +
-						"-p $dbPort:5984 " +
-						"-e COUCHDB_USER=${System.getenv("ICURE_COUCHDB_USERNAME")} -e COUCHDB_PASSWORD=${System.getenv("ICURE_COUCHDB_PASSWORD")} " +
-						"-d --name couchdb-test-instance " +
-						"couchdb:3.2.2"
-					).split(' ')
-			)
-				.start()
-				.waitFor()
-
-			// Polling, waiting for the database to initialize
-			runBlocking {
-				client.get().uri(System.getenv("ICURE_COUCHDB_URL"))
-					.response()
-					.asFlow()
-					.retry(retries = 120) { e ->
-						(e is reactor.netty.http.client.PrematureCloseException).also { if (it) delay(500) }
-					}.collect()
-			}
-		}
+	@Profile("app")
+	fun performStartupTasks(
+		allDaos: List<GenericDAO<*>>,
+		internalDaos: List<InternalDAO<*>>,
+		couchDbProperties: CouchDbProperties,
+		testGroupProperties: TestProperties,
+		@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher) = ApplicationRunner {
 
 		runBlocking {
-			allDaos.forEach {
-				it.forceInitStandardDesignDocument(true)
+			if (testGroupProperties.bootstrapEnv!!) {
+				println("Bootstrapping CouchDB Container...")
+				bootstrapEnvironment(allDaos, couchDbDispatcher, couchDbProperties, testGroupProperties)
 			}
+
+			if (testGroupProperties.groupId != null) {
+				println("Initializing existing groupId ${testGroupProperties.groupId}...")
+				val couchClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), testGroupProperties.groupId)
+				initStandardDesignDocumentsOf(allDaos, couchClient)
+			} else {
+				val groupId = "ic-e2e-${UUID.randomUUID()}"
+				ICureTestSetup.createGroup(groupId, UUID.randomUUID().toString(), couchDbProperties.url, couchDbProperties.username!!, couchDbProperties.password!!)
+				val couchClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), groupId)
+				initStandardDesignDocumentsOf(allDaos, couchClient)
+
+				masterHcp = ICureTestSetup.createMasterHcpIn(groupId, couchDbProperties.url, couchDbProperties.username!!, couchDbProperties.password!!)
+			}
+
 			internalDaos.forEach {
 				it.forceInitStandardDesignDocument(true)
 			}
-
-			// Creation of the test user
-			try {
-				userLogic.newUser(Users.Type.database, System.getenv("ICURE_TEST_USER_NAME"), System.getenv("ICURE_TEST_USER_PASSWORD"), "icure")// Creates a test user if it does not exist
-			} catch (e: DuplicateDocumentException) {
-				log.info("Test user already exists!")
-			} finally {
-				log.info("iCure test user\nusername: ${System.getenv("ICURE_TEST_USER_NAME")}\npassword: ${System.getenv("ICURE_TEST_USER_PASSWORD")}")
-			}
 		}
 	}
 
-	// At the end of the tests, I destroy the docker container
-	@PreDestroy
-	fun destroyDockerDBContainer() {
-		ProcessBuilder(("docker rm -f couchdb-test-instance -v").split(' '))
-			.start()
-			.waitFor()
+	private suspend fun bootstrapEnvironment(allDaos: List<GenericDAO<*>>, couchDbDispatcher: CouchDbDispatcher, couchDbProperties: CouchDbProperties, testGroupProperties: TestProperties) {
+		val couchDbClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url))
+		initStandardDesignDocumentsOf(allDaos, couchDbClient)
+
+		ICureTestSetup.bootstrapCloud(
+			testGroupProperties.adminGroupId!!,
+			testGroupProperties.adminGroupPassword!!,
+			groupUserLogin = testGroupProperties.adminUsername!!,
+			groupUserPasswordHash = DigestUtils.sha256Hex(testGroupProperties.adminPassword!!),
+			couchDbUrl = couchDbProperties.url,
+			couchDbUser = couchDbProperties.username!!,
+			couchDbPassword = couchDbProperties.password!!
+		)
+
+		val couchDbClientForAdminGroup = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), "xx")
+		initStandardDesignDocumentsOf(allDaos, couchDbClientForAdminGroup)
 	}
 
-	// Test beans
-	@Bean("fakeObjectStorageClientUserCheck")
-	fun fakeObjectStorageClientUserCheck(userLogic: UserLogic): (String) -> Boolean {
-		return object : (String) -> Boolean {
-			private val expectedId by lazy {
-				runBlocking { userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id }
-			}
-
-			override fun invoke(userId: String): Boolean = userId == expectedId
+	private suspend fun initStandardDesignDocumentsOf(allDaos: List<GenericDAO<*>>, couchClient: Client) {
+		allDaos.forEach {
+			it.forceInitStandardDesignDocument(couchClient, true)
 		}
 	}
 }

@@ -2,12 +2,16 @@
  *    Copyright 2020 Taktik SA
  */
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import com.google.devtools.ksp.gradle.KspTask
+import org.icure.task.CleanCouchDockerTask
+import org.icure.task.StartCouchDockerTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
-import java.text.SimpleDateFormat
-import java.util.*
-import com.google.devtools.ksp.gradle.KspTask
+
+
 
 val ktlint by configurations.creating
 
@@ -305,6 +309,7 @@ dependencies {
 	testImplementation(group = "io.kotest", name = "kotest-assertions-core", version = "4.4.3")
 	testImplementation(group = "io.kotest", name = "kotest-runner-junit5", version = "4.4.3")
 	testImplementation(group = "io.kotest.extensions", name = "kotest-extensions-spring", version = "1.0.1")
+	testImplementation(group = "io.icure", name = "icure-e2e-test-setup", version = "0.0.2-g817cb0b931")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
@@ -375,3 +380,12 @@ tasks.withType<JavaCompile>().configureEach {
     options.isIncremental = true
 }
 
+
+// Those two tasks require Kotlin 1.7 to run properly: Do not forget to update your project settings
+val cleanCouchTask = tasks.register<CleanCouchDockerTask>("cleanCouchTask")
+val startCouchTask = tasks.register<StartCouchDockerTask>("startCouchTask")
+
+tasks.getByName("test") {
+	dependsOn(startCouchTask)
+	finalizedBy(cleanCouchTask)
+}

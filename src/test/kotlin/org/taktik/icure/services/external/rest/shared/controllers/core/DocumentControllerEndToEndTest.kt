@@ -20,8 +20,9 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key1
 import org.taktik.icure.asynclogic.objectstorage.testutils.key2
 import org.taktik.icure.asynclogic.objectstorage.testutils.key3
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
-import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.*
+import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.UpdateAttachmentMetadata
 import org.taktik.icure.test.authorizationString
+import org.taktik.icure.test.fake.SessionMock
 import org.taktik.icure.test.randomBytes
 import org.taktik.icure.test.retryUntil
 import org.taktik.icure.test.shouldContainExactly

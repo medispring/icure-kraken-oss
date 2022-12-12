@@ -1,4 +1,4 @@
-package org.taktik.icure.test
+package org.taktik.icure.test.fake
 
 import java.net.URI
 import java.util.stream.Stream
@@ -21,6 +21,7 @@ import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.AuthorizationService
 import org.taktik.icure.security.PermissionSetIdentifier
 import org.taktik.icure.security.jwt.JwtDetails
+import org.taktik.icure.test.newId
 import reactor.core.publisher.Mono
 import reactor.util.context.Context
 

@@ -1,19 +1,87 @@
 package org.taktik.icure.test
 
-import kotlin.math.abs
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import kotlin.math.abs
 import kotlin.random.Random.Default.nextInt
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.SingletonSupport
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import org.taktik.icure.services.external.rest.v1.dto.MaintenanceTaskDto
+import org.junit.jupiter.api.Assertions
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
+import org.taktik.icure.services.external.rest.v1.dto.RegistrationInformationDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
+
+val objectMapper: ObjectMapper by lazy {
+	ObjectMapper().registerModule(
+		KotlinModule.Builder()
+			.nullIsSameAsDefault(nullIsSameAsDefault = false)
+			.reflectionCacheSize(reflectionCacheSize = 512)
+			.nullToEmptyMap(nullToEmptyMap = false)
+			.nullToEmptyCollection(nullToEmptyCollection = false)
+			.singletonSupport(singletonSupport = SingletonSupport.DISABLED)
+			.strictNullChecks(strictNullChecks = false)
+			.build()
+	)
+}
+
+fun createTestUserInformationIfNeeded(apiUrl: String, adminUser: String, adminPassword: String, testUser: String, testUserPassword: String) {
+	val responseBody = createHttpClient(adminUser, adminPassword)
+		.get()
+		.uri("$apiUrl/user/byEmail/$testUser")
+		.response()
+		.block()
+
+	if (responseBody?.status()?.code() != 200) {
+		val body = RegistrationInformationDto(lastName = testUser, firstName = testUser, emailAddress = testUser)
+		val responseString = makePostRequest(createHttpClient(adminUser, adminPassword), "$apiUrl/group/register/trial", objectMapper.writeValueAsString(body))
+		val result = objectMapper.readValue(responseString!!, RegistrationSuccess::class.java)
+
+		println("Group ${result.groupId} created for user $testUser")
+
+		makePostRequest(
+			createHttpClient(adminUser, adminPassword, mapOf("token" to testUserPassword)),
+			"$apiUrl/user/token/${result.userId}/testing?tokenValidity=${20 * 60 * 1000}",
+			"{}"
+		) ?: throw RuntimeException("Group and Admin user creation didn't work: User does not exist")
+
+		println("User $testUser may now use its dedicated password for 20 minutes...")
+	}
+}
+
+fun createHttpClient(username: String, password: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
+	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
+	return HttpClient.create().headers { h ->
+		h.set("Authorization", auth) //
+		h.set("Content-type", "application/json")
+		additionalHeaders.forEach {
+			h.set(it.key, it.value)
+		}
+	}
+}
+
+
+fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200): String? {
+	val responseBody = client
+		.post()
+		.uri(url)
+		.send(ByteBufFlux.fromString(Flux.just(payload)))
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 private data class IdWithRev(@field:JsonProperty("_id") val id: String, @field:JsonProperty("_rev") val rev: String)
