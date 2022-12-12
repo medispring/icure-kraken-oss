@@ -170,10 +170,10 @@ open class KmehrExport(
 	suspend fun createParty(m: HealthcareParty, cds: List<CDHCPARTY>? = listOf()): HcpartyType {
 		return HcpartyType().apply {
 			if (!m.nihii.isNullOrBlank()) {
-				m.nihii.let { nihii -> ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.ID_HCPARTY; sv = "1.0"; value = nihii }) }
+				m.nihii.let { nihii -> ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.ID_HCPARTY; sv = "1.0"; value = nihii.replace("[^0-9]".toRegex(), "") }) }
 			}
 			if (!m.ssin.isNullOrBlank()) {
-				m.ssin.let { ssin -> ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.INSS; sv = "1.0"; value = ssin }) }
+				m.ssin.let { ssin -> ids.add(IDHCPARTY().apply { s = IDHCPARTYschemes.INSS; sv = "1.0"; value = ssin.replace("[^0-9]".toRegex(), "") }) }
 			}
 			cds?.let { this.cds.addAll(it) }
 			this.cds.addAll(
@@ -206,7 +206,7 @@ open class KmehrExport(
 		val ssin = p.ssin?.replace("[^0-9]".toRegex(), "")?.let { if (org.taktik.icure.utils.Math.isNissValid(it)) it else null }
 		return makePerson(p, config).apply {
 			ids.clear()
-			ssin?.let { ssin -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.ID_PATIENT; sv = "1.0"; value = ssin }) }
+			ssin?.let { ssin -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.ID_PATIENT; sv = "1.0"; value = ssin.replace("[^0-9]".toRegex(), "") }) }
 			ids.add(IDPATIENT().apply { s = IDPATIENTschemes.LOCAL; sl = "MF-ID"; sv = config.soft.version; value = p.id })
 		}
 	}
@@ -230,7 +230,7 @@ open class KmehrExport(
 		val ssin = p.ssin?.replace("[^0-9]".toRegex(), "")?.let { if (org.taktik.icure.utils.Math.isNissValid(it)) it else null }
 
 		return PersonType().apply {
-			ssin?.let { ssin -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.ID_PATIENT; sv = "1.0"; value = ssin }) }
+			ssin?.let { ssin -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.ID_PATIENT; sv = "1.0"; value = ssin.replace("[^0-9]".toRegex(), "") }) }
 			p.id.let { id -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.LOCAL; sv = config.soft.version; sl = "${config.soft.name}-Person-Id"; value = id }) }
 			firstnames.add(p.firstName)
 			familyname = p.lastName
