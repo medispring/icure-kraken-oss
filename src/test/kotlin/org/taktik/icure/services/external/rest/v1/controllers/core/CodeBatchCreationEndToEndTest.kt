@@ -28,19 +28,19 @@ import org.taktik.icure.test.objectMapper
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CodeBatchCreationEndToEndTest @Autowired constructor(
 	private val codeDAO: CodeDAO,
-	private val couchDbProperties: CouchDbProperties
+	private val couchDbProperties: CouchDbProperties,
+	@LocalServerPort val port: Int,
 ) {
 
-	@LocalServerPort
-	var port = 0
-	val apiHost = System.getenv("ICURE_URL") ?: "http://localhost"
+	val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
 	val apiVersion: String = System.getenv("API_VERSION") ?: "v1"
 	val codeGenerator = CodeBatchGenerator()
 	val batchSize = 1001
 
 	fun createHttpClient() = org.taktik.icure.test.createHttpClient("john", "LetMeIn")
 
-	private fun codeApiEndpoint() = "$apiHost:$port/rest/$apiVersion/code"
+	private fun apiUrl() = if (apiUrl == "http://localhost") "$apiUrl:$port" else apiUrl
+	private fun codeApiEndpoint() = "${apiUrl()}/rest/$apiVersion/code"
 
 	private fun findCodesBy(type: String? = null, code: String? = null, version: String? = null) = codeDAO.listCodesBy(type, code, version)
 	private fun getCodes(codeIds: List<String>) = codeDAO.getEntities(codeIds)

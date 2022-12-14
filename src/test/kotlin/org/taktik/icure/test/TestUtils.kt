@@ -1,7 +1,10 @@
 package org.taktik.icure.test
 
+import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.security.KeyPairGenerator
+import java.util.UUID
 import kotlin.math.abs
 import kotlin.random.Random.Default.nextInt
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
@@ -12,6 +15,13 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.SingletonSupport
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.junit.jupiter.api.Assertions
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.taktik.icure.asyncdao.PatientDAO
+import org.taktik.icure.asyncdao.UserDAO
+import org.taktik.icure.entities.Patient
+import org.taktik.icure.entities.User
+import org.taktik.icure.services.external.rest.v1.dto.PatientDto
+import org.taktik.icure.services.external.rest.v1.dto.UserDto
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
@@ -32,8 +42,12 @@ val objectMapper: ObjectMapper by lazy {
 
 fun createHttpClient(username: String, password: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
 	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
+	return createHttpClient(auth, additionalHeaders)
+}
+
+fun createHttpClient(userAuth: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
 	return HttpClient.create().headers { h ->
-		h.set("Authorization", auth) //
+		h.set("Authorization", userAuth) //
 		h.set("Content-type", "application/json")
 		additionalHeaders.forEach {
 			h.set(it.key, it.value)
@@ -41,6 +55,18 @@ fun createHttpClient(username: String, password: String, additionalHeaders: Map<
 	}
 }
 
+fun makeGetRequest(client: HttpClient, url: String, expectedCode: Int = 200): String? {
+	val responseBody = client
+		.get()
+		.uri(url)
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
 
 fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200): String? {
 	val responseBody = client
@@ -61,6 +87,19 @@ fun makePutRequest(client: HttpClient, url: String, payload: String, expectedCod
 		.put()
 		.uri(url)
 		.send(ByteBufFlux.fromString(Flux.just(payload)))
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
+
+fun makeDeleteRequest(client: HttpClient, url: String, expectedCode: Int = 200): String? {
+	val responseBody = client
+		.delete()
+		.uri(url)
 		.responseSingle { response, buffer ->
 			Assertions.assertNotNull(response)
 			Assertions.assertEquals(expectedCode, response.status().code())
@@ -112,3 +151,57 @@ suspend fun removeEntities(ids: List<String>, objectMapper: ObjectMapper?) {
 	}
 }
 
+private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
+
+suspend fun createPatientUser(httpClient: HttpClient,
+	apiUrl: String,
+	groupId: String,
+	passwordEncoder: PasswordEncoder): UserCredentials {
+	val username = "pat-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
+
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val patientToCreate = PatientDto(
+		id = UUID.randomUUID().toString(),
+		firstName = "pat",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		passwordHash = passwordHash,
+		patientId = patientToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/patient", objectMapper.writeValueAsString(patientToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		groupId,
+		userToCreate.id,
+		patientToCreate.id,
+		username,
+		password,
+		privateKey
+	)
+}
+
+data class UserCredentials(
+	val groupId: String,
+	val userId: String,
+	val dataOwnerId: String,
+	val username: String,
+	val password: String,
+	val privateKey: String?
+) {
+	fun auth() = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
+
+}
