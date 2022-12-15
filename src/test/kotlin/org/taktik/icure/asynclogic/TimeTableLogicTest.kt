@@ -101,7 +101,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"Rrule timetables should return results" {
 		val calendarItemTypeId = newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016000000L, null, null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -112,7 +112,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"Rrule timetables should return the same results even if recurrenceStartDate is moved earlier" {
 		val calendarItemTypeId = newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016000000L, null, null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -155,6 +155,21 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
 			result1 shouldBe listOf<Flow<Long>>()
+		}
+	}
+
+	"Rrule timetable should return different results if rruleStartDate is different" {
+		val calendarItemTypeId = newId()
+		val oneWeekLaterCalendarItemTypeId = newId()
+
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
+		makeTimeTable(oneWeekLaterCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200107L, null , null)
+
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val oneMWeekLater = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, oneWeekLaterCalendarItemTypeId, null, false, true, hcpId).toList()
+			result[0] shouldBe 20200106080000L
+			oneMWeekLater[0] shouldBe 20200113080000L
 		}
 	}
 })
