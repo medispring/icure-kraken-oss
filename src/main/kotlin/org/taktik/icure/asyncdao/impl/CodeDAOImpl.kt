@@ -153,8 +153,8 @@ class CodeDAOImpl(
 			}.let { flw ->
 				if (version == "latest") {
 					flw.scan(CodeAccumulator()) { acc, code ->
+						lastCode = code
 						acc.code?.let {
-							lastCode = code
 							if (code.type != it.type || code.code != it.code) CodeAccumulator(code, it)
 							else CodeAccumulator(code)
 						} ?: CodeAccumulator(code)
