@@ -19,7 +19,11 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 
 	val daysIterator = object : Iterator<LocalDateTime> {
 		var day = startLdt
-		val rrit = rrule?.let { RecurrenceRule(it).iterator(FuzzyValues.getDateTime(rruleStartDate ?: startDateAndTime).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(), TimeZone.getTimeZone("UTC")) }
+		val rrit = rrule?.let {
+			RecurrenceRule(it).iterator(FuzzyValues.getDateTime(rruleStartDate ?: startDateAndTime).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(), TimeZone.getTimeZone("UTC")).also {
+				it.fastForward(FuzzyValues.getDateTime(startDateAndTime).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli() - 24*3600*1000)
+			}
+		}
 
 		override fun hasNext() = rrit?.let { LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.peekMillis()), ZoneOffset.UTC) < coercedEndLdt } ?: (day < coercedEndLdt)
 		override fun next(): LocalDateTime {
@@ -43,6 +47,12 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 	var hoursIterator = hours.iterator(duration)
 
 	var currentDay = daysIterator.next()
+
+	init {
+		while (currentDay < startLdt) {
+			currentDay = daysIterator.next()
+		}
+	}
 
 	override fun hasNext() = true
 	override fun next(): Long = if (hoursIterator.hasNext()) {
