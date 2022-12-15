@@ -11,7 +11,7 @@ class TimeTableItemTest : FunSpec({
 
 	test("iterators on sunday every week with several hourly time spans give consistant results") {
 		TimeTableItem(
-			occurrenceStartDate = 20220101,
+			rruleStartDate = 20220101,
 			rrule = "FREQ=WEEKLY;BYDAY=SU;INTERVAL=1",
 			hours = listOf(TimeTableHour(80000L, 120000L), TimeTableHour(140000L, 160000L))
 		).iterator(
@@ -58,7 +58,7 @@ class TimeTableItemTest : FunSpec({
 
 	test("iterators on sunday and wednesday every week with several hourly time spans give consistant results") {
 		TimeTableItem(
-			occurrenceStartDate = 20220101,
+			rruleStartDate = 20220101,
 			rrule = "FREQ=WEEKLY;BYDAY=SU,WE;INTERVAL=1",
 			hours = listOf(TimeTableHour(80000L, 120000L), TimeTableHour(140000L, 160000L))
 		).iterator(
@@ -117,7 +117,7 @@ class TimeTableItemTest : FunSpec({
 
 	test("iterators on sunday every month on first week with several hourly time spans give consistant results") {
 		TimeTableItem(
-			occurrenceStartDate = 20220101,
+			rruleStartDate = 20220101,
 			rrule = "FREQ=MONTHLY;BYSETPOS=1;BYDAY=SU;INTERVAL=1",
 			hours = listOf(TimeTableHour(80000L, 120000L), TimeTableHour(140000L, 160000L))
 		).iterator(

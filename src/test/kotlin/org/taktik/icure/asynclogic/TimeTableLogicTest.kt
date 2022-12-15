@@ -12,6 +12,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -70,6 +71,7 @@ class TimeTableLogicTest : StringSpec({
 		calendarItemTypeId: String,
 		agendaId: String,
 		rrule: String?,
+		rruleStartDate: Long?,
 		days: List<String>?,
 		recurrenceTypes: List<String>?
 	) {
@@ -79,7 +81,8 @@ class TimeTableLogicTest : StringSpec({
 			startTime = 20221015000000L,
 			endTime = 20321006000000L,
 			items = listOf(
-				TimeTableItem(
+				TimeTableItem (
+					rruleStartDate = rruleStartDate,
 					rrule = rrule,
 					days = days ?: emptyList(),
 					recurrenceTypes = recurrenceTypes ?: emptyList(),
@@ -98,7 +101,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"Rrule timetables should return results" {
 		val calendarItemTypeId = newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016000000L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -107,10 +110,21 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
+	"Rrule timetables should return the same results even if recurrenceStartDate is moved earlier" {
+		val calendarItemTypeId = newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016000000L, null, null)
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			result.size shouldBe 100
+			result[0] shouldBe 20221017080000L //FAIL expected:<20221017080000L> but was:<19991016080000L>
+			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
+		}
+	}
+
 	"Legacy timetables should return results" {
 		val calendarItemTypeId = newId()
 
-		makeTimeTable(calendarItemTypeId, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
+		makeTimeTable(calendarItemTypeId, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -123,8 +137,8 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId1 = newId()
 		val calendarItemTypeId2 = newId()
 
-		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null)
-		makeTimeTable(calendarItemTypeId2, agendaId, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
+		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null, null)
+		makeTimeTable(calendarItemTypeId2, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 
 		withAuthenticatedHcpContext(hcpId) {
 			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
@@ -132,6 +146,16 @@ class TimeTableLogicTest : StringSpec({
 			result1 shouldBe result2
 		}
 
+	}
+
+	"Rrule timetable should return an empty array if rruleStartDate is set after rrule's endDate" {
+		val calendarItemTypeId1 = newId()
+		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=1999006170000;BYDAY=SA,WE,TH,MO",20221118L, null , null)
+
+		withAuthenticatedHcpContext(hcpId) {
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			result1 shouldBe listOf<Flow<Long>>()
+		}
 	}
 })
 
