@@ -5,8 +5,11 @@ import java.net.URI
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.StringSpec
+import kotlin.random.Random.Default.nextInt
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +17,7 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
@@ -124,9 +128,61 @@ class CodeDAOTest(
 			testLatestVersionFilterOnFindCodesByLanguageLabel(codeDAO, region, language, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnFindCodesByLanguageTypeLabel(codeDAO, region, language, codeType, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnListCodesBy(codeDAO, region, codeType, totalUniqueCodes)
-
+			testListCodeIdsByTypeCodeVersionInterval(codeDAO, dbInstanceUrl, groupId, inputCodes)
 		}
 	}
+}
+
+private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
+	codeDAO: CodeDAO,
+	dbInstanceUrl: URI,
+	groupId: String,
+	existingCodes: List<Code>
+) {
+
+	val existingIds = existingCodes.map { it.id }.sortedBy { it }
+	val sortedCodes = existingCodes.toSortedSet(compareBy { it.id }).toList()
+
+	"All ids are returned if both keys are null" {
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, null, null, null, null, null, null)
+			.onEach {  id ->
+				existingIds shouldContain id
+			}.count() shouldBe existingCodes.size
+	}
+
+	"If the starting key is specified only the results that come after it are returned" {
+		val startIndex = nextInt(0, sortedCodes.size)
+		val startCode = sortedCodes[startIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, startCode.type, startCode.code, startCode.version, null, null, null)
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
+ 			}.count() shouldBe (existingCodes.size - startIndex)
+	}
+
+	"If the end key is specified only the results that come before it are returned" {
+		val endIndex = nextInt(0, sortedCodes.size)
+		val endCode = sortedCodes[endIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, null, null, null, endCode.type, endCode.code, endCode.version)
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeLessThanOrEqual endIndex
+			}.count() shouldBe (endIndex + 1)
+	}
+
+	"If the start key and the end key are specified all the in-between results are returned" {
+		val startIndex = nextInt(0, sortedCodes.size/2)
+		val startCode = sortedCodes[startIndex]
+		val endIndex = nextInt(sortedCodes.size/2, sortedCodes.size)
+		val endCode = sortedCodes[endIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, startCode.type, startCode.code, startCode.version, endCode.type, endCode.code, endCode.version)
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
+				existingIds.indexOf(id) shouldBeLessThanOrEqual endIndex
+			}.count() shouldBe (endIndex + 1 - startIndex)
+	}
+
 }
 
 private suspend fun StringSpec.testLatestVersionFilterOnListCodesBy(
