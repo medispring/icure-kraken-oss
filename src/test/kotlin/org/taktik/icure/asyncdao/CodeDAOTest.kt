@@ -1,7 +1,9 @@
 package org.taktik.icure.asyncdao
 
+import java.io.File
 import java.net.URI
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
@@ -24,10 +26,12 @@ import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.base.Code
+import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
 import org.taktik.icure.services.external.rest.v1.utils.paginatedList
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.TestProperties
 
 suspend fun List<Code>.shouldContainAllTheVersions(codeDAO: CodeDAO) =
 	this.groupBy {
@@ -87,7 +91,9 @@ class CodeDAOTest(
 	@Autowired val codeDAO: CodeDAO,
 	@Autowired val codeMapper: CodeMapper,
 	@Autowired val codeLogic: CodeLogic,
-	@Autowired val objectMapper: ObjectMapper
+	@Autowired val objectMapper: ObjectMapper,
+	@Autowired val couchDbProperties: CouchDbProperties,
+	@Autowired val testProperties: TestProperties
 ): StringSpec() {
 
 	val region = "be"
@@ -96,14 +102,12 @@ class CodeDAOTest(
 	val startPaginationOffset = PaginationOffset<List<String?>>(null, null, null, 1001)
 
 	init {
+		val inputCodes = objectMapper.readValue<List<Code>>(
+			File("src/test/resources/org/taktik/icure/db/codes/codes_dao_test.json").inputStream()
+		)
 		runBlocking {
-			val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
-
-			// Imports the codes into the database
-			resolver.getResources("classpath*:/org/taktik/icure/db/codes/region_codes.json").forEach {
-					codeLogic.importCodesFromJSON(it.inputStream)
-			}
-
+			val savedCodes = codeDAO.save(inputCodes)
+			savedCodes.count() shouldBe inputCodes.size
 			val totalUniqueCodes = codeDAO.listCodeIdsByTypeCodeVersionInterval(
 				startType = codeType,
 				startCode = null,
