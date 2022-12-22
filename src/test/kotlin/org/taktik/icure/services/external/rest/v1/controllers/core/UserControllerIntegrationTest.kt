@@ -23,7 +23,13 @@ import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
 import java.util.UUID
-
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.kotest.matchers.shouldNotBe
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.User
+import org.taktik.icure.test.createHttpClient
+import org.taktik.icure.test.makeGetRequest
+import org.taktik.icure.test.makePostRequest
 
 @SpringBootTest(
     classes = [ICureTestApplication::class],
@@ -32,65 +38,15 @@ import java.util.UUID
 )
 @ActiveProfiles("app")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserControllerIntegrationTest {
-
-    @LocalServerPort
-    var port = 0
-
-    val objectMapper: ObjectMapper? = ObjectMapper().registerModule(
-        KotlinModule.Builder()
-            .nullIsSameAsDefault(nullIsSameAsDefault = false)
-            .reflectionCacheSize(reflectionCacheSize = 512)
-            .nullToEmptyMap(nullToEmptyMap = false)
-            .nullToEmptyCollection(nullToEmptyCollection = false)
-            .singletonSupport(singletonSupport = SingletonSupport.DISABLED)
-            .strictNullChecks(strictNullChecks = false)
-            .build()
-    )
-
-    fun makeGetRequest(url: String): PaginatedList<UserDto>? {
-        val auth = "Basic ${
-            java.util.Base64.getEncoder()
-                .encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())
-        }"
-        val client = HttpClient.create().headers { h ->
-            h.set("Authorization", auth) //
-            h.set("Content-type", "application/json")
-        }
-
-        val responseBody = client.get().uri(url).responseSingle { response, buffer ->
-            assertNotNull(response)
-            assertEquals(response.status().code(), 200)
-            buffer.asString(Charsets.UTF_8)
-        }.block()
-
-        assertNotNull(responseBody)
-        return objectMapper?.readValue(responseBody, object : TypeReference<PaginatedList<UserDto>>() {})
-    }
-
-    fun makePostRequest(url: String, userDto: UserDto): UserDto? {
-        val auth = "Basic ${
-            java.util.Base64.getEncoder()
-                .encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())
-        }"
-        val client = HttpClient.create().headers { h ->
-            h.set("Authorization", auth) //
-            h.set("Content-type", "application/json")
-        }
-
-        val responseBody =
-            client.post().send(ByteBufFlux.fromString(Mono.just(objectMapper!!.writeValueAsString(userDto)))).uri(url)
-                .responseSingle { response, buffer ->
-                    assertNotNull(response)
-                    assertEquals(response.status().code(), 200)
-                    buffer.asString(Charsets.UTF_8)
-                }.block()
-
-        assertNotNull(responseBody)
-        return objectMapper?.readValue(responseBody, object : TypeReference<UserDto>() {})
-    }
-
-    lateinit var createdIds: List<String>
+class UserControllerIntegrationTest(
+	@LocalServerPort val port: Int,
+	@Autowired val objectMapper: ObjectMapper
+) {
+	val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
+	fun apiUrl() = if (apiUrl == "http://localhost") "$apiUrl:$port" else apiUrl
+	val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+    val client = createHttpClient(hcpAuth)
+	lateinit var createdIds: List<String>
 
     @BeforeAll
     fun addTestUsers() {
@@ -117,7 +73,14 @@ class UserControllerIntegrationTest {
             )
         )
 
-        createdIds = usersToCreate.map { makePostRequest("http://127.0.0.1:$port/rest/v1/user", it) }.map { it!!.id }
+        createdIds = usersToCreate.map {
+			val result = makePostRequest(
+				client,
+				"${apiUrl()}/rest/v1/user",
+				objectMapper.writeValueAsString(it))
+			result shouldNotBe null
+			objectMapper.readValue<UserDto>(result!!)
+		}.map { it.id }
     }
 
     /**
@@ -127,9 +90,10 @@ class UserControllerIntegrationTest {
      */
     @Test
     fun `Implicit skipPatients = true, user has only a patientId, Should not be found`() {
-        val responseBody = makeGetRequest("http://127.0.0.1:$port/rest/v1/user")
-        assertNotNull(responseBody)
-        assertEquals(3, responseBody!!.rows.size)
+        val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user")
+		response shouldNotBe null
+		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
+        assertEquals(3, responseBody.rows.size)
         assertTrue(responseBody.rows.all { it.patientId == null || it.healthcarePartyId != null })
     }
 
@@ -140,23 +104,19 @@ class UserControllerIntegrationTest {
      */
     @Test
     fun `Explicit skipPatients = true, user has only a patientId, Should not be found`() {
-        val responseBody = makeGetRequest("http://127.0.0.1:$port/rest/v1/user?skipPatients=true")
-        assertNotNull(responseBody)
-        assertEquals(3, responseBody!!.rows.size)
+		val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user?skipPatients=true")
+		response shouldNotBe null
+		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
+        assertEquals(3, responseBody.rows.size)
         assertTrue(responseBody.rows.all { it.patientId == null || it.healthcarePartyId != null })
     }
 
     @Test
     fun `skipPatients = false, user has only a patientId, Should be found`() {
-        val responseBody = makeGetRequest("http://127.0.0.1:$port/rest/v1/user?skipPatients=false")
+		val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user?skipPatients=false")
+		response shouldNotBe null
+		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
         assertNotNull(responseBody)
-        assertEquals(4, responseBody!!.rows.size)
-    }
-
-    @AfterAll
-    fun cleanCodes() {
-        runBlocking {
-            removeEntities(createdIds, objectMapper)
-        }
+        assertEquals(4, responseBody.rows.size)
     }
 }
