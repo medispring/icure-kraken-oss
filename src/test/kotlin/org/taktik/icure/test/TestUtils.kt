@@ -16,9 +16,8 @@ import com.fasterxml.jackson.module.kotlin.SingletonSupport
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.junit.jupiter.api.Assertions
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.taktik.icure.asyncdao.PatientDAO
 import org.taktik.icure.asyncdao.UserDAO
-import org.taktik.icure.entities.Patient
+import kotlinx.coroutines.delay
 import org.taktik.icure.entities.User
 import org.taktik.icure.services.external.rest.v1.dto.PatientDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
@@ -55,8 +54,13 @@ fun createHttpClient(userAuth: String, additionalHeaders: Map<String, String> = 
 	}
 }
 
-fun makeGetRequest(client: HttpClient, url: String, expectedCode: Int = 200): String? {
+fun makeGetRequest(client: HttpClient, url: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
 	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
 		.get()
 		.uri(url)
 		.responseSingle { response, buffer ->
@@ -68,8 +72,13 @@ fun makeGetRequest(client: HttpClient, url: String, expectedCode: Int = 200): St
 	return responseBody
 }
 
-fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200): String? {
+fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
 	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
 		.post()
 		.uri(url)
 		.send(ByteBufFlux.fromString(Flux.just(payload)))
@@ -82,8 +91,13 @@ fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCo
 	return responseBody
 }
 
-fun makePutRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200): String? {
+fun makePutRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
 	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
 		.put()
 		.uri(url)
 		.send(ByteBufFlux.fromString(Flux.just(payload)))
@@ -96,8 +110,13 @@ fun makePutRequest(client: HttpClient, url: String, payload: String, expectedCod
 	return responseBody
 }
 
-fun makeDeleteRequest(client: HttpClient, url: String, expectedCode: Int = 200): String? {
+fun makeDeleteRequest(client: HttpClient, url: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
 	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
 		.delete()
 		.uri(url)
 		.responseSingle { response, buffer ->
@@ -115,17 +134,6 @@ private data class IdWithRev(@field:JsonProperty("_id") val id: String, @field:J
 fun generateRandomString(length: Int, alphabet: List<Char>) = (1..length)
 	.map { _ -> alphabet[nextInt(0, alphabet.size)] }
 	.joinToString("")
-
-fun generateInBetweenCode(firstCode: String, secondCode: String): String {
-	val firstCodeLower = firstCode.lowercase()
-	val secondCodeLower = secondCode.lowercase()
-	return firstCodeLower.zip(secondCodeLower).fold("") { acc, it ->
-		if ( it.first == it.second || abs(it.first.toInt() - it.second.toInt()) == 1 ) acc + it.first
-		else acc + ((it.first.toInt() + it.second.toInt())/2).toChar()
-	}
-
-
-}
 
 suspend fun removeEntities(ids: List<String>, objectMapper: ObjectMapper?) {
 	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_COUCHDB_USERNAME")}:${System.getenv("ICURE_COUCHDB_PASSWORD")}".toByteArray())}"
@@ -155,7 +163,9 @@ private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.to
 
 fun createPatientUser(httpClient: HttpClient,
 	apiUrl: String,
-	passwordEncoder: PasswordEncoder): UserCredentials {
+	passwordEncoder: PasswordEncoder,
+	userDAO: UserDAO,
+	dbUri: URI): UserCredentials {
 	val username = "pat-${UUID.randomUUID()}"
 	val password = UUID.randomUUID().toString()
 	val passwordHash = passwordEncoder.encode(password)
@@ -182,6 +192,7 @@ fun createPatientUser(httpClient: HttpClient,
 
 	makePostRequest(httpClient, "$apiUrl/rest/v1/patient", objectMapper.writeValueAsString(patientToCreate))
 	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+	getUserWithRetry(dbUri, userDAO, groupId, userToCreate.id)
 
 	return UserCredentials(
 		userToCreate.id,

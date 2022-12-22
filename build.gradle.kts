@@ -309,7 +309,7 @@ dependencies {
 	testImplementation(group = "io.kotest", name = "kotest-assertions-core", version = "4.4.3")
 	testImplementation(group = "io.kotest", name = "kotest-runner-junit5", version = "4.4.3")
 	testImplementation(group = "io.kotest.extensions", name = "kotest-extensions-spring", version = "1.0.1")
-	testImplementation(group = "io.icure", name = "icure-e2e-test-setup", version = "0.0.2-g817cb0b931")
+	testImplementation(group = "io.icure", name = "icure-e2e-test-setup", version = "0.0.7-gfed922635a")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

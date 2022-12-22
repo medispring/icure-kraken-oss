@@ -113,6 +113,7 @@ class SessionMock {
 		val permissionSetIdentifier = mockk<PermissionSetIdentifier>()
 		every { grantedAuthority.authority } returns role
 		every { authentication.principal } returns dbUser
+		every { dbUser.userId } returns user.id
 		every { dbUser.authorities } returns listOf(grantedAuthority)
 		every { permissionSetIdentifier.getPrincipalIdOfClass(User::class.java) } returns user.id
 		coEvery { userDaoMock.getUserOnUserDb(user.id , any()) } returns user
