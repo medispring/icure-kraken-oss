@@ -44,7 +44,7 @@ class UserControllerIntegrationTest(
 ) {
 	val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
 	fun apiUrl() = if (apiUrl == "http://localhost") "$apiUrl:$port" else apiUrl
-	val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+	val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
     val client = createHttpClient(hcpAuth)
 	lateinit var createdIds: List<String>
 

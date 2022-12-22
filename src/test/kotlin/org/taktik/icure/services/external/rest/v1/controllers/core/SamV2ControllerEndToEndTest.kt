@@ -47,7 +47,7 @@ class SamV2ControllerEndToEndTest(
 	val apiEndpoint = "/rest/v1/be_samv2"
 
 	fun getAmpsByLabels(label: String, expectedCode: Int): PaginatedList<AmpDto>? {
-		val auth = "Basic ${Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+		val auth = "Basic ${Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
 		val client = HttpClient.create().headers { h ->
 			h.set("Authorization", auth) //
 			h.set("Content-type", "application/json")
