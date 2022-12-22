@@ -36,7 +36,6 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.asynclogic.objectstorage.testutils.xmlUti
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext
-import org.taktik.icure.services.external.rest.shared.controllers.core.client
 import org.taktik.icure.services.external.rest.shared.controllers.core.documentControllerSharedEndToEndTests
 import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DataAttachmentDto
