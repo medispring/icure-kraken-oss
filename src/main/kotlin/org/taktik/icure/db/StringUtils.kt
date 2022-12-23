@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStreamReader
 import java.text.Normalizer
 import org.apache.commons.lang3.StringUtils
+import org.jetbrains.annotations.Contract
 
 object StringUtils {
 	@JvmStatic
