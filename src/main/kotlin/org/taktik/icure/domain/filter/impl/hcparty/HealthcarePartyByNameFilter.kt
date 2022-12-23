@@ -30,6 +30,6 @@ data class HealthcarePartyByNameFilter(
 ) :
 	AbstractFilter<HealthcareParty>, org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter {
 	override fun matches(item: HealthcareParty): Boolean {
-		return item.name?.contains(name.sanitize(), true) ?: false
+		return ((item.lastName ?: "") + (item.firstName ?: "")).contains(name.sanitize(), true)
 	}
 }
