@@ -17,9 +17,7 @@
  */
 package org.taktik.icure.asynclogic.impl.filter.hcparty
 
-import java.net.URI
 import kotlinx.coroutines.flow.Flow
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.taktik.icure.asynclogic.HealthcarePartyLogic
 import org.taktik.icure.asynclogic.impl.filter.Filter
@@ -28,7 +26,6 @@ import org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter
 import org.taktik.icure.entities.HealthcareParty
 
 @Service
-@Profile("app")
 class HealthcarePartyByNameFilter(
 	private val healthcarePartyLogic: HealthcarePartyLogic,
 ) : Filter<String, HealthcareParty, org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter> {
@@ -36,7 +33,5 @@ class HealthcarePartyByNameFilter(
 	override fun resolve(
 		filter: HealthcarePartyByNameFilter,
 		context: Filters,
-		instanceUri: URI?,
-		groupId: String?,
 	): Flow<String> = healthcarePartyLogic.listHealthcarePartyIdsByName(filter.name, filter.descending ?: false)
 }
