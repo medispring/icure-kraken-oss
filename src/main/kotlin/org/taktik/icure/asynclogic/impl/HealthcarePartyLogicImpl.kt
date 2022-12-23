@@ -218,6 +218,10 @@ class HealthcarePartyLogicImpl(
 		)
 	}
 
+	override fun listHealthcarePartyIdsByName(name: String, desc: Boolean) = flow {
+		emitAll(healthcarePartyDAO.listHealthcarePartyIdsByName(name, desc))
+	}
+
 	companion object {
 		private val log = LoggerFactory.getLogger(HealthcarePartyLogicImpl::class.java)
 	}
