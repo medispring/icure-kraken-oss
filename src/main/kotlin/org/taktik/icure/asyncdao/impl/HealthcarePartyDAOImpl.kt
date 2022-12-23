@@ -38,6 +38,7 @@ import org.taktik.couchdb.queryViewIncludeDocs
 import org.taktik.icure.asyncdao.HealthcarePartyDAO
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.db.StringUtils
+import org.taktik.icure.db.sanitize
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.embed.Identifier
 import org.taktik.icure.properties.CouchDbProperties
@@ -261,7 +262,7 @@ internal class HealthcarePartyDAOImpl(
     override fun listHealthcarePartyIdsByName(name: String, desc: Boolean) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 
-		val r = StringUtils.sanitizeString(name)!!
+		val r = name.sanitize()
 		val from = if (desc) r + "\ufff0" else r
 		val to = if (desc) r else r + "\ufff0"
 

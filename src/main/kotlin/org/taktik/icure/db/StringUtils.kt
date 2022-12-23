@@ -126,3 +126,6 @@ object StringUtils {
 		return s1 != null && s2 != null && (StringUtils.equals(s1, s2) || StringUtils.equals(sanitizeString(s1), sanitizeString(s2)))
 	}
 }
+
+@Contract("null -> null; !null -> !null")
+fun String.sanitize() = org.taktik.icure.db.StringUtils.sanitizeString(this)!!
