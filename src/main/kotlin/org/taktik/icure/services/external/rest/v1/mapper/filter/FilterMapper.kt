@@ -46,6 +46,7 @@ import org.taktik.icure.services.external.rest.v1.dto.filter.device.DeviceByIdsF
 import org.taktik.icure.services.external.rest.v1.dto.filter.hcparty.AllHealthcarePartiesFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.hcparty.HealthcarePartyByIdsFilter
+import org.taktik.icure.services.external.rest.v1.dto.filter.hcparty.HealthcarePartyByNameFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.hcparty.HealthcarePartyByTagCodeFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.healthelement.HealthElementByHcPartyFilter
 import org.taktik.icure.services.external.rest.v1.dto.filter.healthelement.HealthElementByHcPartyIdentifiersFilter
@@ -128,6 +129,7 @@ abstract class FilterMapper {
 	abstract fun map(filterDto: ContactByHcPartyFilter): org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter
 	abstract fun map(filterDto: DeviceByIdsFilter): org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter
 	abstract fun map(filterDto: HealthcarePartyByIdsFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter
+	abstract fun map(filterDto: HealthcarePartyByNameFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter
 	abstract fun map(filterDto: HealthcarePartyByIdentifiersFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter
 	abstract fun map(filterDto: HealthcarePartyByTagCodeFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter
 	abstract fun map(filterDto: HealthElementByHcPartyFilter): org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter
@@ -209,6 +211,7 @@ abstract class FilterMapper {
 			is ContactByHcPartyFilter -> map(filterDto)
 			is DeviceByIdsFilter -> map(filterDto)
 			is HealthcarePartyByIdsFilter -> map(filterDto)
+			is HealthcarePartyByNameFilter -> map(filterDto)
 			is HealthcarePartyByIdentifiersFilter -> map(filterDto)
 			is HealthcarePartyByTagCodeFilter -> map(filterDto)
 			is HealthElementByHcPartyFilter -> map(filterDto)
@@ -264,6 +267,7 @@ abstract class FilterMapper {
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter): ContactByHcPartyFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter): DeviceByIdsFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter): HealthcarePartyByIdsFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter): HealthcarePartyByNameFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter): HealthcarePartyByIdentifiersFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter): HealthcarePartyByTagCodeFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter): HealthElementByHcPartyFilter
@@ -347,6 +351,7 @@ abstract class FilterMapper {
 			is org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter -> map(filter)
