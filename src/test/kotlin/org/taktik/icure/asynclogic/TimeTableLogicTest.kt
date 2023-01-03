@@ -6,6 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -16,10 +17,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import org.taktik.icure.asynclogic.impl.CalendarItemLogicImpl
 import org.taktik.icure.asynclogic.impl.TimeTableLogicImpl
 import org.taktik.icure.entities.Agenda
+import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.entities.CalendarItemType
 import org.taktik.icure.entities.TimeTable
+import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.embed.TimeTableHour
 import org.taktik.icure.entities.embed.TimeTableItem
 import org.taktik.icure.test.SessionMock
@@ -36,6 +40,40 @@ class TimeTableLogicTest : StringSpec({
 	lateinit var sessionMock: SessionMock
 	lateinit var timeTableLogic: TimeTableLogic
 
+	fun makeCalendarItem (startTime:Long, endTime:Long):CalendarItem {
+		return CalendarItem("mock",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			setOf(CodeStub("id")),
+			setOf(CodeStub("id")),
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			startTime,
+			endTime,
+			null,
+			null,
+			15*60*1000,
+			null,
+			null,
+			null,
+			agendaId)
+	}
+
+
 	beforeEach {
 		clearAllMocks()
 		val agendaLogic = mockk<AgendaLogic>()
@@ -44,7 +82,10 @@ class TimeTableLogicTest : StringSpec({
 			flowOf(Agenda(id = agendaId, userId = firstArg()))
 		}
 		val calendarItemLogic = mockk<CalendarItemLogic>()
-		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), agendaId) } answers { flowOf() }
+		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), agendaId) } answers { flowOf(
+			makeCalendarItem(20200102081500L, 20200102083000L),
+			makeCalendarItem(20200102085500L, 20200102091000L)
+		) }
 		val calendarItemTypeLogic = mockk<CalendarItemTypeLogic>()
 		every { calendarItemTypeLogic.getCalendarItemTypes(any()) } answers { firstArg<Collection<String>>().map { CalendarItemType(id = it, duration = 15) }.asFlow() }
 		sessionMock = SessionMock()
@@ -56,6 +97,7 @@ class TimeTableLogicTest : StringSpec({
 			sessionMock.sessionLogic
 		)
 	}
+
 
 	suspend fun <T> withAuthenticatedHcpContext(hcpId: String, block: suspend () -> T): T =
 		sessionMock.withAuthenticatedHcpContext(uri, groupId, hcpId, block)
@@ -101,7 +143,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"Rrule timetables should return results" {
 		val calendarItemTypeId = newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016000000L, null, null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -112,7 +154,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"Rrule timetables should return the same results even if recurrenceStartDate is moved earlier" {
 		val calendarItemTypeId = newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016000000L, null, null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
@@ -157,6 +199,49 @@ class TimeTableLogicTest : StringSpec({
 			result1 shouldBe listOf<Flow<Long>>()
 		}
 	}
+
+	"Rrule timetable should return different results if rruleStartDate is different" {
+		val calendarItemTypeId = newId()
+		val oneWeekLaterCalendarItemTypeId = newId()
+
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
+		makeTimeTable(oneWeekLaterCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200107L, null , null)
+
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val oneMWeekLater = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, oneWeekLaterCalendarItemTypeId, null, false, true, hcpId).toList()
+			result[0] shouldBe 20200106080000L
+			oneMWeekLater[0] shouldBe 20200113080000L
+		}
+	}
+
+	"When startDate matches the rrule's first compliant date, it should return a timeSlot of the first date and not the following compliant date." {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
+		withAuthenticatedHcpContext(hcpId) {
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			everyWeek [0] shouldBe 20200106080000L; //  ******** FAIL:expected:<20200106080000L> but was:<20200113080000L> ********
+		}
+	}
+
+	"When rrule is specified with a COUNT property instead of UNTIL, the number of results should match the specified count" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=3",20200101L, null , null)
+		withAuthenticatedHcpContext(hcpId) {
+			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			test.size shouldBe 3; // ********  FAIL: Error "No more instances to iterate."
+		}
+	}
+
+	"It should remove timeslots overlapping with existing calendarItems" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=6",20200101L, null , null)
+		withAuthenticatedHcpContext(hcpId) {
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20300102090000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			everyWeek shouldBe listOf(20200102080000L, 20200102083000L, 20200102091500L); // WIP: fail but should work once previous issues are solved
+		}
+	}
+
 })
 
 infix fun <E, T:Collection<E>> T.shouldNotHaveElement(test: (E) -> Boolean) = should(object:Matcher<T> {
