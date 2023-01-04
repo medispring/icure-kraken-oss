@@ -94,37 +94,40 @@ class TimeTableLogicImpl(
 		val coercedEndLdt = (startLdt + Duration.ofDays(120)).coerceAtMost(endLdt)
 		val coercedEnd = FuzzyValues.getFuzzyDateTime(coercedEndLdt, ChronoUnit.SECONDS)
 
-		val ttis = tts.filter { (it.startTime ?: 0) <= roundedEndDate && (it.endTime ?: Long.MAX_VALUE) >= roundedStartDate }
-			.flatMap { tt -> tt.items
-				.filter { tti -> tti.publicTimeTableItem && tti.calendarItemTypeId == calendarItemTypeId && (placeId == null || tti.placeId == placeId) && (tti.acceptsNewPatient || !isNewPatient) }
-				.map { it to tt }
+		val ttis = tts.filter {
+			(it.startTime ?: 0) <= roundedEndDate && (it.endTime ?: Long.MAX_VALUE) >= roundedStartDate
+		}.flatMap { tt ->
+			tt.items.filter { tti -> tti.publicTimeTableItem && tti.calendarItemTypeId == calendarItemTypeId && (placeId == null || tti.placeId == placeId) && (tti.acceptsNewPatient || !isNewPatient) }.map { it to tt }
 			}
-		val iterator = ttis.map { (tti, tt) -> tti.iterator(roundedStartDate, roundedEndDate, duration).map { SlotAndAgenda(it, tt.agendaId) } }.sortedMerge()
+		val iterator = ttis.map { (tti, tt) -> tti.iterator(roundedStartDate.coerceAtLeast(tt.startTime ?: 0), roundedEndDate.coerceAtMost(tt.endTime ?: 0), duration).map { SlotAndAgenda(it, tt.agendaId) } }.sortedMerge()
 
-		fun nextSlot(): Long? = (if (iterator.hasNext()) iterator.next() else null)?.let { (start, agendaId) ->
-			val end = FuzzyValues.getFuzzyDateTime(FuzzyValues.getDateTime(start) + Duration.ofSeconds(secs), ChronoUnit.SECONDS)
+		fun nextSlot(): Long? {
+			val hasNext = iterator.hasNext()
+			return (if (hasNext) iterator.next() else null)?.let { (start, agendaId) ->
+				val end = FuzzyValues.getFuzzyDateTime(FuzzyValues.getDateTime(start) + Duration.ofSeconds(secs), ChronoUnit.SECONDS)
 
-			when {
-				start > coercedEnd -> {
-					null
-				}
+				when {
+					start > coercedEnd -> {
+						null
+					}
 
-				!cis.filter { it.startTime != null && it.agendaId == agendaId }
-					.any { ci -> //No existing ci conflicts
-						(ci.startTime ?: 0) < end && (
-							ci.endTime ?: (
-								(ci.duration ?: 60).let { d ->
-									FuzzyValues.getFuzzyDateTime(
-										FuzzyValues.getDateTime(ci.startTime ?: 0) + Duration.ofSeconds(d * 60), ChronoUnit.SECONDS
-									)
-								})
-							) > start
-					} -> {
-					start
-				}
+					!cis.filter { it.startTime != null && it.agendaId == agendaId }
+						.any { ci -> //No existing ci conflicts
+							(ci.startTime ?: 0) < end && (
+								ci.endTime ?: (
+									(ci.duration ?: 60).let { d ->
+										FuzzyValues.getFuzzyDateTime(
+											FuzzyValues.getDateTime(ci.startTime ?: 0) + Duration.ofSeconds(d * 60), ChronoUnit.SECONDS
+										)
+									})
+								) > start
+						} -> {
+						start
+					}
 
-				else -> {
-					nextSlot()
+					else -> {
+						nextSlot()
+					}
 				}
 			}
 		}

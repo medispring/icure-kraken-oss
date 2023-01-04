@@ -120,7 +120,7 @@ class TimeTableLogicTest : StringSpec({
 		TimeTable(
 			id = newId(),
 			agendaId = agendaId,
-			startTime = 20221015000000L,
+			startTime = 20191015000000L,
 			endTime = 20321006000000L,
 			items = listOf(
 				TimeTableItem (
@@ -220,7 +220,7 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyWeek [0] shouldBe 20200106080000L; //  ******** FAIL:expected:<20200106080000L> but was:<20200113080000L> ********
+			everyWeek [0] shouldBe 20200106080000L;
 		}
 	}
 
@@ -228,8 +228,8 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=3",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			test.size shouldBe 3; // ********  FAIL: Error "No more instances to iterate."
+			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId, 200).toList()
+			test.size shouldBe 105; //9 hours / day * 4 quarters/hour * 3 days - 3 slots with existing cis
 		}
 	}
 
@@ -237,8 +237,8 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=6",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20300102090000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyWeek shouldBe listOf(20200102080000L, 20200102083000L, 20200102091500L); // WIP: fail but should work once previous issues are solved
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			everyWeek shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
 		}
 	}
 

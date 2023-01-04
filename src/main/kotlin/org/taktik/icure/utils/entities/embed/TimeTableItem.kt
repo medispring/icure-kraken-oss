@@ -25,7 +25,14 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 			}
 		}
 
-		override fun hasNext() = rrit?.let { LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it.peekMillis()), ZoneOffset.UTC) < coercedEndLdt } ?: (day < coercedEndLdt)
+		override fun hasNext(): Boolean {
+			return rrit?.let {
+				try {
+					it.peekMillis().let { n ->
+						LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(n), ZoneOffset.UTC) < coercedEndLdt
+					}
+				} catch(e:ArrayIndexOutOfBoundsException) { false } } ?: (day < coercedEndLdt)
+		}
 		override fun next(): LocalDateTime {
 			return rrit?.nextMillis()?.let {
 				LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it), ZoneOffset.UTC).also { day = it }
@@ -46,22 +53,29 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 
 	var hoursIterator = hours.iterator(duration)
 
-	var currentDay = daysIterator.next()
+	var currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
 
 	init {
-		while (currentDay < startLdt) {
-			currentDay = daysIterator.next()
+		val startOfStartDayLdt = startLdt.withHour(0).withMinute(0).withSecond(0)
+		while (currentDay != null && currentDay!! < startOfStartDayLdt) {
+			currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
 		}
 	}
 
-	override fun hasNext() = true
+	override fun hasNext(): Boolean {
+		return if (currentDay != null && hoursIterator.hasNext()) true else {
+			hoursIterator = hours.iterator(duration)
+			currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
+			(currentDay != null && hoursIterator.hasNext())
+		}
+	}
 	override fun next(): Long = if (hoursIterator.hasNext()) {
 		hoursIterator.next().let {
-			FuzzyValues.getFuzzyDateTime(currentDay + Duration.ofNanos(it.toLocalTime().toNanoOfDay()), ChronoUnit.SECONDS)
+			FuzzyValues.getFuzzyDateTime(currentDay!! + Duration.ofNanos(it.toLocalTime().toNanoOfDay()), ChronoUnit.SECONDS)
 		}
 	} else {
 		hoursIterator = hours.iterator(duration)
-		currentDay = daysIterator.next()
+		currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
 		next()
 	}
 }
