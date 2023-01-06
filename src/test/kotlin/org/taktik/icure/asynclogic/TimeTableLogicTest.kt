@@ -152,13 +152,13 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
-	"Rrule timetables should return the same results even if recurrenceStartDate is moved earlier" {
+	"Rrule timetables should return the same results even if rruleStartDate is moved earlier" {
 		val calendarItemTypeId = newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result.size shouldBe 100
-			result[0] shouldBe 20221017080000L //FAIL expected:<20221017080000L> but was:<19991016080000L>
+			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
 		}
 	}
@@ -215,12 +215,13 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
-	"When startDate matches the rrule's first compliant date, it should return a timeSlot of the first date and not the following compliant date." {
+	"When startDate and endDate exactly match the same timeslot, it should only return the matching timeslot" {
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			everyWeek [0] shouldBe 20200106080000L;
+			everyWeek.size shouldBe 1;
 		}
 	}
 
