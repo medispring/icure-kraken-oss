@@ -95,4 +95,23 @@ class TimeTableDAOImpl(
 		).filter {
 			(it.endTime?.let { et -> et > (startDate ?: 0) } ?: true) && (it.startTime?.let { st -> st < (endDate ?: 999999999999L) } ?: true)
 		}
+
+    override fun listTimeTableByPeriodAndAgendaIds(
+        startDate: Long?,
+        endDate: Long?,
+        agendaIds: Set<String>
+    ) = listTimeTableByAgendaIds(
+			agendaIds
+		).filter {
+			(it.endTime?.let { et -> et > (startDate ?: 0) } ?: true) && (it.startTime?.let { st -> st < (endDate ?: 99999999999999L) } ?: true)
+		}
+
+
+	override fun listTimeTableByAgendaIds(agendaIds: Collection<String>) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val viewQuery = createQuery(client, "by_agenda")
+			.keys(agendaIds)
+			.includeDocs(true)
+		emitAll(client.queryViewIncludeDocsNoValue<String, TimeTable>(viewQuery).map { it.doc })
+	}
 }
