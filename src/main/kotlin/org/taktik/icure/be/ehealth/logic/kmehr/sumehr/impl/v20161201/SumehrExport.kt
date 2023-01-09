@@ -20,6 +20,7 @@ package org.taktik.icure.be.ehealth.logic.kmehr.sumehr.impl.v20161201
 
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -726,7 +727,7 @@ class SumehrExport(
 
 	internal suspend fun addHealthCareElement(trn: TransactionType, he: HealthElement) {
 		try {
-			val items = if (he.closingDate != null && he.closingDate != 0L) {
+			val items = if (he.closingDate != null && he.closingDate != 0L && he.closingDate < LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")).toLong()) {
 				getHistory(trn).headingsAndItemsAndTexts
 			} else {
 				getAssessment(trn).headingsAndItemsAndTexts
