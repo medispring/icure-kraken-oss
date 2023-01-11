@@ -51,7 +51,7 @@ internal class ClassificationTemplateDAOImpl(
 	}
 
 	@View(name = "by_hcparty_patient", map = "classpath:js/classificationtemplate/By_hcparty_patient_map.js")
-	override fun listClassificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: ArrayList<String>): Flow<ClassificationTemplate> = flow {
+	override fun listClassificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>): Flow<ClassificationTemplate> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val keys = secretPatientKeys.map { ComplexKey.of(hcPartyId, it) }
 

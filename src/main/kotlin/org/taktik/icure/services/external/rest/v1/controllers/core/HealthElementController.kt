@@ -107,7 +107,7 @@ class HealthElementController(
 	@GetMapping("/byHcPartySecretForeignKeys")
 	fun findHealthElementsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestParam secretFKeys: String): Flux<HealthElementDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val elementList = healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+		val elementList = healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 
 		return elementList
 			.map { element -> healthElementMapper.map(element) }
@@ -117,7 +117,7 @@ class HealthElementController(
 	@Operation(summary = "List healthcare elements found By Healthcare Party and secret foreign keyelementIds.", description = "Keys hast to delimited by coma")
 	@PostMapping("/byHcPartySecretForeignKeys")
 	fun findHealthElementsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<HealthElementDto> {
-		val elementList = healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+		val elementList = healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 
 		return elementList
 			.map { element -> healthElementMapper.map(element) }

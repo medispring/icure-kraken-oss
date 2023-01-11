@@ -209,7 +209,7 @@ class ContactController(
 		@RequestParam(required = false) skipClosedContacts: Boolean?
 	): Flux<ContactDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys))
+		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys)
 
 		return if (planOfActionsIds != null) {
 			val poaids = planOfActionsIds.split(',')
@@ -227,7 +227,7 @@ class ContactController(
 		@RequestParam(required = false) planOfActionsIds: String?,
 		@RequestParam(required = false) skipClosedContacts: Boolean?
 	): Flux<ContactDto> {
-		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys))
+		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys)
 
 		return if (planOfActionsIds != null) {
 			val poaids = planOfActionsIds.split(',')

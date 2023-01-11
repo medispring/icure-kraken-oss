@@ -223,7 +223,7 @@ class FormController(
 		@RequestParam(required = false) formTemplateId: String?
 	): Flux<FormDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val formsList = formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), healthElementId, planOfActionId, formTemplateId)
+		val formsList = formLogic.listFormsByHCPartyAndPatient(hcPartyId, secretPatientKeys, healthElementId, planOfActionId, formTemplateId)
 		return formsList.map { contact -> formMapper.map(contact) }.injectReactorContext()
 	}
 
@@ -236,7 +236,7 @@ class FormController(
 		@RequestParam(required = false) planOfActionId: String?,
 		@RequestParam(required = false) formTemplateId: String?
 	): Flux<FormDto> {
-		val formsList = formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), healthElementId, planOfActionId, formTemplateId)
+		val formsList = formLogic.listFormsByHCPartyAndPatient(hcPartyId, secretPatientKeys, healthElementId, planOfActionId, formTemplateId)
 		return formsList.map { contact -> formMapper.map(contact) }.injectReactorContext()
 	}
 
@@ -247,7 +247,7 @@ class FormController(
 		@RequestParam secretFKeys: String
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), null, null, null).map { form -> stubMapper.mapToStub(form) }.injectReactorContext()
+		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, secretPatientKeys, null, null, null).map { form -> stubMapper.mapToStub(form) }.injectReactorContext()
 	}
 
 	@Operation(summary = "List form stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
@@ -256,7 +256,7 @@ class FormController(
 		@RequestParam hcPartyId: String,
 		@RequestBody secretPatientKeys: List<String>,
 	): Flux<IcureStubDto> {
-		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), null, null, null).map { form -> stubMapper.mapToStub(form) }.injectReactorContext()
+		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, secretPatientKeys, null, null, null).map { form -> stubMapper.mapToStub(form) }.injectReactorContext()
 	}
 
 	@Operation(summary = "Update delegations in form.", description = "Keys must be delimited by coma")

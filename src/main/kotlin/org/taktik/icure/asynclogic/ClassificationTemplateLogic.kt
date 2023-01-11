@@ -40,7 +40,7 @@ interface ClassificationTemplateLogic : EntityPersister<ClassificationTemplate, 
 
 	suspend fun addDelegations(classificationTemplateId: String, delegations: List<Delegation>): ClassificationTemplate?
 	fun getClassificationTemplates(ids: List<String>): Flow<ClassificationTemplate>
-	fun listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: ArrayList<String>): Flow<ClassificationTemplate>
+	fun listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>): Flow<ClassificationTemplate>
 
 	fun listClassificationTemplates(paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 }

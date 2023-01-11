@@ -86,7 +86,7 @@ class ClassificationTemplateController(
 	@GetMapping("/byHcPartySecretForeignKeys")
 	fun findClassificationTemplatesByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestParam secretFKeys: String): Flux<ClassificationTemplateDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val elementList = classificationTemplateLogic.listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+		val elementList = classificationTemplateLogic.listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 
 		return elementList.map { classificationTemplateMapper.map(it) }.injectReactorContext()
 	}
