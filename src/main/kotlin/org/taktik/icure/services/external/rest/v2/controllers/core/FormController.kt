@@ -253,7 +253,7 @@ class FormController(
 	}
 
 	@Operation(summary = "List form stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
-	@GetMapping("/byHcPartySecretForeignKeys/delegations")
+	@PostMapping("/byHcPartySecretForeignKeys/delegations")
 	fun listFormsDelegationsStubsByHCPartyAndPatientForeignKeys(
 		@RequestParam hcPartyId: String,
 		@RequestBody secretPatientKeys: List<String>,
