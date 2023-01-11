@@ -220,7 +220,7 @@ class ContactController(
 	}
 
 	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
-	@GetMapping("/byHcPartySecretForeignKeys")
+	@PostMapping("/byHcPartySecretForeignKeys")
 	fun listContactsByHCPartyAndPatientSecretFKeys(
 		@RequestParam hcPartyId: String,
 		@RequestBody secretPatientKeys: List<String>,
