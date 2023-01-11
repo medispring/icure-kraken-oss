@@ -211,13 +211,40 @@ class ContactController(
 		}
 	}
 
-	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@Operation(summary = "Get a list of contacts found by Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findByHCPartyPatientSecretFKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+		@RequestParam(required = false) planOfActionsIds: String?,
+		@RequestParam(required = false) skipClosedContacts: Boolean?,
+	): Flux<ContactDto> {
+		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys)
+
+		return if (planOfActionsIds != null) {
+			val poaids = planOfActionsIds.split(',')
+			contactList.filter { c -> (skipClosedContacts == null || !skipClosedContacts || c.closingDate == null) && !Collections.disjoint(c.subContacts.map { it.planOfActionId }, poaids) }.map { contact -> contactMapper.map(contact) }.injectReactorContext()
+		} else {
+			contactList.filter { c -> skipClosedContacts == null || !skipClosedContacts || c.closingDate == null }.map { contact -> contactMapper.map(contact) }.injectReactorContext()
+		}
+	}
+
+	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.")
 	@GetMapping("/byHcPartySecretForeignKeys/delegations")
 	fun findContactsDelegationsStubsByHCPartyPatientForeignKeys(
 		@RequestParam hcPartyId: String,
 		@RequestParam secretFKeys: String,
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
+		return contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys).map { contact -> stubMapper.mapToStub(contact) }.injectReactorContext()
+	}
+
+	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys/delegations")
+	fun findContactsDelegationsStubsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+	): Flux<IcureStubDto> {
 		return contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys).map { contact -> stubMapper.mapToStub(contact) }.injectReactorContext()
 	}
 

@@ -118,6 +118,12 @@ class AccessLogController(
 		emitAll(accessLogLogic.listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys)).map { accessLogMapper.map(it) })
 	}.injectReactorContext()
 
+	@Operation(summary = "List access logs found by Healthcare Party and secret foreign keyelementIds.")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findAccessLogsByHCPartyPatientForeignKeys(@RequestParam("hcPartyId") hcPartyId: String, @RequestBody secretPatientKeys: List<String>) = flow {
+		emitAll(accessLogLogic.listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys).map { accessLogMapper.map(it) })
+	}.injectReactorContext()
+
 	@Operation(summary = "Modifies an access log")
 	@PutMapping
 	fun modifyAccessLog(@RequestBody accessLogDto: AccessLogDto) = mono {

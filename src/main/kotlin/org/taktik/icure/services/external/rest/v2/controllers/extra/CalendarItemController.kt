@@ -151,6 +151,14 @@ class CalendarItemController(
 		return elementList.map { calendarItemV2Mapper.map(it) }.injectReactorContext()
 	}
 
+	@Operation(summary = "Find CalendarItems by hcparty and patient")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findCalendarItemsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<CalendarItemDto> {
+		val elementList = calendarItemLogic.listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+
+		return elementList.map { calendarItemV2Mapper.map(it) }.injectReactorContext()
+	}
+
 	@Operation(summary = "Find CalendarItems by recurrenceId", description = "")
 	@GetMapping("/byRecurrenceId")
 	fun findCalendarItemsByRecurrenceId(@RequestParam recurrenceId: String): Flux<CalendarItemDto> {

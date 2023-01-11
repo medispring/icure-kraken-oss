@@ -30,7 +30,7 @@ interface AccessLogLogic : EntityPersister<AccessLog, String> {
 	suspend fun createAccessLog(accessLog: AccessLog): AccessLog?
 
 	fun deleteAccessLogs(ids: List<String>): Flow<DocIdentifier>
-	fun listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<AccessLog>
+	fun listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretForeignKeys: List<String>): Flow<AccessLog>
 
 	suspend fun getAccessLog(accessLogId: String): AccessLog?
 

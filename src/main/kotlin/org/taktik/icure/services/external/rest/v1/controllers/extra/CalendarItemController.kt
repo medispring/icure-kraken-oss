@@ -149,6 +149,15 @@ class CalendarItemController(
 		return elementList.map { calendarItemMapper.map(it) }.injectReactorContext()
 	}
 
+	@Operation(summary = "Find CalendarItems by hcparty and patient")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findCalendarItemsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<CalendarItemDto> {
+		val elementList = calendarItemLogic.listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+
+		return elementList.map { calendarItemMapper.map(it) }.injectReactorContext()
+	}
+
+
 	@Operation(summary = "Update delegations in calendarItems")
 	@PostMapping("/delegations")
 	fun setCalendarItemsDelegations(@RequestBody stubs: List<IcureStubDto>) = flow {

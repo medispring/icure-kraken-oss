@@ -114,6 +114,16 @@ class HealthElementController(
 			.injectReactorContext()
 	}
 
+	@Operation(summary = "List healthcare elements found By Healthcare Party and secret foreign keyelementIds.", description = "Keys hast to delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findHealthElementsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<HealthElementDto> {
+		val elementList = healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, ArrayList(secretPatientKeys))
+
+		return elementList
+			.map { element -> healthElementV2Mapper.map(element) }
+			.injectReactorContext()
+	}
+
 	@Operation(summary = "List helement stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
 	@GetMapping("/byHcPartySecretForeignKeys/delegations")
 	fun listHealthElementsDelegationsStubsByHCPartyAndPatientForeignKeys(
@@ -121,6 +131,17 @@ class HealthElementController(
 		@RequestParam secretFKeys: String
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
+		return healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
+			.map { healthElement -> stubV2Mapper.mapToStub(healthElement) }
+			.injectReactorContext()
+	}
+
+	@Operation(summary = "List helement stubs found By Healthcare Party and secret foreign keys.")
+	@PostMapping("/byHcPartySecretForeignKeys/delegations")
+	fun findHealthElementsDelegationsStubsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+	): Flux<IcureStubDto> {
 		return healthElementLogic.listHealthElementsByHcPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 			.map { healthElement -> stubV2Mapper.mapToStub(healthElement) }
 			.injectReactorContext()

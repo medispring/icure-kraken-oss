@@ -229,6 +229,19 @@ class FormController(
 		return formsList.map { contact -> formV2Mapper.map(contact) }.injectReactorContext()
 	}
 
+	@Operation(summary = "List forms found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findFormsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+		@RequestParam(required = false) healthElementId: String?,
+		@RequestParam(required = false) planOfActionId: String?,
+		@RequestParam(required = false) formTemplateId: String?
+	): Flux<FormDto> {
+		val formsList = formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), healthElementId, planOfActionId, formTemplateId)
+		return formsList.map { contact -> formV2Mapper.map(contact) }.injectReactorContext()
+	}
+
 	@Operation(summary = "List form stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
 	@GetMapping("/byHcPartySecretForeignKeys/delegations")
 	fun listFormsDelegationsStubsByHCPartyAndPatientForeignKeys(
@@ -236,6 +249,15 @@ class FormController(
 		@RequestParam secretFKeys: String
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
+		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), null, null, null).map { form -> stubV2Mapper.mapToStub(form) }.injectReactorContext()
+	}
+
+	@Operation(summary = "List form stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@GetMapping("/byHcPartySecretForeignKeys/delegations")
+	fun listFormsDelegationsStubsByHCPartyAndPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+	): Flux<IcureStubDto> {
 		return formLogic.listFormsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys), null, null, null).map { form -> stubV2Mapper.mapToStub(form) }.injectReactorContext()
 	}
 
