@@ -92,7 +92,7 @@ class ReceiptController(
 	fun getReceiptAttachment(
 		@PathVariable receiptId: String,
 		@PathVariable attachmentId: String,
-		@RequestParam enckeys: String
+		@RequestParam(required = false) enckeys: String?
 	) = mono {
 		val attachment = ByteArrayOutputStream().use {
 			receiptLogic.getAttachment(receiptId, attachmentId).writeTo(it)
@@ -100,7 +100,11 @@ class ReceiptController(
 		}
 		if (attachment.isEmpty()) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Attachment not found")
 			.also { logger.error(it.message) }
-		CryptoUtils.decryptAESWithAnyKey(attachment, enckeys.split('.'))
+		if (enckeys !== null && enckeys.isNotBlank()) {
+			CryptoUtils.decryptAESWithAnyKey(attachment, enckeys.split('.'))
+		} else {
+			attachment
+		}
 	}
 
 	@Operation(summary = "Creates a receipt's attachment")
@@ -119,8 +123,7 @@ class ReceiptController(
 
 		val receipt = receiptLogic.getEntity(receiptId)
 		if (receipt != null) {
-			receiptLogic.addReceiptAttachment(receipt, ReceiptBlobType.valueOf(blobType), encryptedPayload)
-			receiptV2Mapper.map(receipt)
+			receiptV2Mapper.map(receiptLogic.addReceiptAttachment(receipt, ReceiptBlobType.valueOf(blobType), encryptedPayload))
 		} else throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Receipt modification failed")
 	}
 
