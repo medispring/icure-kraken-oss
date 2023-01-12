@@ -79,7 +79,7 @@ class DiaryNoteExport(
 		return md5Hex
 	}
 
-	suspend fun createDiaryNote(
+	fun createDiaryNote(
 		pat: Patient,
 		sfks: List<String>,
 		sender: HealthcareParty,
@@ -101,6 +101,7 @@ class DiaryNoteExport(
 			defaultLanguage = "en"
 		)
 	) = flow<DataBuffer> {
+		config.defaultLanguage = if (sender.languages.firstOrNull() == "nl") "nl-BE" else if (sender.languages.firstOrNull() == "de") "de-BE" else "fr-BE"
 		val message = initializeMessage(sender, config)
 		message.header.recipients.add(
 			RecipientType().apply {
@@ -112,9 +113,9 @@ class DiaryNoteExport(
 		folder.ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = 1.toString() })
 		folder.patient = makePerson(pat, config)
 		fillPatientFolder(folder, pat, sfks, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
-		message.folders.add(folder)
-
-		fillPatientFolder(folder, pat, sfks, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
+// 		message.folders.add(folder)
+//
+// 		fillPatientFolder(folder, pat, sfks, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
 		emitMessage(message.apply { folders.add(folder) }).collect { emit(it) }
 	}
 

@@ -114,9 +114,10 @@ class KmehrController(
 		@RequestParam language: String,
 		@RequestBody info: DiaryNoteExportInfoDto,
 		response: ServerHttpResponse
-	) = mono {
+	) = flow {
 		patientLogic.getPatient(patientId)?.let {
 			healthcarePartyLogic.getHealthcareParty(sessionLogic.getCurrentHealthcarePartyId())?.let { it1 ->
+				emitAll(
 				diaryNoteLogic.createDiaryNote(
 					it,
 					info.secretForeignKeys,
@@ -130,6 +131,7 @@ class KmehrController(
 					info.documentId,
 					info.attachmentId,
 					null
+				)
 				)
 			}
 		} ?: throw IllegalArgumentException("Missing argument")
