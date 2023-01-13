@@ -6,7 +6,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
-import org.taktik.icure.asynclogic.impl.CalendarItemLogicImpl
 import org.taktik.icure.asynclogic.impl.TimeTableLogicImpl
 import org.taktik.icure.entities.Agenda
 import org.taktik.icure.entities.CalendarItem
@@ -40,7 +38,7 @@ class TimeTableLogicTest : StringSpec({
 	lateinit var sessionMock: SessionMock
 	lateinit var timeTableLogic: TimeTableLogic
 
-	fun makeCalendarItem (startTime:Long, endTime:Long):CalendarItem {
+	fun makeCalendarItem (startTime:Long, endTime:Long, allDay:Boolean = false):CalendarItem {
 		return CalendarItem("mock",
 			null,
 			null,
@@ -67,7 +65,7 @@ class TimeTableLogicTest : StringSpec({
 			null,
 			null,
 			15*60*1000,
-			null,
+			allDay,
 			null,
 			null,
 			agendaId)
@@ -84,7 +82,8 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemLogic = mockk<CalendarItemLogic>()
 		every { calendarItemLogic.getCalendarItemByPeriodAndAgendaId(any(), any(), agendaId) } answers { flowOf(
 			makeCalendarItem(20200102081500L, 20200102083000L),
-			makeCalendarItem(20200102085500L, 20200102091000L)
+			makeCalendarItem(20200102085500L, 20200102091000L),
+			makeCalendarItem(20200110000000L, 20200110000000L, true)
 		) }
 		val calendarItemTypeLogic = mockk<CalendarItemTypeLogic>()
 		every { calendarItemTypeLogic.getCalendarItemTypes(any()) } answers { firstArg<Collection<String>>().map { CalendarItemType(id = it, duration = 15) }.asFlow() }
@@ -115,7 +114,8 @@ class TimeTableLogicTest : StringSpec({
 		rrule: String?,
 		rruleStartDate: Long?,
 		days: List<String>?,
-		recurrenceTypes: List<String>?
+		recurrenceTypes: List<String>?,
+		acceptsNewPatient: Boolean = true,
 	) {
 		TimeTable(
 			id = newId(),
@@ -124,6 +124,7 @@ class TimeTableLogicTest : StringSpec({
 			endTime = 20321006000000L,
 			items = listOf(
 				TimeTableItem (
+					acceptsNewPatient = acceptsNewPatient,
 					rruleStartDate = rruleStartDate,
 					rrule = rrule,
 					days = days ?: emptyList(),
@@ -220,8 +221,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyWeek [0] shouldBe 20200106080000L;
-			everyWeek.size shouldBe 1;
+			everyWeek [0] shouldBe 20200106080000L
+			everyWeek.size shouldBe 1
 		}
 	}
 
@@ -230,19 +231,54 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=3",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId, 200).toList()
-			test.size shouldBe 105; //9 hours / day * 4 quarters/hour * 3 days - 3 slots with existing cis
+			test.size shouldBe 105 //9 hours / day * 4 quarters/hour * 3 days - 3 slots with existing cis
 		}
 	}
 
 	"It should remove timeslots overlapping with existing calendarItems" {
 		val calendarItemTypeId= newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=6",20200101L, null , null)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyWeek shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
 		}
 	}
 
+	"It should remove timeslots overlapping with existing calendarItems in the legacy format too" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1","2", "3", "4", "5", "6" ) , listOf("EVERY_WEEK"))
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L) //Fail:  Element 20200102080000L expected at index 0 but there were no further elements
+		}
+	}
+
+	"It should return an empty list if the provided calendarItemType differs from the timetableItem's calendarItemTypes" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, "SOME OTHER CALENDARITEMTYPE ID", null, false, true, hcpId).toList()
+			result.size shouldBe 0
+		}
+	}
+
+	"It should return an empty list if isNewPatient is set to true and the timetableItem's acceptsNewPatient property is set to false." {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null, false)
+		withAuthenticatedHcpContext(hcpId) {
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, calendarItemTypeId, null, true, true, hcpId).toList()
+			result.size shouldBe 0
+		}
+	}
+
+	"There should not be any availability at days with an allDay-appointment" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
+		withAuthenticatedHcpContext(hcpId) {
+			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200110080000L, 20200110100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			everyDay.size shouldBe 0 // *** Fail: expected:<0> but was:<9>
+		}
+	}
 })
 
 infix fun <E, T:Collection<E>> T.shouldNotHaveElement(test: (E) -> Boolean) = should(object:Matcher<T> {
