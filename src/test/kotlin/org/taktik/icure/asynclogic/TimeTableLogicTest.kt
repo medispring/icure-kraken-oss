@@ -246,7 +246,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"It should remove timeslots overlapping with existing calendarItems in the legacy format too" {
 		val calendarItemTypeId= newId()
-		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1","2", "3", "4", "5", "6" ) , listOf("EVERY_WEEK"))
+		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1","2", "3", "4", "5", "6", "7" ) , listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L) //Fail:  Element 20200102080000L expected at index 0 but there were no further elements
