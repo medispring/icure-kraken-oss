@@ -435,7 +435,7 @@ class SumehrExport(
 	}
 
 	internal suspend fun addActiveServicesAsCD(hcPartyIds: Set<String>, sfks: List<String>, trn: TransactionType, cdItem: String, type: CDCONTENTschemes, values: List<String>, excludedIds: List<String>, includeIrrelevantInformation: Boolean, decryptor: AsyncDecrypt?, servicesFromClient: List<Service>?, language: String) {
-		val assessment = getAssessment(trn)
+		val items = trn.headingsAndItemsAndTexts
 
 		val services = getActiveServices(hcPartyIds, sfks, listOf(cdItem), excludedIds, includeIrrelevantInformation, decryptor, servicesFromClient)
 		val nonConfidentialItems = getNonConfidentialItems(services)
@@ -443,15 +443,15 @@ class SumehrExport(
 
 		values.forEach { value ->
 			nonConfidentialItems.filter { s -> null != s.codes.find { it.type == type.value() && value == it.code } }.forEach {
-				createItemWithContent(it, assessment.headingsAndItemsAndTexts.size + 1, cdItem, listOf(ContentType().apply { cds.add(CDCONTENT().apply { s = type; sv = "1.3"; this.value = value }) }), language = language)?.let {
-					assessment.headingsAndItemsAndTexts.add(it)
+				createItemWithContent(it, items.filter{!(it is HeadingType)}.size + 1, cdItem, listOf(ContentType().apply { cds.add(CDCONTENT().apply { s = type; sv = "1.3"; this.value = value }) }), language = language)?.let {
+					items.add(it)
 				}
 			}
 		}
 	}
 
 	internal suspend fun addActiveServicesAsCDPatientWillChoice(hcPartyIds: Set<String>, sfks: List<String>, trn: TransactionType, cdItem: String, type: CDCONTENTschemes, values: List<String>, excludedIds: List<String>, includeIrrelevantInformation: Boolean, decryptor: AsyncDecrypt?, servicesFromClient: List<Service>?, language: String) {
-		val assessment = getAssessment(trn)
+		val items = trn.headingsAndItemsAndTexts
 
 		val services = getActiveServices(hcPartyIds, sfks, listOf(cdItem), excludedIds, includeIrrelevantInformation, decryptor, servicesFromClient)
 		val nonConfidentialItems = getNonConfidentialItems(services)
@@ -466,8 +466,8 @@ class SumehrExport(
 						break
 					}
 				}
-				createItemWithContent(it, assessment.headingsAndItemsAndTexts.size + 1, cdItem, listOf(ContentType().apply { cds.add(CDCONTENT().apply { s = type; sv = "1.3"; this.value = contentCode }) }), language = language)?.let {
-					assessment.headingsAndItemsAndTexts.add(it)
+				createItemWithContent(it, items.filter{!(it is HeadingType)}.size + 1, cdItem, listOf(ContentType().apply { cds.add(CDCONTENT().apply { s = type; sv = "1.3"; this.value = contentCode }) }), language = language)?.let {
+					items.add(it)
 				}
 			}
 		}
@@ -579,10 +579,10 @@ class SumehrExport(
 				val rel = pat.partnerships.find { it.partnerId == p.id }?.type.toString()
 				try {
 					rel.let {
-						val items = getAssessment(trn).headingsAndItemsAndTexts
+						val items = trn.headingsAndItemsAndTexts
 						items.add(
 							ItemType().apply {
-								ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.size + 1).toString() })
+								ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.filter{!(it is HeadingType)}.size + 1).toString() })
 								cds.add(CDITEM().apply { s(CDITEMschemes.CD_ITEM); value = CDITEMvalues.CONTACTPERSON.value() })
 								cds.add(CDITEM().apply { s(CDITEMschemes.CD_CONTACT_PERSON); value = rel })
 								contents.add(ContentType().apply { person = makePerson(p, config, true) })
@@ -603,10 +603,10 @@ class SumehrExport(
 					val phcp = pat.patientHealthCareParties.find { it.healthcarePartyId == hcp.id }
 					try {
 						phcp.let {
-							val items = getAssessment(trn).headingsAndItemsAndTexts
+							val items = trn.headingsAndItemsAndTexts
 							items.add(
 								ItemType().apply {
-									ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.size + 1).toString() })
+									ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.filter{!(it is HeadingType)}.size + 1).toString() })
 									cds.add(CDITEM().apply { s(CDITEMschemes.CD_ITEM); value = CDITEMvalues.CONTACTHCPARTY.value() })
 									contents.add(ContentType().apply { hcparty = createParty(hcp, emptyList()) })
 								}
@@ -626,10 +626,10 @@ class SumehrExport(
 			if (gmdRelationship != null) {
 				gmdRelationship.healthcarePartyId?.let {
 					healthcarePartyLogic.getHealthcareParty(it)?.let { hcp ->
-						val items = getAssessment(trn).headingsAndItemsAndTexts
+						val items = trn.headingsAndItemsAndTexts
 						items.add(
 							ItemType().apply {
-								ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.size + 1).toString() })
+								ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = (items.filter{!(it is HeadingType)}.size + 1).toString() })
 								cds.add(CDITEM().apply { s(CDITEMschemes.CD_ITEM); value = "gmdmanager" })
 								contents.add(ContentType().apply { hcparty = createParty(hcp, emptyList()) })
 							}
@@ -649,9 +649,9 @@ class SumehrExport(
 			addOmissionOfMedicalDataItem(trn, medications, nonConfidentialItems)
 
 			nonConfidentialItems.forEach { m ->
-				val items = getAssessment(trn).headingsAndItemsAndTexts
+				val items = trn.headingsAndItemsAndTexts
 				createItemWithContent(
-					m.copy(closingDate = m.closingDate ?: FuzzyValues.getFuzzyDate(LocalDateTime.now().plusMonths(1), ChronoUnit.SECONDS)), items.size + 1, "medication",
+					m.copy(closingDate = m.closingDate ?: FuzzyValues.getFuzzyDate(LocalDateTime.now().plusMonths(1), ChronoUnit.SECONDS)), items.filter{!(it is HeadingType)}.size + 1, "medication",
 					m.content.entries.mapNotNull {
 						makeContent(
 							it.key,
@@ -688,8 +688,8 @@ class SumehrExport(
 			addOmissionOfMedicalDataItem(trn, vaccines, nonConfidentialItems)
 
 			nonConfidentialItems.forEach {
-				val items = getAssessment(trn).headingsAndItemsAndTexts
-				items.add(createVaccineItem(it, items.size + 1, language))
+				val items = trn.headingsAndItemsAndTexts
+				items.add(createVaccineItem(it, items.filter{!(it is HeadingType)}.size + 1, language))
 			}
 		} catch (e: RuntimeException) {
 			log.error("Unexpected error", e)
