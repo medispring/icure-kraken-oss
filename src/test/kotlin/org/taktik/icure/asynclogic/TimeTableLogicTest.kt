@@ -280,36 +280,22 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
-	"Time slots should match the start of the timetable + duration and NOT the time of the startDate" {
-		val calendarItemTypeId1 = newId()
-		val calendarItemTypeId2 = newId()
 
-		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", null, null, null)
-		makeTimeTable(calendarItemTypeId2, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
-
+	"In legacy format, time slots should match the start of the timetable + multiple of duration and NOT the time of the startDate" {
+		val calendarItemTypeId= newId()
+		makeTimeTable(calendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000800L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
-			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000800L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
-			result1 shouldBe result2 // *** passes => next problem exists both in legacy and rrule
-			result1[0] shouldBe 20221017001500L //  *** fail expected:<20221017001500L> but was:<20221017080800L>
+			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080700L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
+			everyDay[0] shouldBe 20200105081500L // *** fail. expected:<20200105081500L> but was:<20200105160700L>
 		}
-
 	}
 
-	"Timeslot time should be after the startDate (rrule format)" {
+	"In rrule format Timeslot time should be after the startDate" {
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080800L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyDay[0] shouldBe 20200105081500L // *** Fail: expected:<20200105081500L> but was:<20200105080000L>
-		}
-	}
-	"Timeslot time should be after the startDate (legacy format)" {
-		val calendarItemTypeId= newId()
-		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
-		withAuthenticatedHcpContext(hcpId) {
-			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080700L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyDay[0] shouldBe 20200105081500L // *** fail. Expected <20200105081500L> but was:<20200105080000L>
+			everyDay[0] shouldBe 20200105081500L // *** Fail: <20200105081500L> but was:<20200105080000L>
 		}
 	}
 
