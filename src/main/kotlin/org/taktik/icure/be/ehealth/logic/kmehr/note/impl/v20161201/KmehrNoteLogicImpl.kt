@@ -154,6 +154,7 @@ class KmehrNoteLogicImpl(
 							this.time = Utils.makeXGC(date)
 							this.author = AuthorType().apply {
 								hcparties.add(createParty(author, emptyList<CDHCPARTY>()))
+								hcparties.add(createSpecialistParty(author, emptyList<CDHCPARTY>()))
 							}
 							this.isIscomplete = true
 							this.isIsvalidated = true

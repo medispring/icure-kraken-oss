@@ -15,17 +15,21 @@
  *     License along with this program.  If not, see
  *     <https://www.gnu.org/licenses/>.
  */
+package org.taktik.icure.domain.filter.impl.hcparty
 
-package org.taktik.icure.asyncdao
+import com.github.pozo.KotlinBuilder
+import org.taktik.icure.db.sanitize
+import org.taktik.icure.domain.filter.AbstractFilter
+import org.taktik.icure.entities.HealthcareParty
 
-import kotlinx.coroutines.flow.Flow
-import org.taktik.icure.entities.TimeTable
-
-interface TimeTableDAO : GenericDAO<TimeTable> {
-	fun listTimeTableByAgendaId(agendaId: String): Flow<TimeTable>
-	fun listTimeTableByAgendaIds(agendaIds: Collection<String>): Flow<TimeTable>
-	fun listTimeTableByStartDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByEndDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByPeriodAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByPeriodAndAgendaIds(startDate: Long?, endDate: Long?, agendaIds: Set<String>): Flow<TimeTable>
+@KotlinBuilder
+data class HealthcarePartyByNameFilter(
+	override val desc: String? = null,
+	override val name: String,
+	override val descending: Boolean? = null,
+) :
+	AbstractFilter<HealthcareParty>, org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter {
+	override fun matches(item: HealthcareParty): Boolean {
+		return ((item.lastName ?: "") + (item.firstName ?: "")).contains(name.sanitize(), true)
+	}
 }

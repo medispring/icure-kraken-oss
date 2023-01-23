@@ -1,19 +1,5 @@
 /*
- *  iCure Data Stack. Copyright (c) 2020 Taktik SA
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU Affero General Public License as
- *     published by the Free Software Foundation, either version 3 of the
- *     License, or (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful, but
- *     WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Affero General Public License for more details.
- *
- *     You should have received a copy of the GNU Affero General Public
- *     License along with this program.  If not, see
- *     <https://www.gnu.org/licenses/>.
+ * Copyright (c) 2020. Taktik SA, All rights reserved.
  */
 
 package org.taktik.icure.services.external.rest.v2.mapper.filter
@@ -46,6 +32,7 @@ import org.taktik.icure.services.external.rest.v2.dto.filter.device.DeviceByIdsF
 import org.taktik.icure.services.external.rest.v2.dto.filter.hcparty.AllHealthcarePartiesFilter
 import org.taktik.icure.services.external.rest.v2.dto.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import org.taktik.icure.services.external.rest.v2.dto.filter.hcparty.HealthcarePartyByIdsFilter
+import org.taktik.icure.services.external.rest.v2.dto.filter.hcparty.HealthcarePartyByNameFilter
 import org.taktik.icure.services.external.rest.v2.dto.filter.hcparty.HealthcarePartyByTagCodeFilter
 import org.taktik.icure.services.external.rest.v2.dto.filter.healthelement.HealthElementByHcPartyFilter
 import org.taktik.icure.services.external.rest.v2.dto.filter.healthelement.HealthElementByHcPartyIdentifiersFilter
@@ -128,6 +115,7 @@ abstract class FilterV2Mapper {
 	abstract fun map(filterDto: ContactByHcPartyFilter): org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter
 	abstract fun map(filterDto: DeviceByIdsFilter): org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter
 	abstract fun map(filterDto: HealthcarePartyByIdsFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter
+	abstract fun map(filterDto: HealthcarePartyByNameFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter
 	abstract fun map(filterDto: HealthcarePartyByIdentifiersFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter
 	abstract fun map(filterDto: HealthcarePartyByTagCodeFilter): org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter
 	abstract fun map(filterDto: HealthElementByHcPartyFilter): org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter
@@ -209,6 +197,7 @@ abstract class FilterV2Mapper {
 			is ContactByHcPartyFilter -> map(filterDto)
 			is DeviceByIdsFilter -> map(filterDto)
 			is HealthcarePartyByIdsFilter -> map(filterDto)
+			is HealthcarePartyByNameFilter -> map(filterDto)
 			is HealthcarePartyByIdentifiersFilter -> map(filterDto)
 			is HealthcarePartyByTagCodeFilter -> map(filterDto)
 			is HealthElementByHcPartyFilter -> map(filterDto)
@@ -264,6 +253,7 @@ abstract class FilterV2Mapper {
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter): ContactByHcPartyFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter): DeviceByIdsFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter): HealthcarePartyByIdsFilter
+	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter): HealthcarePartyByNameFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter): HealthcarePartyByIdentifiersFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter): HealthcarePartyByTagCodeFilter
 	abstract fun map(filter: org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter): HealthElementByHcPartyFilter
@@ -347,6 +337,7 @@ abstract class FilterV2Mapper {
 			is org.taktik.icure.domain.filter.impl.contact.ContactByHcPartyFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.device.DeviceByIdsFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdsFilter -> map(filter)
+			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByNameFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByIdentifiersFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.hcparty.HealthcarePartyByTagCodeFilter -> map(filter)
 			is org.taktik.icure.domain.filter.impl.healthelement.HealthElementByHcPartyFilter -> map(filter)

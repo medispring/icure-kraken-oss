@@ -33,10 +33,10 @@ import com.github.pozo.KotlinBuilder
  */
 
 data class TimeTableItem(
+	val rruleStartDate: Long? = null, // YYYYMMDD
 	val rrule: String? = null,
 	@Deprecated("Will be replaced by rrule") val days: List<String> = emptyList(),
 	@Deprecated("Will be replaced by rrule") val recurrenceTypes: List<String> = emptyList(),
-
 	val hours: List<TimeTableHour> = emptyList(),
 	val calendarItemTypeId: String? = null,
 	@JsonProperty("isHomeVisit") val homeVisit: Boolean = false,

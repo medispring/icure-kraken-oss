@@ -15,17 +15,23 @@
  *     License along with this program.  If not, see
  *     <https://www.gnu.org/licenses/>.
  */
-
-package org.taktik.icure.asyncdao
+package org.taktik.icure.asynclogic.impl.filter.hcparty
 
 import kotlinx.coroutines.flow.Flow
-import org.taktik.icure.entities.TimeTable
+import org.springframework.stereotype.Service
+import org.taktik.icure.asynclogic.HealthcarePartyLogic
+import org.taktik.icure.asynclogic.impl.filter.Filter
+import org.taktik.icure.asynclogic.impl.filter.Filters
+import org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter
+import org.taktik.icure.entities.HealthcareParty
 
-interface TimeTableDAO : GenericDAO<TimeTable> {
-	fun listTimeTableByAgendaId(agendaId: String): Flow<TimeTable>
-	fun listTimeTableByAgendaIds(agendaIds: Collection<String>): Flow<TimeTable>
-	fun listTimeTableByStartDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByEndDateAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByPeriodAndAgendaId(startDate: Long?, endDate: Long?, agendaId: String): Flow<TimeTable>
-	fun listTimeTableByPeriodAndAgendaIds(startDate: Long?, endDate: Long?, agendaIds: Set<String>): Flow<TimeTable>
+@Service
+class HealthcarePartyByNameFilter(
+	private val healthcarePartyLogic: HealthcarePartyLogic,
+) : Filter<String, HealthcareParty, org.taktik.icure.domain.filter.hcparty.HealthcarePartyByNameFilter> {
+
+	override fun resolve(
+		filter: HealthcarePartyByNameFilter,
+		context: Filters,
+	): Flow<String> = healthcarePartyLogic.listHealthcarePartyIdsByName(filter.name, filter.descending ?: false)
 }

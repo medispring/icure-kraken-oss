@@ -19,7 +19,6 @@
 package org.taktik.icure.asyncdao.impl
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
@@ -39,6 +38,7 @@ import org.taktik.couchdb.queryViewIncludeDocs
 import org.taktik.icure.asyncdao.HealthcarePartyDAO
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.db.StringUtils
+import org.taktik.icure.db.sanitize
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.embed.Identifier
 import org.taktik.icure.properties.CouchDbProperties
@@ -258,4 +258,20 @@ internal class HealthcarePartyDAOImpl(
 
 		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
 	}
+
+    override fun listHealthcarePartyIdsByName(name: String, desc: Boolean) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+
+		val r = name.sanitize()
+		val from = if (desc) r + "\ufff0" else r
+		val to = if (desc) r else r + "\ufff0"
+
+		val viewQuery = createQuery(client, "by_hcParty_name")
+			.startKey(from)
+			.endKey(to)
+			.includeDocs(false)
+			.descending(desc)
+
+		emitAll(client.queryView<String, String>(viewQuery).mapNotNull { it.id })
+    }
 }
