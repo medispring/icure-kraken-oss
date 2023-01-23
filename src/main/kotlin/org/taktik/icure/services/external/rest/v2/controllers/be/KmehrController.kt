@@ -120,7 +120,7 @@ class KmehrController(
 				emitAll(
 				diaryNoteLogic.createDiaryNote(
 					it,
-					info.secretForeignKeys,
+					info.encryptionDecryptionKeys,
 					it1,
 					healthcarePartyV2Mapper.map(info.recipient!!),
 					language,

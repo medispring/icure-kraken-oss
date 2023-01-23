@@ -81,7 +81,7 @@ class DiaryNoteExport(
 
 	fun createDiaryNote(
 		pat: Patient,
-		sfks: List<String>,
+		enckeys: List<String>,
 		sender: HealthcareParty,
 		recipient: HealthcareParty?,
 		language: String,
@@ -101,6 +101,7 @@ class DiaryNoteExport(
 			defaultLanguage = "en"
 		)
 	) = flow<DataBuffer> {
+		config.format = Config.Format.DIARYNOTE
 		config.defaultLanguage = if (sender.languages.firstOrNull() == "nl") "nl-BE" else if (sender.languages.firstOrNull() == "de") "de-BE" else "fr-BE"
 		val message = initializeMessage(sender, config)
 		message.header.recipients.add(
@@ -112,10 +113,7 @@ class DiaryNoteExport(
 		val folder = FolderType()
 		folder.ids.add(IDKMEHR().apply { s = IDKMEHRschemes.ID_KMEHR; sv = "1.0"; value = 1.toString() })
 		folder.patient = makePerson(pat, config)
-		fillPatientFolder(folder, pat, sfks, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
-// 		message.folders.add(folder)
-//
-// 		fillPatientFolder(folder, pat, sfks, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
+		fillPatientFolder(folder, pat, enckeys, sender, language, config, note, tags, contexts, isPsy, documentId, attachmentId, decryptor)
 		emitMessage(message.apply { folders.add(folder) }).collect { emit(it) }
 	}
 
@@ -130,7 +128,7 @@ class DiaryNoteExport(
 		}
 	}
 
-	internal suspend fun fillPatientFolder(folder: FolderType, p: Patient, sfks: List<String>, sender: HealthcareParty, language: String, config: Config, note: String?, tags: List<String>, contexts: List<String>, isPsy: Boolean, documentId: String?, attachmentId: String?, decryptor: AsyncDecrypt?): FolderType {
+	internal suspend fun fillPatientFolder(folder: FolderType, p: Patient, enckeys: List<String>, sender: HealthcareParty, language: String, config: Config, note: String?, tags: List<String>, contexts: List<String>, isPsy: Boolean, documentId: String?, attachmentId: String?, decryptor: AsyncDecrypt?): FolderType {
 		val trn = TransactionType().apply {
 			cds.add(CDTRANSACTION().apply { s(CDTRANSACTIONschemes.CD_TRANSACTION); value = "diarynote" })
 			author = AuthorType().apply {
@@ -154,7 +152,7 @@ class DiaryNoteExport(
 		folder.transactions.add(trn)
 		if (documentId?.isNotEmpty() == true && attachmentId?.isNotEmpty() == true) {
 			val document = documentLogic.getDocument(documentId)
-			val attachment = document?.let { documentDataAttachmentLoader.decryptMainAttachment(it, sfks) }
+			val attachment = document?.let { documentDataAttachmentLoader.decryptMainAttachment(it, enckeys) }
 			if (attachment != null) {
 				trn.headingsAndItemsAndTexts.add(LnkType().apply { type = CDLNKvalues.MULTIMEDIA; mediatype = documentMediaType(document); value = attachment })
 			}
