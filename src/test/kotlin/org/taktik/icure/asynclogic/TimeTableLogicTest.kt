@@ -6,6 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -187,7 +188,21 @@ class TimeTableLogicTest : StringSpec({
 			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
 			result1 shouldBe result2
 		}
+	}
 
+	"Legacy should return different results with different inputs" {
+		val calendarItemTypeId1 = newId()
+		val calendarItemTypeId2 = newId()
+
+
+		makeTimeTable(calendarItemTypeId1, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
+		makeTimeTable(calendarItemTypeId2, agendaId, null, null, listOf("1", "3", "4"), listOf("EVERY_WEEK"))
+
+		withAuthenticatedHcpContext(hcpId) {
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId2, null, false, true, hcpId).toList()
+			result1 shouldNotBe result2 // fail: results are identical
+		}
 	}
 
 	"Rrule timetable should return an empty array if rruleStartDate is set after rrule's endDate" {
@@ -242,6 +257,8 @@ class TimeTableLogicTest : StringSpec({
 			everyWeek shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
 		}
 	}
+
+
 
 })
 
