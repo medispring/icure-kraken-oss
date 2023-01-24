@@ -18,7 +18,7 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 	val coercedEndLdt = (startLdt + Duration.ofDays(120)).coerceAtMost(endLdt)
 
 	val daysIterator = object : Iterator<LocalDateTime> {
-		var day = startLdt
+		var day = startLdt.withHour(0).withMinute(0).withSecond(0).withNano(0)
 		val rrit = rrule?.let {
 			RecurrenceRule(it).iterator(FuzzyValues.getDateTime(rruleStartDate ?: startDateAndTime).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(), TimeZone.getTimeZone("UTC")).also {
 				it.fastForward(FuzzyValues.getDateTime(startDateAndTime).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli() - 24*3600*1000)
@@ -53,31 +53,55 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 
 	var hoursIterator = hours.iterator(duration)
 
+	//Used for look ahead when we want to be sure that hasNext respects all constraints
 	var currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
+	var currentHour = if (hoursIterator.hasNext()) hoursIterator.next() else null
 
 	init {
-		val startOfStartDayLdt = startLdt.withHour(0).withMinute(0).withSecond(0)
+		val startOfStartDayLdt = startLdt.withHour(0).withMinute(0).withSecond(0).withNano(0)
 		while (currentDay != null && currentDay!! < startOfStartDayLdt) {
 			currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
 		}
 	}
 
 	override fun hasNext(): Boolean {
-		return if (currentDay != null && hoursIterator.hasNext()) true else {
-			hoursIterator = hours.iterator(duration)
-			currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
-			(currentDay != null && hoursIterator.hasNext())
+		val cd = currentDay
+		val ch = currentHour
+		return cd != null && when {
+			ch != null && cd > startLdt -> true
+			ch != null -> {
+				if (ch >= startDateAndTime % 1000000) {
+					true
+				} else {
+					//We need to skip the current hour and see if there is a later one that matches the constraints
+					currentHour = if (hoursIterator.hasNext()) hoursIterator.next() else null
+					hasNext()
+				}
+			}
+			else -> {
+				//We have exhausted the available hours for this day... We need to check what's possible on the next one
+				hoursIterator = hours.iterator(duration)
+				currentHour = if (hoursIterator.hasNext()) hoursIterator.next() else null
+				currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
+				(currentDay != null && currentHour != null)
+			}
 		}
 	}
-	override fun next(): Long = if (hoursIterator.hasNext()) {
-		hoursIterator.next().let {
+
+	override fun next(): Long =
+		(currentHour?.let {
+			currentHour = if (hoursIterator.hasNext()) hoursIterator.next() else null //Prefetch the next hour for hasNext() and next()
 			FuzzyValues.getFuzzyDateTime(currentDay!! + Duration.ofNanos(it.toLocalTime().toNanoOfDay()), ChronoUnit.SECONDS)
+		} ?: run {
+			hoursIterator = hours.iterator(duration)
+			currentHour = if (hoursIterator.hasNext()) hoursIterator.next() else null
+			currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
+			next()
+		}).let {
+			if (it < startDateAndTime) {
+				if (hasNext()) next() else throw NoSuchElementException() //This should never happen if hasNext() is called before next()
+			} else it
 		}
-	} else {
-		hoursIterator = hours.iterator(duration)
-		currentDay = if (daysIterator.hasNext()) daysIterator.next() else null
-		next()
-	}
 }
 
 fun List<TimeTableHour>.iterator(duration: Duration) = object : Iterator<Long> {

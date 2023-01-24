@@ -114,12 +114,15 @@ class TimeTableLogicImpl(
 					!cis.filter { it.startTime != null && it.agendaId == agendaId }
 						.any { ci -> //No existing ci conflicts
 							(ci.startTime ?: 0) < end && (
-								ci.endTime ?: (
-									(ci.duration ?: 60).let { d ->
-										FuzzyValues.getFuzzyDateTime(
-											FuzzyValues.getDateTime(ci.startTime ?: 0) + Duration.ofSeconds(d * 60), ChronoUnit.SECONDS
-										)
-									})
+								if (ci.allDay == true)
+									((ci.startTime ?: 0) - ((ci.startTime ?: 0) % 1000000)) + 240000
+								else
+									ci.endTime ?: (
+										(ci.duration ?: 60).let { d ->
+											FuzzyValues.getFuzzyDateTime(
+												FuzzyValues.getDateTime(ci.startTime ?: 0) + Duration.ofSeconds(d * 60), ChronoUnit.SECONDS
+											)
+										})
 								) > start
 						} -> {
 						start
