@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.taktik.icure.asynclogic.AsyncSessionLogic
+import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.asynclogic.ContactLogic
 import org.taktik.icure.asynclogic.DocumentLogic
 import org.taktik.icure.asynclogic.FormLogic
@@ -40,6 +41,7 @@ import org.taktik.icure.asynclogic.MessageLogic
 import org.taktik.icure.asynclogic.PatientLogic
 import org.taktik.icure.asynclogic.UserLogic
 import org.taktik.icure.asynclogic.impl.ICureLogicImpl
+import org.taktik.icure.services.external.rest.v1.dto.CodeDto
 import org.taktik.icure.services.external.rest.v1.dto.ContactDto
 import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.dto.FormDto
@@ -56,6 +58,7 @@ import org.taktik.icure.services.external.rest.v1.mapper.InvoiceMapper
 import org.taktik.icure.services.external.rest.v1.mapper.MessageMapper
 import org.taktik.icure.services.external.rest.v1.mapper.PatientMapper
 import org.taktik.icure.services.external.rest.v1.mapper.UserMapper
+import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
 import org.taktik.icure.utils.injectReactorContext
 import reactor.core.publisher.Flux
 
@@ -69,6 +72,7 @@ class ICureController(
 	private val userLogic: UserLogic,
 	private val contactLogic: ContactLogic,
 	private val messageLogic: MessageLogic,
+	private val codeLogic: CodeLogic,
 	private val invoiceLogic: InvoiceLogic,
 	private val documentLogic: DocumentLogic,
 	private val healthElementLogic: HealthElementLogic,
@@ -81,6 +85,7 @@ class ICureController(
 	private val formMapper: FormMapper,
 	private val invoiceMapper: InvoiceMapper,
 	private val messageMapper: MessageMapper,
+	private val codeMapper: CodeMapper,
 	private val documentMapper: DocumentMapper,
 ) {
 
@@ -138,6 +143,10 @@ class ICureController(
 	@Operation(summary = "resolve messages conflicts")
 	@PostMapping("/conflicts/message")
 	fun resolveMessagesConflicts(): Flux<MessageDto> = messageLogic.solveConflicts().map { messageMapper.map(it) }.injectReactorContext()
+
+	@Operation(summary = "resolve codes conflicts")
+	@PostMapping("/conflicts/code")
+	fun resolveCodeConflicts(): Flux<CodeDto> = codeLogic.solveConflicts().map { codeMapper.map(it) }.injectReactorContext()
 
 	@Operation(summary = "resolve documents conflicts")
 	@PostMapping("/conflicts/document")

@@ -421,6 +421,13 @@ class CodeDAOImpl(
 		return findCodesByLabel(from, to, version, "by_language_type_label", 3, paginationOffset, 1f, 0, false)
 	}
 
+	@View(name = "conflicts", map = "function(doc) { if (doc.java_type == 'org.taktik.icure.entities.base.Code' && !doc.deleted && doc._conflicts) emit(doc._id )}")
+	override fun listConflicts(): Flow<Code> = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+
+		emitAll(client.queryViewIncludeDocsNoValue<String, Code>(createQuery(client, "conflicts").includeDocs(true)).map { it.doc })
+	}
+
 	@View(name = "by_qualifiedlink_id", map = "classpath:js/code/By_qualifiedlink_id.js")
 	override fun findCodesByQualifiedLinkId(region: String?, linkType: String, linkedId: String?, paginationOffset: PaginationOffset<List<String>>): Flow<ViewQueryResultEvent> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
