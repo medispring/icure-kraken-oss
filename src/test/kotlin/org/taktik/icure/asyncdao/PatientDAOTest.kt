@@ -44,6 +44,7 @@ class PatientDAOTest(
 private suspend fun StringSpec.testPatientFilter(
  patientDAO: PatientDAO
 ){
+	//TODO: These constants work on my db, I've no idea how to make this tests work on any db.
 	val postalCode = "9090"
 	val houseNumber = "340"
 	val streetAndCity = "brus"
