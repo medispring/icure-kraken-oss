@@ -262,7 +262,7 @@ class TimeTableLogicTest : StringSpec({
 
 	"It should remove timeslots overlapping with existing calendarItems in the legacy format too" {
 		val calendarItemTypeId= newId()
-		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1","2", "3", "4", "5", "6", "7" ) , listOf("EVERY_WEEK"))
+		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1", "2", "3", "4", "5", "6", "7" ) , listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
 			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L) //Fail:  Element 20200102080000L expected at index 0 but there were no further elements
@@ -292,7 +292,7 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200110080000L, 20200110100000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyDay.size shouldBe 0 // *** Fail: expected:<0> but was:<9>
+			everyDay.size shouldBe 0
 		}
 	}
 
@@ -302,7 +302,7 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
 			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080700L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyDay[0] shouldBe 20200105081500L // *** fail. expected:<20200105081500L> but was:<20200105160700L>
+			everyDay[0] shouldBe 20200105081500L
 		}
 	}
 
@@ -311,7 +311,7 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
 			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080800L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
-			everyDay[0] shouldBe 20200105081500L // *** Fail: <20200105081500L> but was:<20200105080000L>
+			everyDay[0] shouldBe 20200105081500L
 		}
 	}
 
