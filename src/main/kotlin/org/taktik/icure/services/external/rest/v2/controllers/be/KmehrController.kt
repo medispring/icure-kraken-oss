@@ -134,7 +134,7 @@ class KmehrController(
 				))
 			}
 		} ?: throw IllegalArgumentException("Missing argument")
-	}
+	}.injectReactorContext()
 
 	@Operation(summary = "Generate sumehr", responses = [ApiResponse(responseCode = "200", content = [Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE, schema = Schema(type = "string", format = "binary"))])])
 	@PostMapping("/sumehr/{patientId}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
