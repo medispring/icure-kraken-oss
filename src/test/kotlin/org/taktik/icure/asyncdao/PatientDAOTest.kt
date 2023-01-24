@@ -47,8 +47,8 @@ private suspend fun StringSpec.testPatientFilter(
 	val postalCode = "9090"
 	val houseNumber = "340"
 	val streetAndCity = "brus"
-	val hcpWithoutPatients = "---"
-	val hcpWithPatients = "---"
+	val hcpWithoutPatients = "f12d7fa2-e95f-45d7-ad7f-a2e95f75d763"
+	val hcpWithPatients = "f6789440-7d67-4b11-b894-407d67ab112d"
 	"If streetAndCity postalCode and houseNumber are null, but the HCP has no patients, then the result is empty"{
 		val patientIds = patientDAO.listPatientIdsByHcPartyAndAddress(null,null, null, hcpWithoutPatients).toList()
 		patientIds.size shouldBe 0
@@ -79,7 +79,7 @@ private suspend fun StringSpec.testPatientFilter(
 		patientIds.size shouldBeGreaterThan 0
 		val patients = patientDAO.getPatients(patientIds).toList()
 		patients.forEach{patient ->
-			patient.addresses.map { "$it.postalCode/$it.houseNumber" } shouldContain "$postalCode/$houseNumber"
+			patient.addresses.map { "${it.postalCode}/${it.houseNumber}" } shouldContain "$postalCode/$houseNumber"
 		}
 	}
 	"if streetAndCity is not null, then all the results have the correct streetAndCity parameter"{
@@ -101,7 +101,7 @@ private suspend fun StringSpec.testPatientFilter(
 		patientIds.size shouldBeGreaterThan 0
 		val patients = patientDAO.getPatients(patientIds).toList()
 		patients.forEach{patient ->
-			patient.addresses.filter { address -> ((address.street?.contains(streetAndCity) ?: false) || (address.city?.contains(streetAndCity) ?: false)) && address.houseNumber == houseNumber }.size shouldBeGreaterThan 0
+			patient.addresses.filter { address -> ((address.street?.contains(streetAndCity, ignoreCase = true) ?: false) || (address.city?.contains(streetAndCity, ignoreCase = true) ?: false)) && address.houseNumber == houseNumber }.size shouldBeGreaterThan 0
 		}
 	}
 	"if all the parameters are not null, then all the results have the correct streetAndCity, postalCode and houseNumber"{
@@ -109,7 +109,7 @@ private suspend fun StringSpec.testPatientFilter(
 		patientIds.size shouldBeGreaterThan 0
 		val patients = patientDAO.getPatients(patientIds).toList()
 		patients.forEach{patient ->
-			patient.addresses.filter { address -> ((address.street?.contains(streetAndCity) ?: false) || (address.city?.contains(streetAndCity) ?: false)) && address.postalCode == postalCode && address.houseNumber == houseNumber }.size shouldBeGreaterThan 0
+			patient.addresses.filter { address -> ((address.street?.contains(streetAndCity, ignoreCase = true) ?: false) || (address.city?.contains(streetAndCity, ignoreCase = true) ?: false)) && address.postalCode == postalCode && address.houseNumber == houseNumber }.size shouldBeGreaterThan 0
 		}
 	}
 
