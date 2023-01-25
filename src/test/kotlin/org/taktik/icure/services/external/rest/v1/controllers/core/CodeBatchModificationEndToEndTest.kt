@@ -47,7 +47,7 @@ class CodeBatchModificationEndToEndTest @Autowired constructor(
 	init {
 		runBlocking {
 			val codes = codeGenerator.createBatchOfUniqueCodes(batchSize)
-			existingCodes = codeDAO.create(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, codes.map { codeMapper.map(it) })
+			existingCodes = codeDAO.create(codes.map { codeMapper.map(it) })
 				.map { codeMapper.map(it) }
 				.toList()
 		}
@@ -55,9 +55,9 @@ class CodeBatchModificationEndToEndTest @Autowired constructor(
 
 	private fun codeApiEndpoint() = "$apiHost:$port/rest/$apiVersion/code"
 
-	fun createHttpClient() = org.taktik.icure.test.createHttpClient(ICureTestApplication.masterHcp!!.login, ICureTestApplication.masterHcp!!.password)
+	fun createHttpClient() = org.taktik.icure.test.createHttpClient("john", "LetMeIn")
 
-	private suspend fun getCode(id: String) = codeDAO.get(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, id)
+	private suspend fun getCode(id: String) = codeDAO.get(id)
 
 	fun verifyExistingCodes(codes: List<CodeDto>) {
 		runBlocking {
