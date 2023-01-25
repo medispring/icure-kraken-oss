@@ -153,9 +153,8 @@ suspend fun removeEntities(ids: List<String>, objectMapper: ObjectMapper?) {
 
 private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
-suspend fun createPatientUser(httpClient: HttpClient,
+fun createPatientUser(httpClient: HttpClient,
 	apiUrl: String,
-	groupId: String,
 	passwordEncoder: PasswordEncoder): UserCredentials {
 	val username = "pat-${UUID.randomUUID()}"
 	val password = UUID.randomUUID().toString()
@@ -185,7 +184,6 @@ suspend fun createPatientUser(httpClient: HttpClient,
 	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
 
 	return UserCredentials(
-		groupId,
 		userToCreate.id,
 		patientToCreate.id,
 		username,
@@ -195,7 +193,6 @@ suspend fun createPatientUser(httpClient: HttpClient,
 }
 
 data class UserCredentials(
-	val groupId: String,
 	val userId: String,
 	val dataOwnerId: String,
 	val username: String,

@@ -3,6 +3,8 @@ package org.taktik.icure.services.external.rest.v1.controllers.core
 import java.util.UUID
 import com.fasterxml.jackson.core.type.TypeReference
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.TestInstance
@@ -10,7 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
+import org.taktik.couchdb.DocIdentifier
 import org.taktik.icure.services.external.rest.v1.dto.MaintenanceTaskDto
+import org.taktik.icure.services.external.rest.v1.dto.PaginatedList
+import org.taktik.icure.services.external.rest.v1.dto.embed.DelegationDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.TaskStatusDto
 import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.UserCredentials
@@ -48,7 +53,7 @@ class MaintenanceTaskControllerEndToEndTest(
 	val apiEndpoint = "/rest/$apiVersion/maintenancetask"
 
 	val filterTimestamp = System.currentTimeMillis()-10000
-	val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+	val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
 	var patientCreds: UserCredentials? = null
 
 	fun apiUrl() = if (apiUrl == "http://localhost") "$apiUrl:$port" else apiUrl
@@ -74,7 +79,6 @@ class MaintenanceTaskControllerEndToEndTest(
 			patientCreds = createPatientUser(
 				createHttpClient(hcpAuth),
 				apiUrl(),
-				ICureTestApplication.masterHcp!!.groupId,
 				passwordEncoder
 			)
 		}
