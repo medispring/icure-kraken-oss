@@ -31,10 +31,11 @@ import org.taktik.couchdb.entity.ViewQuery
 import org.taktik.couchdb.exception.CouchDbConflictException
 import org.taktik.couchdb.springramework.webclient.SpringWebfluxWebClient
 import org.taktik.icure.entities.base.Code
+import org.taktik.icure.properties.CouchDbProperties
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class CouchDbClientTests {
+class CouchDbClientTests() {
 
 	private val databaseHost = System.getProperty("icure.test.couchdb.server.url")
 	private val databaseName = System.getProperty("icure.test.couchdb.database.name")
