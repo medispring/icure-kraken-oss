@@ -128,15 +128,13 @@ class CodeDAOTest(
 			testLatestVersionFilterOnFindCodesByLanguageLabel(codeDAO, region, language, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnFindCodesByLanguageTypeLabel(codeDAO, region, language, codeType, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnListCodesBy(codeDAO, region, codeType, totalUniqueCodes)
-			testListCodeIdsByTypeCodeVersionInterval(codeDAO, dbInstanceUrl, groupId, inputCodes)
+			testListCodeIdsByTypeCodeVersionInterval(codeDAO, inputCodes)
 		}
 	}
 }
 
 private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 	codeDAO: CodeDAO,
-	dbInstanceUrl: URI,
-	groupId: String,
 	existingCodes: List<Code>
 ) {
 
@@ -144,7 +142,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 	val sortedCodes = existingCodes.toSortedSet(compareBy { it.id }).toList()
 
 	"All ids are returned if both keys are null" {
-		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, null, null, null, null, null, null)
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(null, null, null, null, null, null)
 			.onEach {  id ->
 				existingIds shouldContain id
 			}.count() shouldBe existingCodes.size
@@ -153,7 +151,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 	"If the starting key is specified only the results that come after it are returned" {
 		val startIndex = nextInt(0, sortedCodes.size)
 		val startCode = sortedCodes[startIndex]
-		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, startCode.type, startCode.code, startCode.version, null, null, null)
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(startCode.type, startCode.code, startCode.version, null, null, null)
 			.onEach {  id ->
 				existingIds shouldContain id
 				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
@@ -163,7 +161,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 	"If the end key is specified only the results that come before it are returned" {
 		val endIndex = nextInt(0, sortedCodes.size)
 		val endCode = sortedCodes[endIndex]
-		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, null, null, null, endCode.type, endCode.code, endCode.version)
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(null, null, null, endCode.type, endCode.code, endCode.version)
 			.onEach {  id ->
 				existingIds shouldContain id
 				existingIds.indexOf(id) shouldBeLessThanOrEqual endIndex
@@ -175,7 +173,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 		val startCode = sortedCodes[startIndex]
 		val endIndex = nextInt(sortedCodes.size/2, sortedCodes.size)
 		val endCode = sortedCodes[endIndex]
-		codeDAO.listCodeIdsByTypeCodeVersionInterval(dbInstanceUrl, groupId, startCode.type, startCode.code, startCode.version, endCode.type, endCode.code, endCode.version)
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(startCode.type, startCode.code, startCode.version, endCode.type, endCode.code, endCode.version)
 			.onEach {  id ->
 				existingIds shouldContain id
 				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
