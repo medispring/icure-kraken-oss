@@ -71,7 +71,7 @@ class KmehrWsController(
 			patient?.let {
 				healthcareParty?.let { it1 ->
 					operation.binaryResponse(
-						diaryNoteLogic.createDiaryNote(it, info.secretForeignKeys, it1, healthcarePartyMapper.map(info.recipient!!), language, info.note, info.tags, info.contexts, info.psy ?: false, info.documentId, info.attachmentId, operation)
+						diaryNoteLogic.createDiaryNote(it, info.encryptionDecryptionKeys, it1, healthcarePartyMapper.map(info.recipient!!), language, info.note, info.tags, info.contexts, info.psy ?: false, info.documentId, info.attachmentId, operation)
 					)
 				}
 			}
