@@ -49,17 +49,14 @@ class MaintenanceTaskControllerEndToEndTest(
 	val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
 
 	val filterTimestamp = System.currentTimeMillis() - 10000
-	val hcpAuth = "Basic ${Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+	val hcpAuth = "Basic ${Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
 
 	init {
 		runBlocking {
 			val patientCredentials = createPatientUser(
 				createHttpClient(hcpAuth),
 				"$apiUrl:$port",
-				ICureTestApplication.masterHcp!!.groupId,
 				passwordEncoder,
-				userDAO,
-				URI.create(couchDbProperties.url)
 			)
 			testMaintenanceTask(
 				"$apiUrl:$port",
@@ -323,7 +320,7 @@ fun StringSpec.testMaintenanceTask(
             id = UUID.randomUUID().toString(),
             taskType = "OTHER",
             status = TaskStatusDto.pending,
-            delegations = mapOf(ICureTestApplication.masterHcp!!.hcpId to setOf(DelegationDto()))
+            delegations = mapOf(ICureTestApplication.masterHcp!!.dataOwnerId to setOf(DelegationDto()))
         )
 		val responseBody = makePostRequest(
 			createHttpClient(hcpAuth),
