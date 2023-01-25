@@ -23,6 +23,7 @@ import org.taktik.icure.services.external.rest.v1.dto.PaginatedList
 import org.taktik.icure.services.external.rest.v1.dto.embed.DelegationDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.TaskStatusDto
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.UserCredentials
 import org.taktik.icure.test.createHttpClient
 import org.taktik.icure.test.createPatientUser
 import org.taktik.icure.test.makeDeleteRequest
@@ -86,8 +87,6 @@ class MaintenanceTaskControllerEndToEndTest(
 				createHttpClient(hcpAuth),
 				apiUrl(),
 				passwordEncoder,
-				userDAO,
-				URI.create(couchDbProperties.url)
 			)
 		}
 	}
@@ -240,7 +239,7 @@ class MaintenanceTaskControllerEndToEndTest(
 			id = UUID.randomUUID().toString(),
 			taskType = "OTHER",
 			status = TaskStatusDto.pending,
-			delegations = mapOf(ICureTestApplication.masterHcp!!.hcpId to setOf(DelegationDto()))
+			delegations = mapOf(ICureTestApplication.masterHcp!!.dataOwnerId to setOf(DelegationDto()))
 		)
 		val responsePost = maintenanceTaskPostRequest(objectMapper.writeValueAsString(task), "${apiUrl()}/$apiEndpoint", 200, hcpAuth)
 		val createdTask = objectMapper.readValue<MaintenanceTaskDto>(responsePost!!)

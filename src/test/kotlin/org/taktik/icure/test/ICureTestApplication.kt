@@ -12,12 +12,16 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.context.annotation.PropertySource
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.taktik.couchdb.Client
 import org.taktik.icure.asyncdao.GenericDAO
+import org.taktik.icure.asyncdao.HealthcarePartyDAO
 import org.taktik.icure.asyncdao.InternalDAO
+import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.asyncdao.impl.CouchDbDispatcher
 import org.taktik.icure.properties.CouchDbProperties
 
@@ -57,14 +61,23 @@ import org.taktik.icure.properties.CouchDbProperties
 @TestConfiguration
 class ICureTestApplication {
 
+	companion object {
+		lateinit var masterHcp: UserCredentials
+	}
+
 	@Bean
 	@Profile("app")
 	fun performStartupTasks(
+		userDAO: UserDAO,
+		healthcarePartyDAO: HealthcarePartyDAO,
 		allDaos: List<GenericDAO<*>>,
 		internalDaos: List<InternalDAO<*>>,
 		couchDbProperties: CouchDbProperties,
 		testGroupProperties: TestProperties,
-		@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher) = ApplicationRunner {
+		passwordEncoder: PasswordEncoder,
+		@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
+		@LocalServerPort port: Int,
+	) = ApplicationRunner {
 
 		runBlocking {
 			if (testGroupProperties.bootstrapEnv!!) {
@@ -75,6 +88,9 @@ class ICureTestApplication {
 			internalDaos.forEach {
 				it.forceInitStandardDesignDocument( true)
 			}
+
+			val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
+			masterHcp = createHcpUser(createHttpClient("john", "LetMeIn"), "$apiUrl:$port", passwordEncoder)
 		}
 	}
 
@@ -87,7 +103,6 @@ class ICureTestApplication {
 			couchDbUser = couchDbProperties.username!!,
 			couchDbPassword = couchDbProperties.password!!
 		)
-
 	}
 
 	private suspend fun initStandardDesignDocumentsOf(allDaos: List<GenericDAO<*>>, couchClient: Client) {

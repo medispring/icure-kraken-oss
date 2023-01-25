@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.taktik.icure.asyncdao.UserDAO
 import kotlinx.coroutines.delay
 import org.taktik.icure.entities.User
+import org.taktik.icure.services.external.rest.v1.dto.HealthElementDto
+import org.taktik.icure.services.external.rest.v1.dto.HealthcarePartyDto
 import org.taktik.icure.services.external.rest.v1.dto.PatientDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
 import reactor.core.publisher.Flux
@@ -164,8 +166,7 @@ private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.to
 fun createPatientUser(httpClient: HttpClient,
 	apiUrl: String,
 	passwordEncoder: PasswordEncoder,
-	userDAO: UserDAO,
-	dbUri: URI): UserCredentials {
+	): UserCredentials {
 	val username = "pat-${UUID.randomUUID()}"
 	val password = UUID.randomUUID().toString()
 	val passwordHash = passwordEncoder.encode(password)
@@ -192,11 +193,50 @@ fun createPatientUser(httpClient: HttpClient,
 
 	makePostRequest(httpClient, "$apiUrl/rest/v1/patient", objectMapper.writeValueAsString(patientToCreate))
 	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
-	getUserWithRetry(dbUri, userDAO, groupId, userToCreate.id)
 
 	return UserCredentials(
 		userToCreate.id,
 		patientToCreate.id,
+		username,
+		password,
+		privateKey
+	)
+}
+
+fun createHcpUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "hcp-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
+
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val healthcarePartyToCreate = HealthcarePartyDto(
+		id = UUID.randomUUID().toString(),
+		firstName = "hcp",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		passwordHash = passwordHash,
+		healthcarePartyId = healthcarePartyToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/hcparty", objectMapper.writeValueAsString(healthcarePartyToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		healthcarePartyToCreate.id,
 		username,
 		password,
 		privateKey
