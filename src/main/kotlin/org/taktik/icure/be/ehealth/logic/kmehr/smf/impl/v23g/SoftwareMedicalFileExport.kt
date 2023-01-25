@@ -268,7 +268,7 @@ class SoftwareMedicalFileExport(
 		}
 
 		// add Hes without idOpeningContact to clinical summary
-		var exportedHeById = hesByContactId[null].orEmpty().map { he -> addHealthCareElement(folder.transactions.first(), he, 0, config, language) }
+		val exportedHeById = hesByContactId[null].orEmpty().map { he -> addHealthCareElement(folder.transactions.first(), he, 0, config, language) }
 		hesByContactId = hesByContactId.filterKeys { it != null }
 
 		heById = nonConfidentialHealthElements.groupBy {
