@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
 import org.taktik.icure.asynclogic.CodeLogic
+import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
 import org.taktik.icure.test.CodeBatchGenerator
@@ -33,7 +34,8 @@ import reactor.netty.http.client.HttpClient
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CodeBatchCreationEndToEndTest @Autowired constructor(
 	private val codeLogic: CodeLogic,
-	private val codeMapper: CodeMapper
+	private val codeMapper: CodeMapper,
+	private val couchDbProperties: CouchDbProperties,
 ) {
 	@LocalServerPort
 	var port = 0
@@ -56,7 +58,7 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	}
 
 	fun createHttpClient(): HttpClient {
-		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${couchDbProperties.username!!}:${couchDbProperties.password!!}".toByteArray())}"
 		return HttpClient.create().headers { h ->
 			h.set("Authorization", auth) //
 			h.set("Content-type", "application/json")

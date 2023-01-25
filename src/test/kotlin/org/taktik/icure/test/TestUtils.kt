@@ -33,30 +33,6 @@ val objectMapper: ObjectMapper by lazy {
 	)
 }
 
-fun createTestUserInformationIfNeeded(apiUrl: String, adminUser: String, adminPassword: String, testUser: String, testUserPassword: String) {
-	val responseBody = createHttpClient(adminUser, adminPassword)
-		.get()
-		.uri("$apiUrl/user/byEmail/$testUser")
-		.response()
-		.block()
-
-	if (responseBody?.status()?.code() != 200) {
-		val body = RegistrationInformationDto(lastName = testUser, firstName = testUser, emailAddress = testUser)
-		val responseString = makePostRequest(createHttpClient(adminUser, adminPassword), "$apiUrl/group/register/trial", objectMapper.writeValueAsString(body))
-		val result = objectMapper.readValue(responseString!!, RegistrationSuccess::class.java)
-
-		println("Group ${result.groupId} created for user $testUser")
-
-		makePostRequest(
-			createHttpClient(adminUser, adminPassword, mapOf("token" to testUserPassword)),
-			"$apiUrl/user/token/${result.userId}/testing?tokenValidity=${20 * 60 * 1000}",
-			"{}"
-		) ?: throw RuntimeException("Group and Admin user creation didn't work: User does not exist")
-
-		println("User $testUser may now use its dedicated password for 20 minutes...")
-	}
-}
-
 fun createHttpClient(username: String, password: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
 	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
 	return HttpClient.create().headers { h ->

@@ -1,11 +1,8 @@
 package org.taktik.icure.test
 
 import java.net.URI
-import java.util.UUID
 import com.icure.test.setup.ICureTestSetup
-import com.icure.test.setup.ICureTestSetup.MasterHcpCredentials
 import kotlinx.coroutines.runBlocking
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -60,10 +57,6 @@ import org.taktik.icure.properties.CouchDbProperties
 @TestConfiguration
 class ICureTestApplication {
 
-	companion object {
-		var masterHcp: MasterHcpCredentials? = null
-	}
-
 	@Bean
 	@Profile("app")
 	fun performStartupTasks(
@@ -79,21 +72,8 @@ class ICureTestApplication {
 				bootstrapEnvironment(allDaos, couchDbDispatcher, couchDbProperties, testGroupProperties)
 			}
 
-			if (testGroupProperties.groupId != null) {
-				println("Initializing existing groupId ${testGroupProperties.groupId}...")
-				val couchClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), testGroupProperties.groupId)
-				initStandardDesignDocumentsOf(allDaos, couchClient)
-			} else {
-				val groupId = "ic-e2e-${UUID.randomUUID()}"
-				ICureTestSetup.createGroup(groupId, UUID.randomUUID().toString(), couchDbProperties.url, couchDbProperties.username!!, couchDbProperties.password!!)
-				val couchClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), groupId)
-				initStandardDesignDocumentsOf(allDaos, couchClient)
-
-				masterHcp = ICureTestSetup.createMasterHcpIn(groupId, couchDbProperties.url, couchDbProperties.username!!, couchDbProperties.password!!)
-			}
-
 			internalDaos.forEach {
-				it.forceInitStandardDesignDocument(true)
+				it.forceInitStandardDesignDocument( true)
 			}
 		}
 	}
@@ -102,18 +82,12 @@ class ICureTestApplication {
 		val couchDbClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url))
 		initStandardDesignDocumentsOf(allDaos, couchDbClient)
 
-		ICureTestSetup.bootstrapCloud(
-			testGroupProperties.adminGroupId!!,
-			testGroupProperties.adminGroupPassword!!,
-			groupUserLogin = testGroupProperties.adminUsername!!,
-			groupUserPasswordHash = DigestUtils.sha256Hex(testGroupProperties.adminPassword!!),
+		ICureTestSetup.bootstrapOss(
 			couchDbUrl = couchDbProperties.url,
 			couchDbUser = couchDbProperties.username!!,
 			couchDbPassword = couchDbProperties.password!!
 		)
 
-		val couchDbClientForAdminGroup = couchDbDispatcher.getClient(URI.create(couchDbProperties.url), "xx")
-		initStandardDesignDocumentsOf(allDaos, couchDbClientForAdminGroup)
 	}
 
 	private suspend fun initStandardDesignDocumentsOf(allDaos: List<GenericDAO<*>>, couchClient: Client) {
