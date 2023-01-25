@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Assertions
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.taktik.icure.asyncdao.UserDAO
 import kotlinx.coroutines.delay
+import org.taktik.icure.asyncdao.HealthcarePartyDAO
+import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.User
 import org.taktik.icure.services.external.rest.v1.dto.HealthElementDto
 import org.taktik.icure.services.external.rest.v1.dto.HealthcarePartyDto
@@ -203,8 +205,9 @@ fun createPatientUser(httpClient: HttpClient,
 	)
 }
 
-fun createHcpUser(httpClient: HttpClient,
-	apiUrl: String,
+suspend fun createHcpUser(
+	userDAO: UserDAO,
+	healthcarePartyDAO: HealthcarePartyDAO,
 	passwordEncoder: PasswordEncoder,
 ): UserCredentials {
 	val username = "hcp-${UUID.randomUUID()}"
@@ -217,22 +220,22 @@ fun createHcpUser(httpClient: HttpClient,
 	val pubKey = rsaKeypair.public.encoded.keyToHexString()
 	val privateKey = rsaKeypair.private.encoded.keyToHexString()
 
-	val healthcarePartyToCreate = HealthcarePartyDto(
+	val healthcarePartyToCreate = HealthcareParty(
 		id = UUID.randomUUID().toString(),
 		firstName = "hcp",
 		lastName = username,
 		publicKey = pubKey
 	)
 
-	val userToCreate = UserDto(
+	val userToCreate = User(
 		id = UUID.randomUUID().toString(),
 		login = username,
 		passwordHash = passwordHash,
 		healthcarePartyId = healthcarePartyToCreate.id
 	)
 
-	makePostRequest(httpClient, "$apiUrl/rest/v1/hcparty", objectMapper.writeValueAsString(healthcarePartyToCreate))
-	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+	userDAO.create(userToCreate)
+	healthcarePartyDAO.create(healthcarePartyToCreate)
 
 	return UserCredentials(
 		userToCreate.id,

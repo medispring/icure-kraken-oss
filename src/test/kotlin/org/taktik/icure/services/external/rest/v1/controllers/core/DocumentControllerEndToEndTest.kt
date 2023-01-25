@@ -92,9 +92,7 @@ class DocumentControllerEndToEndTest(
 			override val properties: ObjectStorageProperties = properties
 			override val dao: DocumentDAO = dao
 			override val objectStorageClient: DocumentObjectStorageClient = objectStorageClient
-			override val testUserId: String = runBlocking {
-				userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id
-			}
+			override val testUserId: String = ICureTestApplication.masterHcp.userId
 
 			override fun WebClient.RequestBodySpec.dtoBody(dto: DocumentDto): WebClient.RequestHeadersSpec<*> =
 				body<DocumentDto>(Mono.just(dto))

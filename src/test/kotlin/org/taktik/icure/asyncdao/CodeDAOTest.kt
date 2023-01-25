@@ -30,6 +30,7 @@ import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.base.Code
+import org.taktik.icure.exceptions.BulkUpdateConflictException
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
@@ -110,8 +111,12 @@ class CodeDAOTest(
 			File("src/test/resources/org/taktik/icure/db/codes/codes_dao_test.json").inputStream()
 		)
 		runBlocking {
-			val savedCodes = codeDAO.save(inputCodes)
-			savedCodes.count() shouldBe inputCodes.size
+			try {
+				val savedCodes = codeDAO.save(inputCodes)
+				savedCodes.count() shouldBe inputCodes.size
+			} catch (e: BulkUpdateConflictException) {
+				//Already created
+			}
 			val totalUniqueCodes = codeDAO.listCodeIdsByTypeCodeVersionInterval(
 				startType = codeType,
 				startCode = null,

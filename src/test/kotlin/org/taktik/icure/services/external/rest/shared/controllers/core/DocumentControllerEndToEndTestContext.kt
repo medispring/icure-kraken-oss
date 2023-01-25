@@ -37,7 +37,7 @@ import reactor.core.publisher.Mono
 abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
 	val host: String = System.getenv("ICURE_URL") ?: "localhost"
 
-	private val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp!!.login}:${ICureTestApplication.masterHcp!!.password}".toByteArray())}"
+	private val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
 
 	val client: WebClient = WebClient.builder()
 		.defaultHeader(org.apache.http.HttpHeaders.AUTHORIZATION, hcpAuth)

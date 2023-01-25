@@ -76,7 +76,6 @@ class ICureTestApplication {
 		testGroupProperties: TestProperties,
 		passwordEncoder: PasswordEncoder,
 		@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
-		@LocalServerPort port: Int,
 	) = ApplicationRunner {
 
 		runBlocking {
@@ -89,8 +88,7 @@ class ICureTestApplication {
 				it.forceInitStandardDesignDocument( true)
 			}
 
-			val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
-			masterHcp = createHcpUser(createHttpClient("john", "LetMeIn"), "$apiUrl:$port", passwordEncoder)
+			masterHcp = createHcpUser(userDAO, healthcarePartyDAO, passwordEncoder)
 		}
 	}
 
