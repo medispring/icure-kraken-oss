@@ -1,6 +1,5 @@
 package org.taktik.icure.services.external.rest.v1.controllers.core
 
-import java.net.URI
 import com.fasterxml.jackson.core.type.TypeReference
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.runBlocking
@@ -39,12 +38,12 @@ class CodeBatchCreationEndToEndTest @Autowired constructor(
 	val codeGenerator = CodeBatchGenerator()
 	val batchSize = 1001
 
-	fun createHttpClient() = org.taktik.icure.test.createHttpClient(ICureTestApplication.masterHcp!!.login, ICureTestApplication.masterHcp!!.password)
+	fun createHttpClient() = org.taktik.icure.test.createHttpClient("john", "LetMeIn")
 
 	private fun codeApiEndpoint() = "$apiHost:$port/rest/$apiVersion/code"
 
-	private fun findCodesBy(type: String? = null, code: String? = null, version: String? = null) = codeDAO.listCodesBy(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, type, code, version)
-	private fun getCodes(codeIds: List<String>) = codeDAO.getEntities(URI(couchDbProperties.url), ICureTestApplication.masterHcp!!.groupId, codeIds)
+	private fun findCodesBy(type: String? = null, code: String? = null, version: String? = null) = codeDAO.listCodesBy(type, code, version)
+	private fun getCodes(codeIds: List<String>) = codeDAO.getEntities(codeIds)
 
 	@Test
 	fun onEmptyBatchTheResponseIsEmptyAndNoCodeIsAdded() {
