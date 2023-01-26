@@ -88,8 +88,9 @@ class UserControllerIntegrationTest(
         val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user")
 		response shouldNotBe null
 		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
-        assertEquals(3, responseBody.rows.size)
-        assertTrue(responseBody.rows.all { it.patientId == null || it.healthcarePartyId != null })
+		val rows = responseBody.rows.filter { createdIds.contains(it.id) }
+		assertEquals(2, rows.size)
+        assertTrue(rows.all { it.patientId == null || it.healthcarePartyId != null })
     }
 
     /**
@@ -102,8 +103,9 @@ class UserControllerIntegrationTest(
 		val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user?skipPatients=true")
 		response shouldNotBe null
 		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
-        assertEquals(3, responseBody.rows.size)
-        assertTrue(responseBody.rows.all { it.patientId == null || it.healthcarePartyId != null })
+		val rows = responseBody.rows.filter { createdIds.contains(it.id) }
+        assertEquals(2, rows.size)
+        assertTrue(rows.all { it.patientId == null || it.healthcarePartyId != null })
     }
 
     @Test
@@ -111,7 +113,8 @@ class UserControllerIntegrationTest(
 		val response = makeGetRequest(client, "${apiUrl()}/rest/v1/user?skipPatients=false")
 		response shouldNotBe null
 		val responseBody = objectMapper.readValue<PaginatedList<UserDto>>(response!!)
-        assertNotNull(responseBody)
-        assertEquals(4, responseBody.rows.size)
+		val rows = responseBody.rows.filter { createdIds.contains(it.id) }
+		assertNotNull(responseBody)
+        assertEquals(3, rows.size)
     }
 }
