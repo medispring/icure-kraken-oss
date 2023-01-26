@@ -268,7 +268,7 @@ class SoftwareMedicalFileExport(
 		}
 
 		// add Hes without idOpeningContact to clinical summary
-		hesByContactId[null].orEmpty().map { he -> addHealthCareElement(folder.transactions.first(), he, 0, config, language) }
+		val exportedHeById = hesByContactId[null].orEmpty().map { he -> addHealthCareElement(folder.transactions.first(), he, 0, config, language) }
 		hesByContactId = hesByContactId.filterKeys { it != null }
 
 		heById = nonConfidentialHealthElements.groupBy {
@@ -470,7 +470,7 @@ class SoftwareMedicalFileExport(
 							}
 							parentContactId?.let { headingsAndItemsAndTexts.add(LnkType().apply { type = CDLNKvalues.ISACHILDOF; url = makeLnkUrl(it) }) }
 						}
-						val subContactsWithHealthElementId: List<SubContact> = contact.subContacts.filter { subContactWithHealthElementId -> subContactWithHealthElementId.healthElementId != null && subContactWithHealthElementId.formId == subContact.formId }
+						val subContactsWithHealthElementId: List<SubContact> = contact.subContacts.filter { subContactWithHealthElementId -> exportedHeById.contains(subContactWithHealthElementId.healthElementId) && subContactWithHealthElementId.healthElementId != null && subContactWithHealthElementId.formId == subContact.formId }
 						addServiceLinkToHealthElement(subContactsWithHealthElementId)
 					}
 				)
@@ -1151,7 +1151,7 @@ class SoftwareMedicalFileExport(
 		return false
 	}
 
-	fun addHealthCareElement(trn: TransactionType, eds: HealthElement, itemIndex: Int, config: Config, language: String): Int {
+	fun addHealthCareElement(trn: TransactionType, eds: HealthElement, itemIndex: Int, config: Config, language: String): String? {
 		var mutItemIndex = itemIndex
 		try {
 			val content = listOf(
@@ -1174,13 +1174,15 @@ class SoftwareMedicalFileExport(
 				if (!(config.format == Config.Format.PMF && !it.isIsrelevant && it.lifecycle.cd.value == CDLIFECYCLEvalues.INACTIVE)) {
 					// inactive irrelevant items should not be exported in PMF
 					trn.headingsAndItemsAndTexts.add(it)
+					return eds.id
 				}
 				mutItemIndex++
+				return null
 			}
 		} catch (e: Exception) {
 			log.error("Unexpected error", e)
 		}
-		return mutItemIndex
+		return null
 	}
 
 	suspend fun getHealthElements(hcp: HealthcareParty, sfks: List<String>, config: Config): List<HealthElement> {

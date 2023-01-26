@@ -29,6 +29,7 @@ data class Config(var _kmehrId: String? = null, var date: XMLGregorianCalendar? 
 		PMF,
 		MEDEX,
 		MEDICATIONSCHEME,
-		MULTEMEDIATT
+		MULTEMEDIATT,
+		DIARYNOTE
 	}
 }

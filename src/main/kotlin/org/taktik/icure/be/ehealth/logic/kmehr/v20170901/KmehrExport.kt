@@ -144,6 +144,7 @@ import org.taktik.icure.entities.base.Code
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.embed.Address
 import org.taktik.icure.entities.embed.Content
+import org.taktik.icure.entities.embed.Gender
 import org.taktik.icure.entities.embed.PlanOfAction
 import org.taktik.icure.entities.embed.Service
 import org.taktik.icure.utils.FuzzyValues
@@ -232,7 +233,7 @@ open class KmehrExport(
 			p.placeOfBirth?.let { birthlocation = AddressTypeBase().apply { city = it } }
 			p.placeOfDeath?.let { deathlocation = AddressTypeBase().apply { city = it } }
 			p.profession?.let { profession = ProfessionType().apply { text = TextType().apply { l = "fr"; value = it } } }
-			usuallanguage = p.languages.firstOrNull()
+			usuallanguage = if (listOf(Config.Format.SUMEHR, Config.Format.MEDICATIONSCHEME, Config.Format.DIARYNOTE).contains(config.format)) config.defaultLanguage else p.languages.firstOrNull()
 			addresses.addAll(makeAddresses(p.addresses))
 			telecoms.addAll(makeTelecoms(p.addresses))
 			if (!p.nationality.isNullOrBlank()) {
@@ -249,9 +250,20 @@ open class KmehrExport(
 			p.id.let { id -> ids.add(IDPATIENT().apply { s = IDPATIENTschemes.LOCAL; sv = config.soft?.version; sl = "${config.soft?.name}-Person-Id"; value = id }) }
 			firstnames.add(p.firstName)
 			familyname = p.lastName
-			sex = SexType().apply { cd = CDSEX().apply { s = "CD-SEX"; sv = "1.0"; value = p.gender?.let { CDSEXvalues.fromValue(it.name) } ?: CDSEXvalues.UNKNOWN } }
+			sex = SexType().apply { cd = CDSEX().apply { s = "CD-SEX"; sv = "1.0"; value = p.gender?.let { genderToSexMapper(it) } ?: CDSEXvalues.UNKNOWN } }
 			p.dateOfBirth?.let { birthdate = Utils.makeDateTypeFromFuzzyLong(it.toLong()) }
 			recorddatetime = makeXGC(p.modified)
+		}
+	}
+
+	private fun genderToSexMapper(gender: Gender): CDSEXvalues{
+		return when(gender){
+			Gender.changed,Gender.changedToMale,Gender.changedToFemale -> CDSEXvalues.CHANGED
+			Gender.male -> CDSEXvalues.MALE
+			Gender.female -> CDSEXvalues.FEMALE
+			Gender.indeterminate -> CDSEXvalues.UNDEFINED
+			Gender.unknown -> CDSEXvalues.UNKNOWN
+			else -> CDSEXvalues.UNKNOWN
 		}
 	}
 
