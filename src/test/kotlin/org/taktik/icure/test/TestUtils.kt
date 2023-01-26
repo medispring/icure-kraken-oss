@@ -21,10 +21,15 @@ import kotlinx.coroutines.delay
 import org.taktik.icure.asyncdao.HealthcarePartyDAO
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.User
+import org.taktik.icure.entities.security.AlwaysPermissionItem
+import org.taktik.icure.entities.security.Permission
+import org.taktik.icure.entities.security.PermissionType
+import org.taktik.icure.services.external.rest.v1.dto.DeviceDto
 import org.taktik.icure.services.external.rest.v1.dto.HealthElementDto
 import org.taktik.icure.services.external.rest.v1.dto.HealthcarePartyDto
 import org.taktik.icure.services.external.rest.v1.dto.PatientDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
+import org.taktik.icure.services.external.rest.v1.dto.security.PermissionDto
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
@@ -139,29 +144,6 @@ fun generateRandomString(length: Int, alphabet: List<Char>) = (1..length)
 	.map { _ -> alphabet[nextInt(0, alphabet.size)] }
 	.joinToString("")
 
-suspend fun removeEntities(ids: List<String>, objectMapper: ObjectMapper?) {
-	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_COUCHDB_USERNAME")}:${System.getenv("ICURE_COUCHDB_PASSWORD")}".toByteArray())}"
-	val client = HttpClient.create().headers { h ->
-		h.set("Authorization", auth)
-		h.set("Content-type", "application/json")
-	}
-
-	ids.forEach { id ->
-		client.get()
-			.uri("${System.getenv("ICURE_COUCHDB_URL")}/${System.getenv("ICURE_COUCHDB_PREFIX")}-base/${URLEncoder.encode(id, Charsets.UTF_8)}")
-			.responseSingle { response, buffer ->
-				if (response.status().code() < 400) {
-					buffer.asString(StandardCharsets.UTF_8).mapNotNull {
-						objectMapper?.readValue(it, object : TypeReference<IdWithRev>() {})
-					}.flatMap {
-						it?.let {
-							client.delete().uri("${System.getenv("ICURE_COUCHDB_URL")}/${System.getenv("ICURE_COUCHDB_PREFIX")}-base/${URLEncoder.encode(id, Charsets.UTF_8)}?rev=${URLEncoder.encode(it.rev, Charsets.UTF_8)}").response()
-						} ?: Mono.empty()
-					}
-				} else Mono.empty()
-			}.awaitFirstOrNull()
-	}
-}
 
 private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
@@ -189,6 +171,7 @@ fun createPatientUser(httpClient: HttpClient,
 	val userToCreate = UserDto(
 		id = UUID.randomUUID().toString(),
 		login = username,
+		email = username,
 		passwordHash = passwordHash,
 		patientId = patientToCreate.id
 	)
@@ -199,6 +182,87 @@ fun createPatientUser(httpClient: HttpClient,
 	return UserCredentials(
 		userToCreate.id,
 		patientToCreate.id,
+		username,
+		password,
+		privateKey
+	)
+}
+
+fun createHcpUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "hcp-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
+
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val hcpToCreate = HealthcarePartyDto(
+		id = UUID.randomUUID().toString(),
+		firstName = "hcp",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		email = username,
+		passwordHash = passwordHash,
+		healthcarePartyId = hcpToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/hcparty", objectMapper.writeValueAsString(hcpToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		hcpToCreate.id,
+		username,
+		password,
+		privateKey
+	)
+}
+
+fun createDeviceUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "device-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
+
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val deviceToCreate = DeviceDto(
+		id = UUID.randomUUID().toString(),
+		brand = "device",
+		name = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		passwordHash = passwordHash,
+		deviceId = deviceToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/device", objectMapper.writeValueAsString(deviceToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		deviceToCreate.id,
 		username,
 		password,
 		privateKey
