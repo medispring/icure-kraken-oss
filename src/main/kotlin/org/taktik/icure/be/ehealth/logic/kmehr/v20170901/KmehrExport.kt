@@ -258,7 +258,7 @@ open class KmehrExport(
 
 	private fun genderToSexMapper(gender: Gender): CDSEXvalues{
 		return when(gender){
-			Gender.changed,Gender.changedToMale,Gender.changedToFemale -> CDSEXvalues.UNDEFINED
+			Gender.changed,Gender.changedToMale,Gender.changedToFemale -> CDSEXvalues.CHANGED
 			Gender.male -> CDSEXvalues.MALE
 			Gender.female -> CDSEXvalues.FEMALE
 			Gender.indeterminate -> CDSEXvalues.UNDEFINED
