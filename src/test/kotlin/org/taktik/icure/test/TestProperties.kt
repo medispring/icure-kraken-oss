@@ -15,5 +15,13 @@ data class TestProperties(
 	var groupId: String? = null,
 	var groupUsername: String? = "johnny@forever.fr",
 	var groupPassword: String? = null,
-	var bootstrapEnv: Boolean? = false
+	var bootstrapEnv: Boolean? = false,
+
+	var couchdb: CouchDbProperties = CouchDbProperties(),
+)
+
+class CouchDbProperties(
+	var databaseName: String? = null,
+	var username: String? = null,
+	var password: String? = null,
 )

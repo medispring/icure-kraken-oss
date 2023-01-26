@@ -191,23 +191,23 @@ dependencies {
     implementation(group = "io.projectreactor", name = "reactor-tools", version = "3.4.17")
     implementation(group = "io.projectreactor.netty", name = "reactor-netty", version = "1.0.24")
 
-    implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.6.21")
-    implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.6.21")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.1")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version = "1.6.1")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version = "1.6.1")
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version = "1.6.1")
+    implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version = "1.7.20")
+    implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect", version = "1.7.20")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.4")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version = "1.6.4")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version = "1.6.4")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version = "1.6.4")
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version = "0.3.5")
 
     //Jackson
 	implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = "2.12.7")
 	implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = "2.12.7")
-    implementation(group = "com.fasterxml.jackson.datatype", name="jackson-datatype-jsr310", version = "2.12.6")
+    implementation(group = "com.fasterxml.jackson.datatype", name="jackson-datatype-jsr310", version = "2.12.7")
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.3.1.Final")
 
     //Krouch
     implementation(group = "org.taktik.couchdb", name = "krouch", version = "1.1.13-g13e4fcb88e")
-    implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.1.12-dd2039b194")
+    implementation(group = "io.icure", name = "async-jackson-http-client", version = "0.2.6-g02c59d08a5")
     implementation(group = "io.icure", name = "mapper-processor", version = "0.1.1-32d45af2a6")
 
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-mail", version = "2.5.5")

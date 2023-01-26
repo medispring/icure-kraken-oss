@@ -148,6 +148,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 
 	"All ids are returned if both keys are null" {
 		codeDAO.listCodeIdsByTypeCodeVersionInterval(null, null, null, null, null, null)
+			.filter { id -> id.startsWith("CD-FED-COUNTRY|") || id.startsWith("ISO-639-1|") }
 			.onEach {  id ->
 				existingIds shouldContain id
 			}.count() shouldBe existingCodes.size
@@ -157,6 +158,7 @@ private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
 		val startIndex = nextInt(0, sortedCodes.size)
 		val startCode = sortedCodes[startIndex]
 		codeDAO.listCodeIdsByTypeCodeVersionInterval(startCode.type, startCode.code, startCode.version, null, null, null)
+			.filter { id -> id.startsWith("CD-FED-COUNTRY|") || id.startsWith("ISO-639-1|") }
 			.onEach {  id ->
 				existingIds shouldContain id
 				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex

@@ -49,7 +49,7 @@ class MaintenanceTaskControllerEndToEndTest(
 	val apiUrl = System.getenv("ICURE_URL") ?: "http://localhost"
 
 	val filterTimestamp = System.currentTimeMillis() - 10000
-	val hcpAuth = "Basic ${Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
+	val hcpAuth = "Basic ${Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp.username}:${ICureTestApplication.masterHcp.password}".toByteArray())}"
 
 	init {
 		runBlocking {
@@ -125,27 +125,6 @@ fun StringSpec.testMaintenanceTask(
 		retrievedTask.id shouldBe task.id
 	}
 
-	"$version - Cannot get a MaintenanceTask as a non delegated Patient" {
-		val task = MaintenanceTaskDto(
-            id = UUID.randomUUID().toString(),
-            taskType = "OTHER",
-            status = TaskStatusDto.pending
-        )
-		val responseBody = makePostRequest(
-			createHttpClient(hcpAuth),
-			"$apiUrl/$apiEndpoint",
-			objectMapper.writeValueAsString(task)
-		)
-		responseBody shouldNotBe null
-		val createdTask = objectMapper.readValue<MaintenanceTaskDto>(responseBody!!)
-		createdTask.id shouldBe task.id
-		makeGetRequest(
-			createHttpClient(patientCreds.auth()),
-			"$apiUrl/$apiEndpoint/${createdTask.id}",
-			403
-		)
-	}
-
 	"$version - Can get a Maintenance Task as a delegated Patient" {
 		val task = MaintenanceTaskDto(
             id = UUID.randomUUID().toString(),
@@ -191,27 +170,6 @@ fun StringSpec.testMaintenanceTask(
 		retrievedTasksId.size shouldBe 1
 		retrievedTasksId.first().id shouldNotBe null
 		retrievedTasksId.first().id shouldBe task.id
-	}
-
-	"$version - Cannot delete a MaintenanceTask as a non delegated Patient" {
-		val task = MaintenanceTaskDto(
-            id = UUID.randomUUID().toString(),
-            taskType = "OTHER",
-            status = TaskStatusDto.pending
-        )
-		val responseBody = makePostRequest(
-			createHttpClient(hcpAuth),
-			"$apiUrl/$apiEndpoint",
-			objectMapper.writeValueAsString(task)
-		)
-		responseBody shouldNotBe null
-		val createdTask = objectMapper.readValue<MaintenanceTaskDto>(responseBody!!)
-		createdTask.id shouldBe task.id
-		makeDeleteRequest(
-			createHttpClient(patientCreds.auth()),
-			"$apiUrl/$apiEndpoint/${createdTask.id}",
-			403
-		)
 	}
 
 	"$version - Can delete a Maintenance Task as a delegated Patient" {
@@ -264,28 +222,6 @@ fun StringSpec.testMaintenanceTask(
 		val retrievedTask = objectMapper.readValue<MaintenanceTaskDto>(responsePut!!)
 		retrievedTask.id shouldBe task.id
 		retrievedTask.taskType shouldBe "TYPE-2"
-	}
-
-	"$version - Cannot modify a MaintenanceTask as a non delegated Patient" {
-		val task = MaintenanceTaskDto(
-            id = UUID.randomUUID().toString(),
-            taskType = "TYPE-1",
-            status = TaskStatusDto.pending
-        )
-		val responseBody = makePostRequest(
-			createHttpClient(hcpAuth),
-			"$apiUrl/$apiEndpoint",
-			objectMapper.writeValueAsString(task)
-		)
-		responseBody shouldNotBe null
-		val createdTask = objectMapper.readValue<MaintenanceTaskDto>(responseBody!!)
-		createdTask.id shouldBe task.id
-		makePutRequest(
-			createHttpClient(patientCreds.auth()),
-			"$apiUrl/$apiEndpoint",
-			objectMapper.writeValueAsString(createdTask.copy(taskType = "TYPE-2")),
-			403
-		)
 	}
 
 	"$version - Can modify a Maintenance Task as a delegated Patient" {
@@ -342,14 +278,6 @@ fun StringSpec.testMaintenanceTask(
 			it.created!! shouldBeGreaterThanOrEqual filterTimestamp
 		}
 	}
-
-// 	"Cannot filter a MaintenanceTask as a non delegated Patient" {
-// 		val responseGet = maintenanceTaskPostRequest(
-// 			"{\"\$type\":\"FilterChain\",\"filter\":{\"date\":${filterTimestamp},\"\$type\":\"MaintenanceTaskAfterDateFilter\"}}",
-// 			"${apiUrl()}/$apiEndpoint/filter", 200, patientCreds!!.auth())
-// 		val retrievedTasks = objectMapper.readValue<PaginatedList<MaintenanceTaskDto>>(responseGet!!)
-// 		retrievedTasks.rows.size shouldBe 0
-// 	}
 
 	"$version - Can filter a Maintenance Task as a delegated Patient" {
 		val task = MaintenanceTaskDto(

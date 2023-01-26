@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.taktik.icure.asyncdao.UserDAO
 import kotlinx.coroutines.delay
 import org.taktik.icure.asyncdao.HealthcarePartyDAO
+import org.taktik.icure.constants.Users
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.User
 import org.taktik.icure.entities.security.AlwaysPermissionItem
@@ -294,6 +295,7 @@ suspend fun createHcpUser(
 	val userToCreate = User(
 		id = UUID.randomUUID().toString(),
 		login = username,
+		status = Users.Status.ACTIVE,
 		passwordHash = passwordHash,
 		healthcarePartyId = healthcarePartyToCreate.id
 	)
