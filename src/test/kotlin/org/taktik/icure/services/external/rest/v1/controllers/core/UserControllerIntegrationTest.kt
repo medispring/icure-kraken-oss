@@ -18,15 +18,10 @@ import org.springframework.test.context.ActiveProfiles
 import org.taktik.icure.services.external.rest.v1.dto.PaginatedList
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
 import org.taktik.icure.test.ICureTestApplication
-import org.taktik.icure.test.removeEntities
-import reactor.core.publisher.Mono
-import reactor.netty.ByteBufFlux
-import reactor.netty.http.client.HttpClient
 import java.util.UUID
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.userdetails.User
 import org.taktik.icure.test.createHttpClient
 import org.taktik.icure.test.makeGetRequest
 import org.taktik.icure.test.makePostRequest

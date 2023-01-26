@@ -2,6 +2,7 @@ package org.taktik.icure.security
 
 import java.nio.charset.StandardCharsets
 import java.util.Base64
+import java.util.UUID
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.core.spec.style.StringSpec
@@ -13,13 +14,29 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
+import org.taktik.icure.asyncdao.DeviceDAO
+import org.taktik.icure.asyncdao.HealthcarePartyDAO
+import org.taktik.icure.asyncdao.PatientDAO
 import org.taktik.icure.asyncdao.UserDAO
+import org.taktik.icure.entities.Device
+import org.taktik.icure.entities.HealthcareParty
+import org.taktik.icure.entities.Patient
+import org.taktik.icure.entities.User
+import org.taktik.icure.entities.security.AlwaysPermissionItem
+import org.taktik.icure.entities.security.Permission
+import org.taktik.icure.entities.security.PermissionItem
+import org.taktik.icure.entities.security.PermissionType
 import org.taktik.icure.security.jwt.JwtDetails
 import org.taktik.icure.security.jwt.JwtResponse
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.services.external.rest.v1.dto.AuthenticationResponse
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.UserCredentials
+import org.taktik.icure.test.createDeviceUser
+import org.taktik.icure.test.createHcpUser
+import org.taktik.icure.test.createPatientUser
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
@@ -36,19 +53,10 @@ fun JwtResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshTo
 fun AuthenticationResponse.toResponseWithJwt() = ResponseWithJwt(this.token, this.refreshToken)
 
 data class AuthenticationUsers(
-	val hcp1User: String,
-	val hcp1Pwd: String,
-	val hcp1UserId: String,
-	val hcp1Id: String,
-	val patId: String,
-	val patUser: String,
-	val patPwd: String,
-	val patUserId: String,
-	val deviceId: String,
-	val deviceUser: String,
-	val devicePwd: String,
-	val adminUser: String,
-	val adminPwd: String
+	val hcp: UserCredentials,
+	val patient: UserCredentials,
+	val device: UserCredentials,
+	val admin: UserCredentials
 )
 
 fun makePostRequestAndExpectResult(payload: String, url: String, expectedCode: Int, headers: Map<String, String> = mapOf(), responseHeaders: List<String> = listOf()): String? {
@@ -138,30 +146,28 @@ class JWTAuthenticationE2ETest(
 	@LocalServerPort val port: Int,
 	@Autowired val jwtUtils: JwtUtils,
 	@Autowired val userDAO: UserDAO,
+	@Autowired val healthcarePartyDAO: HealthcarePartyDAO,
+	@Autowired val patientDAO: PatientDAO,
+	@Autowired val deviceDAO: DeviceDAO,
+	@Autowired val passwordEncoder: PasswordEncoder,
 	@Autowired val objectMapper: ObjectMapper
 ) : StringSpec() {
 
-	val users = AuthenticationUsers(
-		System.getenv("ICURE_TEST_HCP_1_USER"),
-		System.getenv("ICURE_TEST_HCP_1_PWD"),
-		System.getenv("ICURE_TEST_HCP_1_USER_ID"),
-		System.getenv("ICURE_TEST_HCP_1_ID"),
-		System.getenv("ICURE_TEST_PAT_ID"),
-		System.getenv("ICURE_TEST_PAT_USER"),
-		System.getenv("ICURE_TEST_PAT_PWD"),
-		System.getenv("ICURE_TEST_PAT_USER_ID"),
-		System.getenv("ICURE_TEST_DEVICE_ID"),
-		System.getenv("ICURE_TEST_DEVICE_USER"),
-		System.getenv("ICURE_TEST_DEVICE_PWD"),
-		System.getenv("ICURE_TEST_ADMIN_USER"),
-		System.getenv("ICURE_TEST_ADMIN_PWD")
-	)
 	val apiVersion = "v2"
+	val apiUrl = "${System.getenv("ICURE_URL") ?: "http://localhost"}:$port"
 
 	init {
 		runBlocking {
+			val client = org.taktik.icure.test.createHttpClient("john", "LetMeIn")
+			val hcpUser = createHcpUser(client, apiUrl, passwordEncoder)
+			val patientUser = createPatientUser(client, apiUrl, passwordEncoder)
+			val deviceUser = createDeviceUser(client, apiUrl, passwordEncoder)
+			val adminUser = createHcpUser(client, apiUrl, passwordEncoder)
+
+			val users = AuthenticationUsers(hcpUser, patientUser, deviceUser, adminUser)
+
 			testJwtAuthentication(
-				port,
+				apiUrl,
 				jwtUtils,
 				userDAO,
 				apiVersion,
@@ -170,13 +176,13 @@ class JWTAuthenticationE2ETest(
 				listOf("Set-Cookie")
 			)
 			testSessionAuthentication(
-				port,
+				apiUrl,
 				apiVersion,
 				objectMapper,
 				users
 			)
 			testBasicAuthentication(
-				port,
+				apiUrl,
 				apiVersion,
 				users,
 				listOf("Set-Cookie")
@@ -187,19 +193,19 @@ class JWTAuthenticationE2ETest(
 }
 
 private fun StringSpec.testBasicAuthentication(
-	port: Int,
+	apiUrl: String,
 	apiVersion: String,
 	users: AuthenticationUsers,
 	responseHeaders: List<String>
 ) {
 
-	val baseUrl = "http://localhost:$port/rest/$apiVersion"
+	val baseUrl = "$apiUrl/rest/$apiVersion"
 
 	"A User with valid credentials should be able to access endpoints and receive a session cookie" {
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
@@ -208,7 +214,7 @@ private fun StringSpec.testBasicAuthentication(
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			401,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:INVALID_PASSWORD".toByteArray())}")
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:INVALID_PASSWORD".toByteArray())}")
 		)
 	}
 
@@ -229,27 +235,27 @@ private fun StringSpec.testBasicAuthentication(
 
 	"A User should be able to get users as a patient" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/${users.patUserId}",
+			"${baseUrl}/user/${users.patient.userId}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
 
 	"A User should be able to get users by email as a patient" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/byEmail/${users.patUser}",
+			"${baseUrl}/user/byEmail/${users.patient.username}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
 
 	"A User should be able to get patients as a patient" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
@@ -258,7 +264,7 @@ private fun StringSpec.testBasicAuthentication(
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
@@ -267,7 +273,7 @@ private fun StringSpec.testBasicAuthentication(
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.adminUser}:${users.adminPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.admin.username}:${users.admin.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
@@ -276,34 +282,34 @@ private fun StringSpec.testBasicAuthentication(
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.deviceUser}:${users.devicePwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.device.username}:${users.device.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
 
 	"A User should be able to get patients as a device" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.deviceUser}:${users.devicePwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.device.username}:${users.device.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
 
 	"A User should be able to get patients as a hcp" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.hcp1User}:${users.hcp1Pwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.hcp.username}:${users.hcp.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
 
 	"A User should be able to get HCPs as a patient" {
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/hcparty/${users.hcp1Id}",
+			"${baseUrl}/hcparty/${users.hcp.dataOwnerId}",
 			200,
-			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patUser}:${users.patPwd}".toByteArray())}"),
+			mapOf("Authorization" to "Basic ${Base64.getEncoder().encodeToString("${users.patient.username}:${users.patient.password}".toByteArray())}"),
 			responseHeaders
 		)
 	}
@@ -311,13 +317,13 @@ private fun StringSpec.testBasicAuthentication(
 }
 
 private fun StringSpec.testSessionAuthentication(
-	port: Int,
+	apiUrl: String,
 	apiVersion: String,
 	objectMapper: ObjectMapper,
 	users: AuthenticationUsers
 ) {
 
-	val baseUrl = "http://localhost:$port/rest/$apiVersion"
+	val baseUrl = "$apiUrl/rest/$apiVersion"
 
 	fun authenticateAndExpectSuccess(username: String, password: String): String {
 		val body = objectMapper.writeValueAsString(mapOf("username" to username, "password" to password))
@@ -329,16 +335,16 @@ private fun StringSpec.testSessionAuthentication(
 	}
 
 	"A User with valid credentials should be able to receive a session cookie" {
-		authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 	}
 
 	"A User with non-valid credentials should not be able to receive a session cookie" {
-		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp1User, "password" to "DEFINITELY_NOT_THE_PASSWORD"))
+		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp.username, "password" to "DEFINITELY_NOT_THE_PASSWORD"))
 		makePostRequestAndExpectResult(body, "${baseUrl}/auth/login", 401)
 	}
 
 	"A User should not be able to access methods with a non-valid session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			401,
@@ -354,7 +360,7 @@ private fun StringSpec.testSessionAuthentication(
 	}
 
 	"A User should not be able to access methods with the same session cookie after logout" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/auth/logout",
 			200,
@@ -368,34 +374,34 @@ private fun StringSpec.testSessionAuthentication(
 	}
 
 	"A User should be able to access users with a patient session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/${users.patUserId}",
+			"${baseUrl}/user/${users.patient.userId}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
 	}
 
 	"A User should be able to get users by email with a session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/byEmail/${users.patUser}",
+			"${baseUrl}/user/byEmail/${users.patient.username}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
 	}
 
 	"A User should be able to access patients with a session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
 	}
 
 	"A User should be able to get codes patient session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -404,7 +410,7 @@ private fun StringSpec.testSessionAuthentication(
 	}
 
 	"A User should be able to get codes with an admin session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.adminUser, users.adminPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.admin.username, users.admin.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -413,27 +419,27 @@ private fun StringSpec.testSessionAuthentication(
 	}
 
 	"A User should be able to get patients with a device session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.deviceUser, users.devicePwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.device.username, users.device.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
 	}
 
 	"A User should be able to access patients with a hcp session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
 	}
 
 	"A User should be able to access hcps with a patient session cookie" {
-		val sessionCookie = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val sessionCookie = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/hcparty/${users.hcp1Id}",
+			"${baseUrl}/hcparty/${users.hcp.dataOwnerId}",
 			200,
 			mapOf("Cookie" to sessionCookie)
 		)
@@ -442,7 +448,7 @@ private fun StringSpec.testSessionAuthentication(
 }
 
 private suspend fun StringSpec.testJwtAuthentication(
-	port: Int,
+	apiUrl: String,
 	jwtUtils: JwtUtils,
 	userDAO: UserDAO,
 	apiVersion: String,
@@ -451,7 +457,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	responseHeaders: List<String>
 ) {
 
-	val baseUrl = "http://localhost:$port/rest/$apiVersion"
+	val baseUrl = "$apiUrl/rest/$apiVersion"
 
 	fun authenticateAndExpectSuccess(username: String, password: String): ResponseWithJwt {
 		val body = objectMapper.writeValueAsString(mapOf("username" to username, "password" to password))
@@ -493,8 +499,8 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User with valid credentials should be able to receive an authentication and refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
-		val user = userDAO.findUserOnUserDb(users.hcp1UserId, true)
+		val authResponse = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
+		val user = userDAO.findUserOnUserDb(users.hcp.userId, true)
 		user shouldNotBe null
 		val authClaims = jwtUtils.decodeAndGetClaims(authResponse.token!!)
 		authClaims["userId"] shouldBe user!!.id
@@ -510,12 +516,12 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If both JWT and session cookie are provided, the user should still be able of accessing the method" {
-		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp1User, "password" to users.hcp1Pwd))
+		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp.username, "password" to users.hcp.password))
 		val responseString = makePostRequestAndReturnSession(body, "${baseUrl}/auth/login", 200, mapOf())
 		responseString shouldNotBe null
 		val sessionCookie = Regex(".*(SESSION=[a-z0-9\\-]+).*").find(responseString!!)?.groupValues?.get(1)
 		sessionCookie shouldNotBe null
-		val authResponse = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		val authResponse = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -527,12 +533,12 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If an non valid JWT and a valid session cookie are provided, the user should not be able to access the method" {
-		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp1User, "password" to users.hcp1Pwd))
+		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp.username, "password" to users.hcp.password))
 		val responseString = makePostRequestAndReturnSession(body, "${baseUrl}/auth/login", 200, mapOf())
 		responseString shouldNotBe null
 		val sessionCookie = Regex(".*(SESSION=[a-z0-9\\-]+).*").find(responseString!!)?.groupValues?.get(1)
 		sessionCookie shouldNotBe null
-		val authResponse = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		val authResponse = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 		delay(10*1000)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
@@ -545,12 +551,12 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If a valid JWT and a non valid session cookie are provided, the user should be able to access the method" {
-		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp1User, "password" to users.hcp1Pwd))
+		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp.username, "password" to users.hcp.password))
 		val responseString = makePostRequestAndReturnSession(body, "${baseUrl}/auth/login", 200, mapOf())
 		responseString shouldNotBe null
 		val sessionCookie = Regex(".*(SESSION=[a-z0-9\\-]+).*").find(responseString!!)?.groupValues?.get(1)
 		sessionCookie shouldNotBe null
-		val authResponse = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		val authResponse = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -562,12 +568,12 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User with non-valid credentials should not be able to receive an authentication and refresh token" {
-		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp1User, "password" to "DEFINITELY_NOT_THE_PASSWORD"))
+		val body = objectMapper.writeValueAsString(mapOf("username" to users.hcp.username, "password" to "DEFINITELY_NOT_THE_PASSWORD"))
 		makePostRequestAndExpectResult(body, "${baseUrl}/auth/login", 401)
 	}
 
 	"A User should not be able to access methods with a malformed token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			401,
@@ -576,9 +582,9 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to change their role by altering the token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		println(authResponse.token!!)
-		val (header, payload, signature) = authResponse.token!!.split('.')
+		val (header, payload, signature) = authResponse.token.split('.')
 		val decodedPayload = Base64.getDecoder().decode(payload).toString(Charsets.UTF_8)
 		val tamperedPayload = Base64.getEncoder().encodeToString(decodedPayload.replace("ROLE_PATIENT", "ROLE_ADMIN").toByteArray())
 		makeGetRequestAndExpectResult(
@@ -589,7 +595,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to access methods with an invalid token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			401,
@@ -606,7 +612,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to access methods with an expired token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		delay(10*1000)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
@@ -616,7 +622,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to access methods with a refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			401,
@@ -625,7 +631,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should be able to get a new authentication token using the refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		delay(10*1000)
 		val newAuth = regenerateAuthenticationToken(authResponse.refreshToken!!)
 		makeGetRequestAndExpectResult(
@@ -636,7 +642,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to get a new authentication token using a malformed refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
@@ -645,7 +651,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to get a new authentication token using a non-valid refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
@@ -654,7 +660,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to get a new authentication token using an authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
@@ -663,7 +669,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to get a new authentication token using an expired refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		delay(30*1000)
 		makePostRequestAndExpectResult(
 			"",
@@ -673,8 +679,8 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If the user performs the login again, a new valid refresh token is issued and the old one stays valid" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
-		authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
+		authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
@@ -683,8 +689,8 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If the user performs the login again, a new valid refresh token is issued and the new one stays valid" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
-		val newResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
+		val newResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/refresh",
@@ -693,7 +699,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If the user calls the invalidate method with a valid refresh token, the refresh token is invalidated" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/invalidate",
@@ -708,8 +714,8 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"If the user calls the invalidate method with a valid refresh token, the other refresh tokens stays valid" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
-		val secondAuth = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
+		val secondAuth = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/invalidate",
@@ -724,7 +730,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able of invalidating a refresh token with a non-valid refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makePostRequestAndExpectResult(
 			"",
 			"${baseUrl}/auth/invalidate",
@@ -734,7 +740,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able of invalidating a refresh token with an expired refresh token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		delay(30000)
 		makePostRequestAndExpectResult(
 			"",
@@ -745,52 +751,52 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should be able to get the current user with an authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/${users.patUserId}",
+			"${baseUrl}/user/${users.patient.userId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get a user with an authentication token for another user" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/${users.hcp1UserId}",
+			"${baseUrl}/user/${users.hcp.userId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get a user by email an authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/byEmail/${users.patUser}",
+			"${baseUrl}/user/byEmail/${users.patient.username}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should not be able to get a user by email with an authentication token for another user" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/user/byEmail/${users.hcp1User}",
+			"${baseUrl}/user/byEmail/${users.hcp.username}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get a patient with a patient authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get the codes with a patient authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -799,7 +805,7 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should be able to get the codes with an admin authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.adminUser, users.adminPwd)
+		val authResponse = authenticateAndExpectSuccess(users.admin.username, users.admin.password)
 		makeGetRequestAndExpectResult(
 			"${baseUrl}/code?region=be",
 			200,
@@ -808,27 +814,27 @@ private suspend fun StringSpec.testJwtAuthentication(
 	}
 
 	"A User should not be able to get a patient with a device authentication token " {
-		val authResponse = authenticateAndExpectSuccess(users.deviceUser, users.devicePwd)
+		val authResponse = authenticateAndExpectSuccess(users.device.username, users.device.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get a patient with a HCP authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.hcp1User, users.hcp1Pwd)
+		val authResponse = authenticateAndExpectSuccess(users.hcp.username, users.hcp.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/patient/${users.patId}",
+			"${baseUrl}/patient/${users.patient.dataOwnerId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
 	}
 
 	"A User should be able to get a HCP with a patient authentication token" {
-		val authResponse = authenticateAndExpectSuccess(users.patUser, users.patPwd)
+		val authResponse = authenticateAndExpectSuccess(users.patient.username, users.patient.password)
 		makeGetRequestAndExpectResult(
-			"${baseUrl}/hcparty/${users.hcp1Id}",
+			"${baseUrl}/hcparty/${users.hcp.dataOwnerId}",
 			200,
 			mapOf("Authorization" to "Bearer ${authResponse.token}")
 		)
