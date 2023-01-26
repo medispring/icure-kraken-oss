@@ -34,5 +34,7 @@ import org.taktik.icure.services.external.rest.v2.dto.filter.AbstractFilterDto
 data class PatientByHcPartyAndAddressFilter(
 	override val desc: String? = null,
 	override val searchString: String? = null,
-	override val healthcarePartyId: String? = null
+	override val healthcarePartyId: String? = null,
+	override val postalCode: String? = null,
+	override val houseNumber: String? = null
 ) : AbstractFilterDto<Patient>, org.taktik.icure.domain.filter.patient.PatientByHcPartyAndAddressFilter

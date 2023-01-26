@@ -86,6 +86,10 @@ class FakePatientDAO : PatientDAO, GenericDAO<Patient> by FakeGenericDAO() {
 		TODO("Not yet implemented")
 	}
 
+	override fun listPatientIdsByHcPartyAndAddress(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> {
+		TODO("Not yet implemented")
+	}
+
 	override fun findPatientIdsByHcParty(healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent> {
 		TODO("Not yet implemented")
 	}

@@ -75,13 +75,12 @@ class ICureTestApplication {
 		couchDbProperties: CouchDbProperties,
 		testGroupProperties: TestProperties,
 		passwordEncoder: PasswordEncoder,
-		@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	) = ApplicationRunner {
 
 		runBlocking {
 			if (testGroupProperties.bootstrapEnv!!) {
 				println("Bootstrapping CouchDB Container...")
-				bootstrapEnvironment(allDaos, couchDbDispatcher, couchDbProperties, testGroupProperties)
+				bootstrapEnvironment(allDaos, couchDbProperties)
 			}
 
 			internalDaos.forEach {
@@ -92,9 +91,8 @@ class ICureTestApplication {
 		}
 	}
 
-	private suspend fun bootstrapEnvironment(allDaos: List<GenericDAO<*>>, couchDbDispatcher: CouchDbDispatcher, couchDbProperties: CouchDbProperties, testGroupProperties: TestProperties) {
-		val couchDbClient = couchDbDispatcher.getClient(URI.create(couchDbProperties.url))
-		initStandardDesignDocumentsOf(allDaos, couchDbClient)
+	private suspend fun bootstrapEnvironment(allDaos: List<GenericDAO<*>>, couchDbProperties: CouchDbProperties) {
+		initStandardDesignDocumentsOf(allDaos)
 
 		ICureTestSetup.bootstrapOss(
 			couchDbUrl = couchDbProperties.url,
@@ -103,9 +101,9 @@ class ICureTestApplication {
 		)
 	}
 
-	private suspend fun initStandardDesignDocumentsOf(allDaos: List<GenericDAO<*>>, couchClient: Client) {
+	private suspend fun initStandardDesignDocumentsOf(allDaos: List<GenericDAO<*>>) {
 		allDaos.forEach {
-			it.forceInitStandardDesignDocument(couchClient, true)
+			it.forceInitStandardDesignDocument(true)
 		}
 	}
 }
