@@ -19,11 +19,17 @@ package org.taktik.icure.services.external.rest.v1.dto.gui.type.primitive
 
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.services.external.rest.v1.dto.gui.type.Data
 
 /**
  * Created by aduchate on 19/11/13, 10:41
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 class AttributedString(val rtfString: String? = null, val rtfData: ByteArray? = null) : Data(), Primitive {
 	fun length(): Int {
 		return if (rtfString!!.length > 0) rtfString!!.length else rtfData!!.size
