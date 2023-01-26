@@ -31,7 +31,7 @@ class IncapacityLogicImpl(val incapacityExport: IncapacityExport) : IncapacityLo
 				_kmehrId = System.currentTimeMillis().toString(),
 				date = Utils.makeXGC(Instant.now().toEpochMilli(), unsetMillis = false, setTimeZone = false, timeZone = timeZone ?: "Europe/Brussels")!!,
 				time = Utils.makeXGC(Instant.now().toEpochMilli(), unsetMillis = true, setTimeZone = false, timeZone = timeZone ?: "Europe/Brussels")!!,
-				soft = Config.Software(name = "iCure", version = ICUREVERSION),
+				soft = Config.Software(name = exportInfo.softwareName ?: "iCure", version = exportInfo.softwareVersion ?: ICUREVERSION),
 				clinicalSummaryType = "",
 				defaultLanguage = "en"
 			)
