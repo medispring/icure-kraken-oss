@@ -360,6 +360,8 @@ class IncapacityExport(
 									contents.add(
 										ContentType().apply {
 											person = PersonType().apply {
+												//NOTE: Mult-eMediatt only requires the phone number of the contactperson and no other data.
+												//		But kmehr requires name/id/sex so dummy values are given here
 												ids.add(IDPATIENT().apply { s = IDPATIENTschemes.LOCAL; sv = config.soft?.version; sl = "${config.soft?.name}-Person-Id"; value = "cp" })
 												firstnames.add("contactpersontel")
 												familyname = "contactpersontel"
