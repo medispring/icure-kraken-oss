@@ -7,7 +7,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -26,8 +25,8 @@ import org.taktik.icure.entities.TimeTable
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.embed.TimeTableHour
 import org.taktik.icure.entities.embed.TimeTableItem
-import org.taktik.icure.test.SessionMock
-import org.taktik.icure.test.fakedaos.FakeTimeTableDAO
+import org.taktik.icure.test.fake.FakeTimeTableDAO
+import org.taktik.icure.test.fake.SessionMock
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.randomUri
 

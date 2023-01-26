@@ -1,19 +1,142 @@
 package org.taktik.icure.test
 
-import kotlin.math.abs
+import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.security.KeyPairGenerator
+import java.util.UUID
+import kotlin.math.abs
 import kotlin.random.Random.Default.nextInt
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.SingletonSupport
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import org.taktik.icure.services.external.rest.v1.dto.MaintenanceTaskDto
-import org.taktik.icure.services.external.rest.v1.dto.CodeDto
+import org.junit.jupiter.api.Assertions
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.taktik.icure.asyncdao.UserDAO
+import kotlinx.coroutines.delay
+import org.taktik.icure.asyncdao.HealthcarePartyDAO
+import org.taktik.icure.constants.Users
+import org.taktik.icure.entities.HealthcareParty
+import org.taktik.icure.entities.User
+import org.taktik.icure.entities.security.AlwaysPermissionItem
+import org.taktik.icure.entities.security.Permission
+import org.taktik.icure.entities.security.PermissionType
+import org.taktik.icure.services.external.rest.v1.dto.DeviceDto
+import org.taktik.icure.services.external.rest.v1.dto.HealthElementDto
+import org.taktik.icure.services.external.rest.v1.dto.HealthcarePartyDto
+import org.taktik.icure.services.external.rest.v1.dto.PatientDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
+import org.taktik.icure.services.external.rest.v1.dto.security.PermissionDto
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
+
+val objectMapper: ObjectMapper by lazy {
+	ObjectMapper().registerModule(
+		KotlinModule.Builder()
+			.nullIsSameAsDefault(nullIsSameAsDefault = false)
+			.reflectionCacheSize(reflectionCacheSize = 512)
+			.nullToEmptyMap(nullToEmptyMap = false)
+			.nullToEmptyCollection(nullToEmptyCollection = false)
+			.singletonSupport(singletonSupport = SingletonSupport.DISABLED)
+			.strictNullChecks(strictNullChecks = false)
+			.build()
+	)
+}
+
+fun createHttpClient(username: String, password: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
+	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
+	return createHttpClient(auth, additionalHeaders)
+}
+
+fun createHttpClient(userAuth: String, additionalHeaders: Map<String, String> = emptyMap()): HttpClient {
+	return HttpClient.create().headers { h ->
+		h.set("Authorization", userAuth) //
+		h.set("Content-type", "application/json")
+		additionalHeaders.forEach {
+			h.set(it.key, it.value)
+		}
+	}
+}
+
+fun makeGetRequest(client: HttpClient, url: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
+	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
+		.get()
+		.uri(url)
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
+
+fun makePostRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
+	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
+		.post()
+		.uri(url)
+		.send(ByteBufFlux.fromString(Flux.just(payload)))
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
+
+fun makePutRequest(client: HttpClient, url: String, payload: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
+	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
+		.put()
+		.uri(url)
+		.send(ByteBufFlux.fromString(Flux.just(payload)))
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
+
+fun makeDeleteRequest(client: HttpClient, url: String, expectedCode: Int = 200, additionalHeaders: Map<String, String> = mapOf()): String? {
+	val responseBody = client
+		.headers {
+			additionalHeaders.forEach { (k, v) ->
+				it.set(k, v)
+			}
+		}
+		.delete()
+		.uri(url)
+		.responseSingle { response, buffer ->
+			Assertions.assertNotNull(response)
+			Assertions.assertEquals(expectedCode, response.status().code())
+			buffer.asString(StandardCharsets.UTF_8)
+		}.block()
+
+	return responseBody
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 private data class IdWithRev(@field:JsonProperty("_id") val id: String, @field:JsonProperty("_rev") val rev: String)
@@ -22,96 +145,180 @@ fun generateRandomString(length: Int, alphabet: List<Char>) = (1..length)
 	.map { _ -> alphabet[nextInt(0, alphabet.size)] }
 	.joinToString("")
 
-@OptIn(ExperimentalStdlibApi::class)
-fun generateInBetweenCode(firstCode: String, secondCode: String): String {
-	val firstCodeLower = firstCode.lowercase()
-	val secondCodeLower = secondCode.lowercase()
-	return firstCodeLower.zip(secondCodeLower).fold("") { acc, it ->
-		if ( it.first == it.second || abs(it.first.toInt() - it.second.toInt()) == 1 ) acc + it.first
-		else acc + ((it.first.toInt() + it.second.toInt())/2).toChar()
-	}
 
+private fun ByteArray.keyToHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
+fun createPatientUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+	): UserCredentials {
+	val username = "pat-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
+
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val patientToCreate = PatientDto(
+		id = UUID.randomUUID().toString(),
+		firstName = "pat",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		email = username,
+		passwordHash = passwordHash,
+		patientId = patientToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/patient", objectMapper.writeValueAsString(patientToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		patientToCreate.id,
+		username,
+		password,
+		privateKey
+	)
 }
 
-suspend fun removeEntities(ids: List<String>, objectMapper: ObjectMapper?) {
-	val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_COUCHDB_USERNAME")}:${System.getenv("ICURE_COUCHDB_PASSWORD")}".toByteArray())}"
-	val client = HttpClient.create().headers { h ->
-		h.set("Authorization", auth)
-		h.set("Content-type", "application/json")
-	}
+fun createHcpUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "hcp-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
 
-	ids.forEach { id ->
-		client.get()
-			.uri("${System.getenv("ICURE_COUCHDB_URL")}/${System.getenv("ICURE_COUCHDB_PREFIX")}-base/${URLEncoder.encode(id, Charsets.UTF_8)}")
-			.responseSingle { response, buffer ->
-				if (response.status().code() < 400) {
-					buffer.asString(StandardCharsets.UTF_8).mapNotNull {
-						objectMapper?.readValue(it, object : TypeReference<IdWithRev>() {})
-					}.flatMap {
-						it?.let {
-							client.delete().uri("${System.getenv("ICURE_COUCHDB_URL")}/${System.getenv("ICURE_COUCHDB_PREFIX")}-base/${URLEncoder.encode(id, Charsets.UTF_8)}?rev=${URLEncoder.encode(it.rev, Charsets.UTF_8)}").response()
-						} ?: Mono.empty()
-					}
-				} else Mono.empty()
-			}.awaitFirstOrNull()
-	}
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
+
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val hcpToCreate = HealthcarePartyDto(
+		id = UUID.randomUUID().toString(),
+		firstName = "hcp",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		email = username,
+		passwordHash = passwordHash,
+		healthcarePartyId = hcpToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/hcparty", objectMapper.writeValueAsString(hcpToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		hcpToCreate.id,
+		username,
+		password,
+		privateKey
+	)
 }
 
-class CodeBatchGenerator {
+fun createDeviceUser(httpClient: HttpClient,
+	apiUrl: String,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "device-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
 
-	private val alphabet: List<Char> = ('a'..'z').toList() + ('A'..'Z') + ('0'..'9')
-	private val languages = listOf("en", "fr", "nl")
-	private val types = listOf("SNOMED", "LOINC", "TESTCODE", "DEEPSECRET")
-	private val regions = listOf("int", "fr", "be")
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
 
-	private fun generateRandomString(length: Int) = (1..length)
-		.map { _ -> alphabet[nextInt(0, alphabet.size)] }
-		.joinToString("")
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
 
-	fun createBatchOfUniqueCodes(size: Int) = (1..size)
-		.fold(listOf<CodeDto>()) { acc, _ ->
-			val lang = languages[nextInt(0, languages.size)]
-			val type = types[nextInt(0, types.size)]
-			val code = generateRandomString(20)
-			val version = nextInt(0, 10).toString()
-			acc + CodeDto(
-				id = "$type|$code|$version",
-				type = type,
-				code = code,
-				version = version,
-				label = if (nextInt(0, 4) == 0) mapOf(lang to generateRandomString(nextInt(20, 100))) else mapOf(),
-				regions = if (nextInt(0, 4) == 0) setOf(regions[nextInt(0, regions.size)]) else setOf(),
-				qualifiedLinks = if (nextInt(0, 4) == 0) mapOf(generateRandomString(10) to List(nextInt(1, 4)) { generateRandomString(10) }) else mapOf(),
-				searchTerms = if (nextInt(0, 4) == 0) mapOf(generateRandomString(10) to List(nextInt(1, 4)) { generateRandomString(10) }.toSet()) else mapOf(),
-			)
-		}
+	val deviceToCreate = DeviceDto(
+		id = UUID.randomUUID().toString(),
+		brand = "device",
+		name = username,
+		publicKey = pubKey
+	)
 
-	fun randomCodeModification(code: CodeDto, modifyLabel: Boolean = false, modifyRegions: Boolean = false, modifyQualifiedLinks: Boolean = false, modifySearchTerms: Boolean = false) = code
-		.let {
-			if (modifyLabel && nextInt(0, 4) == 0) it.copy(label = mapOf(languages[nextInt(0, languages.size)] to generateRandomString(nextInt(20, 100))))
-			else it
-		}.let {
-			if (modifyRegions && nextInt(0, 4) == 0) it.copy(regions = setOf(regions[nextInt(0, regions.size)]))
-			else it
-		}.let {
-			if (modifyQualifiedLinks && nextInt(0, 4) == 0) it.copy(qualifiedLinks = mapOf(generateRandomString(10) to List(nextInt(1, 4)) { generateRandomString(10) }))
-			else it
-		}.let {
-			if (modifySearchTerms && nextInt(0, 4) == 0) it.copy(searchTerms = mapOf(generateRandomString(10) to List(nextInt(1, 4)) { generateRandomString(10) }.toSet()))
-			else it
-		}
+	val userToCreate = UserDto(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		passwordHash = passwordHash,
+		deviceId = deviceToCreate.id
+	)
+
+	makePostRequest(httpClient, "$apiUrl/rest/v1/device", objectMapper.writeValueAsString(deviceToCreate))
+	makePostRequest(httpClient, "$apiUrl/rest/v1/user", objectMapper.writeValueAsString(userToCreate))
+
+	return UserCredentials(
+		userToCreate.id,
+		deviceToCreate.id,
+		username,
+		password,
+		privateKey
+	)
 }
 
-class UserGenerator {
+suspend fun createHcpUser(
+	userDAO: UserDAO,
+	healthcarePartyDAO: HealthcarePartyDAO,
+	passwordEncoder: PasswordEncoder,
+): UserCredentials {
+	val username = "hcp-${UUID.randomUUID()}"
+	val password = UUID.randomUUID().toString()
+	val passwordHash = passwordEncoder.encode(password)
 
-	private val alphabet: List<Char> = ('a'..'z').toList() + ('A'..'Z') + ('0'..'9')
+	val rsaKeyGenerator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+	val rsaKeypair = rsaKeyGenerator.generateKeyPair()
 
-	fun generateRandomUsers(num: Int) = List(num) {
-		UserDto(
-			id = generateRandomString(20, alphabet),
-			patientId = generateRandomString(10, alphabet),
-			login = generateRandomString(5, alphabet) + '@' + generateRandomString(5, alphabet)
-		)
-	}
+	val pubKey = rsaKeypair.public.encoded.keyToHexString()
+	val privateKey = rsaKeypair.private.encoded.keyToHexString()
+
+	val healthcarePartyToCreate = HealthcareParty(
+		id = UUID.randomUUID().toString(),
+		firstName = "hcp",
+		lastName = username,
+		publicKey = pubKey
+	)
+
+	val userToCreate = User(
+		id = UUID.randomUUID().toString(),
+		login = username,
+		status = Users.Status.ACTIVE,
+		passwordHash = passwordHash,
+		healthcarePartyId = healthcarePartyToCreate.id
+	)
+
+	userDAO.create(userToCreate)
+	healthcarePartyDAO.create(healthcarePartyToCreate)
+
+	return UserCredentials(
+		userToCreate.id,
+		healthcarePartyToCreate.id,
+		username,
+		password,
+		privateKey
+	)
+}
+
+data class UserCredentials(
+	val userId: String,
+	val dataOwnerId: String,
+	val username: String,
+	val password: String,
+	val privateKey: String?
+) {
+	fun auth() = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
+
 }

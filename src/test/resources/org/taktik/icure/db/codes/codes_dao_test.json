@@ -1,0 +1,7533 @@
+[
+	{
+		"_id" : "CD-FED-COUNTRY|ad|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ad",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Andorra",
+			"fr" : "Andorre",
+			"nl" : "Andorra"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ad|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ad",
+		"version" : "2",
+		"label" : {
+			"de" : "Andorra",
+			"fr" : "Andorre",
+			"nl" : "Andorra"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ad|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ad",
+		"version" : "3",
+		"label" : {
+			"de" : "Andorra",
+			"fr" : "Andorre",
+			"nl" : "Andorra"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ae|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ae",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Arabische Emirate",
+			"fr" : "\u00c9mirats Arabes Unis",
+			"nl" : "Verenigde Arabische Emiraten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ae|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ae",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigte Arabische Emirate",
+			"fr" : "\u00c9mirats Arabes Unis",
+			"nl" : "Verenigde Arabische Emiraten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|af|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "af",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Afghanistan",
+			"fr" : "Afghanistan",
+			"nl" : "Afghanistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ag|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ag",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Antigua",
+			"fr" : "Antigua-et-Barbuda",
+			"nl" : "Antigua en Barbuda"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ag|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ag",
+		"version" : "2",
+		"label" : {
+			"de" : "Antigua",
+			"fr" : "Antigua-et-Barbuda",
+			"nl" : "Antigua en Barbuda"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ai|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ai",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Anguilla",
+			"fr" : "Royaume-Uni - Anguilla (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Anguilla (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ai|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ai",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Anguilla",
+			"fr" : "Royaume-Uni - Anguilla (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Anguilla (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|al|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "al",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Albanien",
+			"fr" : "Albanie",
+			"nl" : "Albani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|am|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "am",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Armenien",
+			"fr" : "Arm\u00e9nie",
+			"nl" : "Armeni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|am|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "am",
+		"version" : "3",
+		"label" : {
+			"de" : "Armenien",
+			"fr" : "Arm\u00e9nie",
+			"nl" : "Armeni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|an|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "an",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Niederlande - Niederl\u00e4ndische Antillen (Aruba und Cura\u00e7ao)",
+			"fr" : "Pays-Bas - Antilles n\u00e9erlandaises (dont Aruba et Cura\u00e7ao)",
+			"nl" : "Nederland - Nederlandse Antillen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|an|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "an",
+		"version" : "2",
+		"label" : {
+			"de" : "Niederlande - Niederl\u00e4ndische Antillen (Aruba und Cura\u00e7ao)",
+			"fr" : "Pays-Bas - Antilles n\u00e9erlandaises (dont Aruba et Cura\u00e7ao)",
+			"nl" : "Nederland - Nederlandse Antillen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ao|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ao",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Angola",
+			"fr" : "Angola",
+			"nl" : "Angola"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ao|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ao",
+		"version" : "2",
+		"label" : {
+			"de" : "Angola",
+			"fr" : "Angola",
+			"nl" : "Angola"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|aq|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "aq",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Antarktis",
+			"fr" : "Antarctique",
+			"nl" : "Antarctica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|aq|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "aq",
+		"version" : "3",
+		"label" : {
+			"de" : "Antarktis",
+			"fr" : "Antarctique",
+			"nl" : "Antarctica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ar|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ar",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Argentinien",
+			"fr" : "Argentine",
+			"nl" : "Argentini\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|as|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "as",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Staaten - Amerikanische Samoa",
+			"fr" : "\u00c9tats-Unis - Samoa am\u00e9ricaines",
+			"nl" : "Verenigde Staten - Amerikaans-Samoa"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|as|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "as",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigte Staaten - Amerikanische Samoa",
+			"fr" : "\u00c9tats-Unis - Samoa am\u00e9ricaines",
+			"nl" : "Verenigde Staten - Amerikaans-Samoa"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|at|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "at",
+		"version" : "1.2",
+		"label" : {
+			"de" : "\u00d6sterreich",
+			"fr" : "Autriche",
+			"nl" : "Oostenrijk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|at|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "at",
+		"version" : "2",
+		"label" : {
+			"de" : "\u00d6sterreich",
+			"fr" : "Autriche",
+			"nl" : "Oostenrijk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|au|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "au",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien",
+			"fr" : "Australie",
+			"nl" : "Australi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|au|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "au",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien",
+			"fr" : "Australie",
+			"nl" : "Australi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|aw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "aw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Aruba",
+			"fr" : "Aruba",
+			"nl" : "Aruba"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|aw|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "aw",
+		"version" : "2",
+		"label" : {
+			"de" : "Aruba",
+			"fr" : "Aruba",
+			"nl" : "Aruba"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ax|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ax",
+		"version" : "1.2",
+		"label" : {
+			"de" : "\u00c5land",
+			"fr" : "\u00celes \u00c5land",
+			"nl" : "\u00c5land"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ax|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ax",
+		"version" : "2",
+		"label" : {
+			"de" : "\u00c5land",
+			"fr" : "\u00celes \u00c5land",
+			"nl" : "\u00c5land"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ax|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ax",
+		"version" : "3",
+		"label" : {
+			"de" : "\u00c5land",
+			"fr" : "\u00celes \u00c5land",
+			"nl" : "\u00c5land"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|az|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "az",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Aserbaidschan",
+			"fr" : "Azerba\u00efdjan",
+			"nl" : "Azerbeidzjan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ba|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ba",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bosnien-Herzegowina",
+			"fr" : "Bosnie-Herz\u00e9govine",
+			"nl" : "Bosni\u00eb en Herzegovina"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ba|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ba",
+		"version" : "2",
+		"label" : {
+			"de" : "Bosnien-Herzegowina",
+			"fr" : "Bosnie-Herz\u00e9govine",
+			"nl" : "Bosni\u00eb en Herzegovina"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bb|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bb",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Barbados",
+			"fr" : "Barbade",
+			"nl" : "Barbados"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bd|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bd",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bangladesh",
+			"fr" : "Bangladesh",
+			"nl" : "Bangladesh"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bd|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bd",
+		"version" : "2",
+		"label" : {
+			"de" : "Bangladesh",
+			"fr" : "Bangladesh",
+			"nl" : "Bangladesh"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|be|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "be",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Belgien",
+			"fr" : "Belgique",
+			"nl" : "Belgi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|be|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "be",
+		"version" : "2",
+		"label" : {
+			"de" : "Belgien",
+			"fr" : "Belgique",
+			"nl" : "Belgi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|be|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "be",
+		"version" : "3",
+		"label" : {
+			"de" : "Belgien",
+			"fr" : "Belgique",
+			"nl" : "Belgi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Burkina Faso",
+			"fr" : "Burkina Faso",
+			"nl" : "Burkina Faso"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bulgarien",
+			"fr" : "Bulgarie",
+			"nl" : "Bulgarije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bg",
+		"version" : "2",
+		"label" : {
+			"de" : "Bulgarien",
+			"fr" : "Bulgarie",
+			"nl" : "Bulgarije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bahrein",
+			"fr" : "Bahre\u00efn",
+			"nl" : "Bahrein"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bh|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bh",
+		"version" : "2",
+		"label" : {
+			"de" : "Bahrein",
+			"fr" : "Bahre\u00efn",
+			"nl" : "Bahrein"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bi|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bi",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Burundi",
+			"fr" : "Burundi",
+			"nl" : "Burundi"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bi|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bi",
+		"version" : "2",
+		"label" : {
+			"de" : "Burundi",
+			"fr" : "Burundi",
+			"nl" : "Burundi"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bi|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bi",
+		"version" : "3",
+		"label" : {
+			"de" : "Burundi",
+			"fr" : "Burundi",
+			"nl" : "Burundi"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bj|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bj",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Benin",
+			"fr" : "B\u00e9nin",
+			"nl" : "Benin"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bj|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bj",
+		"version" : "3",
+		"label" : {
+			"de" : "Benin",
+			"fr" : "B\u00e9nin",
+			"nl" : "Benin"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Bermuda",
+			"fr" : "Royaume-Uni - Bermudes (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Bermuda (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Brunei",
+			"fr" : "Brun\u00e9i Darussalam",
+			"nl" : "Brunei"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bn",
+		"version" : "3",
+		"label" : {
+			"de" : "Brunei",
+			"fr" : "Brun\u00e9i Darussalam",
+			"nl" : "Brunei"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bo|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bo",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bolivien",
+			"fr" : "Bolivie",
+			"nl" : "Boliv\u00efe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bo|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bo",
+		"version" : "3",
+		"label" : {
+			"de" : "Bolivien",
+			"fr" : "Bolivie",
+			"nl" : "Boliv\u00efe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bq|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bq",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bonaire, Sint Eustatius und Saba",
+			"fr" : "Bonaire, Saint-Eustache et Saba",
+			"nl" : "Bonaire, Sint Eustatius en Saba"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bq|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bq",
+		"version" : "3",
+		"label" : {
+			"de" : "Bonaire, Sint Eustatius und Saba",
+			"fr" : "Bonaire, Saint-Eustache et Saba",
+			"nl" : "Bonaire, Sint Eustatius en Saba"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|br|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "br",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Brasilien",
+			"fr" : "Br\u00e9sil",
+			"nl" : "Brazili\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|br|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "br",
+		"version" : "3",
+		"label" : {
+			"de" : "Brasilien",
+			"fr" : "Br\u00e9sil",
+			"nl" : "Brazili\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bs|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bs",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bahamas",
+			"fr" : "Bahamas",
+			"nl" : "Bahama's"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bs|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bs",
+		"version" : "2",
+		"label" : {
+			"de" : "Bahamas",
+			"fr" : "Bahamas",
+			"nl" : "Bahama's"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bhutan",
+			"fr" : "Bhoutan",
+			"nl" : "Bhutan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bt|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bt",
+		"version" : "2",
+		"label" : {
+			"de" : "Bhutan",
+			"fr" : "Bhoutan",
+			"nl" : "Bhutan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Bouvetinsel",
+			"fr" : "\u00cele Bouvet",
+			"nl" : "Bouvet"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bv|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bv",
+		"version" : "2",
+		"label" : {
+			"de" : "Bouvetinsel",
+			"fr" : "\u00cele Bouvet",
+			"nl" : "Bouvet"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Botswana",
+			"fr" : "Botswana",
+			"nl" : "Botswana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bw|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bw",
+		"version" : "3",
+		"label" : {
+			"de" : "Botswana",
+			"fr" : "Botswana",
+			"nl" : "Botswana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|by|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "by",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Belarus",
+			"fr" : "B\u00e9larus",
+			"nl" : "Wit-Rusland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Belize",
+			"fr" : "Belize",
+			"nl" : "Belize"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bz",
+		"version" : "2",
+		"label" : {
+			"de" : "Belize",
+			"fr" : "Belize",
+			"nl" : "Belize"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|bz|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "bz",
+		"version" : "3",
+		"label" : {
+			"de" : "Belize",
+			"fr" : "Belize",
+			"nl" : "Belize"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ca|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ca",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kanada",
+			"fr" : "Canada",
+			"nl" : "Canada"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ca|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ca",
+		"version" : "2",
+		"label" : {
+			"de" : "Kanada",
+			"fr" : "Canada",
+			"nl" : "Canada"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ca|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ca",
+		"version" : "3",
+		"label" : {
+			"de" : "Kanada",
+			"fr" : "Canada",
+			"nl" : "Canada"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kokosinseln",
+			"fr" : "\u00celes Cocos",
+			"nl" : "Cocoseilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cc|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cc",
+		"version" : "2",
+		"label" : {
+			"de" : "Kokosinseln",
+			"fr" : "\u00celes Cocos",
+			"nl" : "Cocoseilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cc|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cc",
+		"version" : "3",
+		"label" : {
+			"de" : "Kokosinseln",
+			"fr" : "\u00celes Cocos",
+			"nl" : "Cocoseilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cd|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cd",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kongo-Kinshasa",
+			"fr" : "Congo, R\u00e9publique D\u00e9mocratique du",
+			"nl" : "Congo, Demo. Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cd|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cd",
+		"version" : "2",
+		"label" : {
+			"de" : "Kongo-Kinshasa",
+			"fr" : "Congo, R\u00e9publique D\u00e9mocratique du",
+			"nl" : "Congo, Demo. Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Zentrafrika",
+			"fr" : "Centrafricaine, R\u00e9publique",
+			"nl" : "Centraal-Afrikaanse Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cf|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cf",
+		"version" : "3",
+		"label" : {
+			"de" : "Zentrafrika",
+			"fr" : "Centrafricaine, R\u00e9publique",
+			"nl" : "Centraal-Afrikaanse Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kongo-Brazza",
+			"fr" : "Congo, R\u00e9publique du",
+			"nl" : "Congo-Brazzaville"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ch|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ch",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Schweiz",
+			"fr" : "Suisse",
+			"nl" : "Zwitserland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ch|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ch",
+		"version" : "3",
+		"label" : {
+			"de" : "Schweiz",
+			"fr" : "Suisse",
+			"nl" : "Zwitserland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ci|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ci",
+		"version" : "1.2",
+		"label" : {
+			"de" : "C\u00f4te d'Ivoire",
+			"fr" : "C\u00f4te d'Ivoire",
+			"nl" : "Ivoorkust"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ci|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ci",
+		"version" : "2",
+		"label" : {
+			"de" : "C\u00f4te d'Ivoire",
+			"fr" : "C\u00f4te d'Ivoire",
+			"nl" : "Ivoorkust"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ci|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ci",
+		"version" : "3",
+		"label" : {
+			"de" : "C\u00f4te d'Ivoire",
+			"fr" : "C\u00f4te d'Ivoire",
+			"nl" : "Ivoorkust"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ck|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ck",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien - Cook (NZ)",
+			"fr" : "Australie - Cook, Iles (NZ)",
+			"nl" : "Australi\u00eb - Cook, Eilanden (NZ)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ck|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ck",
+		"version" : "2",
+		"label" : {
+			"de" : "Australien - Cook (NZ)",
+			"fr" : "Australie - Cook, Iles (NZ)",
+			"nl" : "Australi\u00eb - Cook, Eilanden (NZ)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ck|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ck",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien - Cook (NZ)",
+			"fr" : "Australie - Cook, Iles (NZ)",
+			"nl" : "Australi\u00eb - Cook, Eilanden (NZ)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Chile",
+			"fr" : "Chili",
+			"nl" : "Chili"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kamerun",
+			"fr" : "Cameroun",
+			"nl" : "Kameroen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cm",
+		"version" : "3",
+		"label" : {
+			"de" : "Kamerun",
+			"fr" : "Cameroun",
+			"nl" : "Kameroen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "China",
+			"fr" : "Chine",
+			"nl" : "China"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cn|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cn",
+		"version" : "2",
+		"label" : {
+			"de" : "China",
+			"fr" : "Chine",
+			"nl" : "China"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|co|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "co",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kolumbien",
+			"fr" : "Colombie",
+			"nl" : "Colombia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|co|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "co",
+		"version" : "2",
+		"label" : {
+			"de" : "Kolumbien",
+			"fr" : "Colombie",
+			"nl" : "Colombia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Costa Rica",
+			"fr" : "Costa Rica",
+			"nl" : "Costa Rica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cr",
+		"version" : "3",
+		"label" : {
+			"de" : "Costa Rica",
+			"fr" : "Costa Rica",
+			"nl" : "Costa Rica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cs|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cs",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Serbien und Montenegro",
+			"fr" : "Serbie-Mont\u00e9n\u00e9gro ( et ex-Yougoslavie)",
+			"nl" : "Servi\u00eb en Montenegro (ex-Joegoslavi\u00eb)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kuba",
+			"fr" : "Cuba",
+			"nl" : "Cuba"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kap Verde",
+			"fr" : "Cap-Vert, R\u00e9publique du",
+			"nl" : "Kaapverdi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cv|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cv",
+		"version" : "2",
+		"label" : {
+			"de" : "Kap Verde",
+			"fr" : "Cap-Vert, R\u00e9publique du",
+			"nl" : "Kaapverdi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cv|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cv",
+		"version" : "3",
+		"label" : {
+			"de" : "Kap Verde",
+			"fr" : "Cap-Vert, R\u00e9publique du",
+			"nl" : "Kaapverdi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Cura\u00e7ao",
+			"fr" : "Cura\u00e7ao",
+			"nl" : "Cura\u00e7ao"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cw|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cw",
+		"version" : "2",
+		"label" : {
+			"de" : "Cura\u00e7ao",
+			"fr" : "Cura\u00e7ao",
+			"nl" : "Cura\u00e7ao"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cw|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cw",
+		"version" : "3",
+		"label" : {
+			"de" : "Cura\u00e7ao",
+			"fr" : "Cura\u00e7ao",
+			"nl" : "Cura\u00e7ao"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cx|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cx",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Weihnachtsinsel",
+			"fr" : "\u00cele Christmas",
+			"nl" : "Christmaseiland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cx|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cx",
+		"version" : "2",
+		"label" : {
+			"de" : "Weihnachtsinsel",
+			"fr" : "\u00cele Christmas",
+			"nl" : "Christmaseiland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cy|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cy",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Zypern",
+			"fr" : "Chypre",
+			"nl" : "Cyprus"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cy|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cy",
+		"version" : "2",
+		"label" : {
+			"de" : "Zypern",
+			"fr" : "Chypre",
+			"nl" : "Cyprus"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cy|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cy",
+		"version" : "3",
+		"label" : {
+			"de" : "Zypern",
+			"fr" : "Chypre",
+			"nl" : "Cyprus"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tschechien",
+			"fr" : "Tch\u00e8que, R\u00e9publique",
+			"nl" : "Tsjechi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|cz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "cz",
+		"version" : "2",
+		"label" : {
+			"de" : "Tschechien",
+			"fr" : "Tch\u00e8que, R\u00e9publique",
+			"nl" : "Tsjechi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|de|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "de",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Deutschland",
+			"fr" : "Allemagne",
+			"nl" : "Duitsland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|de|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "de",
+		"version" : "3",
+		"label" : {
+			"de" : "Deutschland",
+			"fr" : "Allemagne",
+			"nl" : "Duitsland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dj|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dj",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Dchibuti",
+			"fr" : "Djibouti",
+			"nl" : "Djibouti"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "D\u00e4nemark",
+			"fr" : "Danemark",
+			"nl" : "Denemarken"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dk",
+		"version" : "3",
+		"label" : {
+			"de" : "D\u00e4nemark",
+			"fr" : "Danemark",
+			"nl" : "Denemarken"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Dominica",
+			"fr" : "Dominique, R\u00e9publique",
+			"nl" : "Dominica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|do|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "do",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Dominikanische Rep.",
+			"fr" : "Dominicaine, R\u00e9publique",
+			"nl" : "Dominicaanse Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|do|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "do",
+		"version" : "3",
+		"label" : {
+			"de" : "Dominikanische Rep.",
+			"fr" : "Dominicaine, R\u00e9publique",
+			"nl" : "Dominicaanse Republiek"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Algerien",
+			"fr" : "Alg\u00e9rie",
+			"nl" : "Algerije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dz",
+		"version" : "2",
+		"label" : {
+			"de" : "Algerien",
+			"fr" : "Alg\u00e9rie",
+			"nl" : "Algerije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|dz|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "dz",
+		"version" : "3",
+		"label" : {
+			"de" : "Algerien",
+			"fr" : "Alg\u00e9rie",
+			"nl" : "Algerije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ec|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ec",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ecuador",
+			"fr" : "\u00c9quateur",
+			"nl" : "Ecuador"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ec|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ec",
+		"version" : "2",
+		"label" : {
+			"de" : "Ecuador",
+			"fr" : "\u00c9quateur",
+			"nl" : "Ecuador"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ee|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ee",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Estland",
+			"fr" : "Estonie",
+			"nl" : "Estland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ee|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ee",
+		"version" : "2",
+		"label" : {
+			"de" : "Estland",
+			"fr" : "Estonie",
+			"nl" : "Estland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|eg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "eg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "\u00c4gypten",
+			"fr" : "\u00c9gypte",
+			"nl" : "Egypte"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|eg|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "eg",
+		"version" : "3",
+		"label" : {
+			"de" : "\u00c4gypten",
+			"fr" : "\u00c9gypte",
+			"nl" : "Egypte"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|eh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "eh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sahara",
+			"fr" : "Sahara Occidental",
+			"nl" : "Westelijke Sahara"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|eh|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "eh",
+		"version" : "2",
+		"label" : {
+			"de" : "Sahara",
+			"fr" : "Sahara Occidental",
+			"nl" : "Westelijke Sahara"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|eh|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "eh",
+		"version" : "3",
+		"label" : {
+			"de" : "Sahara",
+			"fr" : "Sahara Occidental",
+			"nl" : "Westelijke Sahara"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|er|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "er",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Eritrea",
+			"fr" : "\u00c9rythr\u00e9e",
+			"nl" : "Eritrea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|es|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "es",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Spanien",
+			"fr" : "Espagne",
+			"nl" : "Spanje"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|et|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "et",
+		"version" : "1.2",
+		"label" : {
+			"de" : "\u00c4thiopien",
+			"fr" : "\u00c9thiopie",
+			"nl" : "Ethiopi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|et|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "et",
+		"version" : "2",
+		"label" : {
+			"de" : "\u00c4thiopien",
+			"fr" : "\u00c9thiopie",
+			"nl" : "Ethiopi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|et|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "et",
+		"version" : "3",
+		"label" : {
+			"de" : "\u00c4thiopien",
+			"fr" : "\u00c9thiopie",
+			"nl" : "Ethiopi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fi|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fi",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Finnland",
+			"fr" : "Finlande",
+			"nl" : "Finland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fi|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fi",
+		"version" : "2",
+		"label" : {
+			"de" : "Finnland",
+			"fr" : "Finlande",
+			"nl" : "Finland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fi|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fi",
+		"version" : "3",
+		"label" : {
+			"de" : "Finnland",
+			"fr" : "Finlande",
+			"nl" : "Finland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fj|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fj",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Fidschi",
+			"fr" : "Fidji",
+			"nl" : "Fiji"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Falkland",
+			"fr" : "Royaume-Uni - Falkland (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Britse overzeese staatsburgers"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fk",
+		"version" : "2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Falkland",
+			"fr" : "Royaume-Uni - Falkland (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Britse overzeese staatsburgers"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fk",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Falkland",
+			"fr" : "Royaume-Uni - Falkland (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Britse overzeese staatsburgers"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mikronesien",
+			"fr" : "Micron\u00e9sie, \u00c9tats F\u00e9d\u00e9r\u00e9s de",
+			"nl" : "Micronesia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fm",
+		"version" : "3",
+		"label" : {
+			"de" : "Mikronesien",
+			"fr" : "Micron\u00e9sie, \u00c9tats F\u00e9d\u00e9r\u00e9s de",
+			"nl" : "Micronesia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fo|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fo",
+		"version" : "1.2",
+		"label" : {
+			"de" : "F\u00e4r\u00f6er-Inseln",
+			"fr" : "\u00celes F\u00e9ro\u00e9",
+			"nl" : "Faer\u00f6ereilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fo|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fo",
+		"version" : "3",
+		"label" : {
+			"de" : "F\u00e4r\u00f6er-Inseln",
+			"fr" : "\u00celes F\u00e9ro\u00e9",
+			"nl" : "Faer\u00f6ereilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|fr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "fr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich",
+			"fr" : "France",
+			"nl" : "Frankrijk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ga|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ga",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Gabun",
+			"fr" : "Gabon",
+			"nl" : "Gabon"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gb|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gb",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich",
+			"fr" : "Royaume-Uni",
+			"nl" : "Verenigd Koninkrijk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gd|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gd",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Grenada",
+			"fr" : "Grenade",
+			"nl" : "Grenada"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ge|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ge",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Georgien",
+			"fr" : "G\u00e9orgie",
+			"nl" : "Georgi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ge|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ge",
+		"version" : "3",
+		"label" : {
+			"de" : "Georgien",
+			"fr" : "G\u00e9orgie",
+			"nl" : "Georgi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Franz\u00f6siche-Guayana",
+			"fr" : "France - Guyane fran\u00e7aise",
+			"nl" : "Frankrijk - Frans-Guyana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gf|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gf",
+		"version" : "3",
+		"label" : {
+			"de" : "Frankreich - Franz\u00f6siche-Guayana",
+			"fr" : "France - Guyane fran\u00e7aise",
+			"nl" : "Frankrijk - Frans-Guyana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Guernsey (Kanalinsel)",
+			"fr" : "Guernesey",
+			"nl" : "Guernsey"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gg|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gg",
+		"version" : "3",
+		"label" : {
+			"de" : "Guernsey (Kanalinsel)",
+			"fr" : "Guernesey",
+			"nl" : "Guernsey"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ghana",
+			"fr" : "Ghana",
+			"nl" : "Ghana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gi|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gi",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Gibraltar",
+			"fr" : "Gibraltar",
+			"nl" : "Gibraltar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Gr\u00f6nland",
+			"fr" : "Groenland",
+			"nl" : "Groenland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Gambia",
+			"fr" : "Gambie",
+			"nl" : "Gambia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gm",
+		"version" : "3",
+		"label" : {
+			"de" : "Gambia",
+			"fr" : "Gambie",
+			"nl" : "Gambia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Guinea",
+			"fr" : "Guin\u00e9e",
+			"nl" : "Guinee"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gn",
+		"version" : "3",
+		"label" : {
+			"de" : "Guinea",
+			"fr" : "Guin\u00e9e",
+			"nl" : "Guinee"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gp|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gp",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Guadeloupe",
+			"fr" : "France - Guadeloupe (et Antilles fran\u00e7aises)",
+			"nl" : "Frankrijk - Guadeloupe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gp|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gp",
+		"version" : "2",
+		"label" : {
+			"de" : "Frankreich - Guadeloupe",
+			"fr" : "France - Guadeloupe (et Antilles fran\u00e7aises)",
+			"nl" : "Frankrijk - Guadeloupe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gq|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gq",
+		"version" : "1.2",
+		"label" : {
+			"de" : "\u00c4quatorialguinea",
+			"fr" : "Guin\u00e9e \u00e9quatoriale",
+			"nl" : "Equatoriaal-Guinea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gq|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gq",
+		"version" : "2",
+		"label" : {
+			"de" : "\u00c4quatorialguinea",
+			"fr" : "Guin\u00e9e \u00e9quatoriale",
+			"nl" : "Equatoriaal-Guinea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gq|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gq",
+		"version" : "3",
+		"label" : {
+			"de" : "\u00c4quatorialguinea",
+			"fr" : "Guin\u00e9e \u00e9quatoriale",
+			"nl" : "Equatoriaal-Guinea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Griechenland",
+			"fr" : "Gr\u00e8ce",
+			"nl" : "Griekenland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gr",
+		"version" : "2",
+		"label" : {
+			"de" : "Griechenland",
+			"fr" : "Gr\u00e8ce",
+			"nl" : "Griekenland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gr",
+		"version" : "3",
+		"label" : {
+			"de" : "Griechenland",
+			"fr" : "Gr\u00e8ce",
+			"nl" : "Griekenland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gs|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gs",
+		"version" : "1.2",
+		"label" : {
+			"de" : "S\u00fcdgeorgien und die S\u00fcdlichen Sandwichinseln",
+			"fr" : "G\u00e9orgie du Sud-et-les \u00eeles Sandwich du Sud",
+			"nl" : "Zuid-Georgia en de Zuidelijke Sandwicheilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gs|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gs",
+		"version" : "2",
+		"label" : {
+			"de" : "S\u00fcdgeorgien und die S\u00fcdlichen Sandwichinseln",
+			"fr" : "G\u00e9orgie du Sud-et-les \u00eeles Sandwich du Sud",
+			"nl" : "Zuid-Georgia en de Zuidelijke Sandwicheilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Guatemala",
+			"fr" : "Guatemala",
+			"nl" : "Guatemala"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gt|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gt",
+		"version" : "3",
+		"label" : {
+			"de" : "Guatemala",
+			"fr" : "Guatemala",
+			"nl" : "Guatemala"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Staaten - Guam",
+			"fr" : "\u00c9tats-Unis - Guam",
+			"nl" : "Verenigde Staten - Guam"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Guinea-Bissau",
+			"fr" : "Guin\u00e9e-Bissau",
+			"nl" : "Guinee-Bissau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gy|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gy",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Guyana",
+			"fr" : "Guyana",
+			"nl" : "Guyana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|gy|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "gy",
+		"version" : "2",
+		"label" : {
+			"de" : "Guyana",
+			"fr" : "Guyana",
+			"nl" : "Guyana"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Hong Kong",
+			"fr" : "Hong Kong",
+			"nl" : "Hong Kong"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hk",
+		"version" : "2",
+		"label" : {
+			"de" : "Hong Kong",
+			"fr" : "Hong Kong",
+			"nl" : "Hong Kong"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien - Heard- und McDonald-Inseln, Norfolk, Christmas, Coco",
+			"fr" : "Australie - Heard et McDonald, Norfolk, Christmas, Cocos",
+			"nl" : "Australi\u00eb - Heard en McDonald, Norfolk, Christmas, Cocos"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hm|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hm",
+		"version" : "2",
+		"label" : {
+			"de" : "Australien - Heard- und McDonald-Inseln, Norfolk, Christmas, Coco",
+			"fr" : "Australie - Heard et McDonald, Norfolk, Christmas, Cocos",
+			"nl" : "Australi\u00eb - Heard en McDonald, Norfolk, Christmas, Cocos"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hm",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien - Heard- und McDonald-Inseln, Norfolk, Christmas, Coco",
+			"fr" : "Australie - Heard et McDonald, Norfolk, Christmas, Cocos",
+			"nl" : "Australi\u00eb - Heard en McDonald, Norfolk, Christmas, Cocos"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Honduras",
+			"fr" : "Honduras",
+			"nl" : "Honduras"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hn|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hn",
+		"version" : "2",
+		"label" : {
+			"de" : "Honduras",
+			"fr" : "Honduras",
+			"nl" : "Honduras"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hn",
+		"version" : "3",
+		"label" : {
+			"de" : "Honduras",
+			"fr" : "Honduras",
+			"nl" : "Honduras"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kroatien",
+			"fr" : "Croatie",
+			"nl" : "Kroati\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ht|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ht",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Haiti",
+			"fr" : "Ha\u00efti",
+			"nl" : "Ha\u00efti"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ht|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ht",
+		"version" : "3",
+		"label" : {
+			"de" : "Haiti",
+			"fr" : "Ha\u00efti",
+			"nl" : "Ha\u00efti"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|hu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "hu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ungarn",
+			"fr" : "Hongrie",
+			"nl" : "Hongarije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|id|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "id",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Indonesien",
+			"fr" : "Indon\u00e9sie",
+			"nl" : "Indonesi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|id|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "id",
+		"version" : "2",
+		"label" : {
+			"de" : "Indonesien",
+			"fr" : "Indon\u00e9sie",
+			"nl" : "Indonesi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|id|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "id",
+		"version" : "3",
+		"label" : {
+			"de" : "Indonesien",
+			"fr" : "Indon\u00e9sie",
+			"nl" : "Indonesi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ie|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ie",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Irland",
+			"fr" : "Irlande",
+			"nl" : "Ierland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|il|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "il",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Israel",
+			"fr" : "Isra\u00ebl",
+			"nl" : "Isra\u00ebl"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|il|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "il",
+		"version" : "2",
+		"label" : {
+			"de" : "Israel",
+			"fr" : "Isra\u00ebl",
+			"nl" : "Isra\u00ebl"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|im|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "im",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Isle of Man",
+			"fr" : "\u00cele de Man",
+			"nl" : "Man"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|im|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "im",
+		"version" : "3",
+		"label" : {
+			"de" : "Isle of Man",
+			"fr" : "\u00cele de Man",
+			"nl" : "Man"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|in|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "in",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Indien",
+			"fr" : "Inde",
+			"nl" : "India"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|io|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "io",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Britisches Territorium im Indischen Ozean",
+			"fr" : "Territoire britannique de l'oc\u00e9an Indien",
+			"nl" : "Brits Indische Oceaanterritorium"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|io|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "io",
+		"version" : "2",
+		"label" : {
+			"de" : "Britisches Territorium im Indischen Ozean",
+			"fr" : "Territoire britannique de l'oc\u00e9an Indien",
+			"nl" : "Brits Indische Oceaanterritorium"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|iq|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "iq",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Irak",
+			"fr" : "Iraq",
+			"nl" : "Irak"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|iq|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "iq",
+		"version" : "2",
+		"label" : {
+			"de" : "Irak",
+			"fr" : "Iraq",
+			"nl" : "Irak"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ir|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ir",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Iran",
+			"fr" : "Iran, R\u00e9publique Islamique d'",
+			"nl" : "Iran"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|is|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "is",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Island",
+			"fr" : "Islande",
+			"nl" : "IJsland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|is|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "is",
+		"version" : "2",
+		"label" : {
+			"de" : "Island",
+			"fr" : "Islande",
+			"nl" : "IJsland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|is|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "is",
+		"version" : "3",
+		"label" : {
+			"de" : "Island",
+			"fr" : "Islande",
+			"nl" : "IJsland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|it|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "it",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Italien",
+			"fr" : "Italie",
+			"nl" : "Itali\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|it|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "it",
+		"version" : "2",
+		"label" : {
+			"de" : "Italien",
+			"fr" : "Italie",
+			"nl" : "Itali\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|je|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "je",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Jersey",
+			"fr" : "Jersey",
+			"nl" : "Jersey"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|je|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "je",
+		"version" : "3",
+		"label" : {
+			"de" : "Jersey",
+			"fr" : "Jersey",
+			"nl" : "Jersey"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Jamaika",
+			"fr" : "Jama\u00efque",
+			"nl" : "Jamaica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jm",
+		"version" : "3",
+		"label" : {
+			"de" : "Jamaika",
+			"fr" : "Jama\u00efque",
+			"nl" : "Jamaica"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jo|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jo",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Jordanien",
+			"fr" : "Jordanie",
+			"nl" : "Jordani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jo|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jo",
+		"version" : "2",
+		"label" : {
+			"de" : "Jordanien",
+			"fr" : "Jordanie",
+			"nl" : "Jordani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jo|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jo",
+		"version" : "3",
+		"label" : {
+			"de" : "Jordanien",
+			"fr" : "Jordanie",
+			"nl" : "Jordani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|jp|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "jp",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Japan",
+			"fr" : "Japon",
+			"nl" : "Japan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ke|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ke",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kenia",
+			"fr" : "Kenya",
+			"nl" : "Kenia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ke|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ke",
+		"version" : "2",
+		"label" : {
+			"de" : "Kenia",
+			"fr" : "Kenya",
+			"nl" : "Kenia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kyrgyzstan",
+			"fr" : "Kirghizistan",
+			"nl" : "Kirgizi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kg",
+		"version" : "2",
+		"label" : {
+			"de" : "Kyrgyzstan",
+			"fr" : "Kirghizistan",
+			"nl" : "Kirgizi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kambodscha",
+			"fr" : "Cambodge",
+			"nl" : "Cambodja"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ki|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ki",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kiribati",
+			"fr" : "Kiribati",
+			"nl" : "Kiribati"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ki|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ki",
+		"version" : "2",
+		"label" : {
+			"de" : "Kiribati",
+			"fr" : "Kiribati",
+			"nl" : "Kiribati"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|km|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "km",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Komoren",
+			"fr" : "Comores",
+			"nl" : "Comoren"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|km|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "km",
+		"version" : "3",
+		"label" : {
+			"de" : "Komoren",
+			"fr" : "Comores",
+			"nl" : "Comoren"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sankt Kitts",
+			"fr" : "Saint-Kitts-Et-Nevis",
+			"nl" : "Saint Kitts en Nevis"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kn|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kn",
+		"version" : "2",
+		"label" : {
+			"de" : "Sankt Kitts",
+			"fr" : "Saint-Kitts-Et-Nevis",
+			"nl" : "Saint Kitts en Nevis"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kn",
+		"version" : "3",
+		"label" : {
+			"de" : "Sankt Kitts",
+			"fr" : "Saint-Kitts-Et-Nevis",
+			"nl" : "Saint Kitts en Nevis"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kp|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kp",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Nordkorea",
+			"fr" : "Cor\u00e9e, R\u00e9publique Populaire D\u00e9mocratique de",
+			"nl" : "Noord-Korea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kp|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kp",
+		"version" : "2",
+		"label" : {
+			"de" : "Nordkorea",
+			"fr" : "Cor\u00e9e, R\u00e9publique Populaire D\u00e9mocratique de",
+			"nl" : "Noord-Korea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "S\u00fcdkorea",
+			"fr" : "Cor\u00e9e, R\u00e9publique de",
+			"nl" : "Zuid-Korea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kr",
+		"version" : "2",
+		"label" : {
+			"de" : "S\u00fcdkorea",
+			"fr" : "Cor\u00e9e, R\u00e9publique de",
+			"nl" : "Zuid-Korea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kuwait",
+			"fr" : "Kowe\u00eft",
+			"nl" : "Koeweit"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ky|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ky",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Kaiman",
+			"fr" : "Royaume-Uni - Iles Ca\u00efmans (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Caymaneilanden (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ky|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ky",
+		"version" : "2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Kaiman",
+			"fr" : "Royaume-Uni - Iles Ca\u00efmans (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Caymaneilanden (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kasachstan",
+			"fr" : "Kazakhstan",
+			"nl" : "Kazachstan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|kz|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "kz",
+		"version" : "3",
+		"label" : {
+			"de" : "Kasachstan",
+			"fr" : "Kazakhstan",
+			"nl" : "Kazachstan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|la|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "la",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Laos",
+			"fr" : "Lao, R\u00e9publique D\u00e9mocratique Populaire",
+			"nl" : "Laos"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|la|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "la",
+		"version" : "2",
+		"label" : {
+			"de" : "Laos",
+			"fr" : "Lao, R\u00e9publique D\u00e9mocratique Populaire",
+			"nl" : "Laos"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lb|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lb",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Libanon",
+			"fr" : "Liban",
+			"nl" : "Libanon"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lb|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lb",
+		"version" : "2",
+		"label" : {
+			"de" : "Libanon",
+			"fr" : "Liban",
+			"nl" : "Libanon"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lb|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lb",
+		"version" : "3",
+		"label" : {
+			"de" : "Libanon",
+			"fr" : "Liban",
+			"nl" : "Libanon"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sankt Lucia",
+			"fr" : "Sainte-Lucie",
+			"nl" : "Saint Lucia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lc|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lc",
+		"version" : "3",
+		"label" : {
+			"de" : "Sankt Lucia",
+			"fr" : "Sainte-Lucie",
+			"nl" : "Saint Lucia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|li|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "li",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Liechtenstein",
+			"fr" : "Liechtenstein",
+			"nl" : "Liechtenstein"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|li|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "li",
+		"version" : "3",
+		"label" : {
+			"de" : "Liechtenstein",
+			"fr" : "Liechtenstein",
+			"nl" : "Liechtenstein"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sri Lanka",
+			"fr" : "Sri Lanka",
+			"nl" : "Sri Lanka"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lk",
+		"version" : "2",
+		"label" : {
+			"de" : "Sri Lanka",
+			"fr" : "Sri Lanka",
+			"nl" : "Sri Lanka"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lk",
+		"version" : "3",
+		"label" : {
+			"de" : "Sri Lanka",
+			"fr" : "Sri Lanka",
+			"nl" : "Sri Lanka"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Liberia",
+			"fr" : "Lib\u00e9ria",
+			"nl" : "Liberia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lr",
+		"version" : "3",
+		"label" : {
+			"de" : "Liberia",
+			"fr" : "Lib\u00e9ria",
+			"nl" : "Liberia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ls|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ls",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Lesotho",
+			"fr" : "Lesotho",
+			"nl" : "Lesotho"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Litauen",
+			"fr" : "Lituanie",
+			"nl" : "Litouwen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Luxemburg",
+			"fr" : "Luxembourg",
+			"nl" : "Luxemburg"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lu|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lu",
+		"version" : "2",
+		"label" : {
+			"de" : "Luxemburg",
+			"fr" : "Luxembourg",
+			"nl" : "Luxemburg"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Lettland",
+			"fr" : "Lettonie",
+			"nl" : "Letland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lv|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lv",
+		"version" : "2",
+		"label" : {
+			"de" : "Lettland",
+			"fr" : "Lettonie",
+			"nl" : "Letland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|lv|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "lv",
+		"version" : "3",
+		"label" : {
+			"de" : "Lettland",
+			"fr" : "Lettonie",
+			"nl" : "Letland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ly|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ly",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Libyen",
+			"fr" : "Libyenne, Jamahiriya Arabe",
+			"nl" : "Libi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ly|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ly",
+		"version" : "3",
+		"label" : {
+			"de" : "Libyen",
+			"fr" : "Libyenne, Jamahiriya Arabe",
+			"nl" : "Libi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ma|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ma",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Marokko",
+			"fr" : "Maroc",
+			"nl" : "Marokko"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ma|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ma",
+		"version" : "2",
+		"label" : {
+			"de" : "Marokko",
+			"fr" : "Maroc",
+			"nl" : "Marokko"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ma|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ma",
+		"version" : "3",
+		"label" : {
+			"de" : "Marokko",
+			"fr" : "Maroc",
+			"nl" : "Marokko"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Monaco",
+			"fr" : "Monaco, Principaut\u00e9 de",
+			"nl" : "Monaco"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|md|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "md",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Moldawien",
+			"fr" : "Moldova, R\u00e9publique de",
+			"nl" : "Moldavi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|md|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "md",
+		"version" : "2",
+		"label" : {
+			"de" : "Moldawien",
+			"fr" : "Moldova, R\u00e9publique de",
+			"nl" : "Moldavi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|md|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "md",
+		"version" : "3",
+		"label" : {
+			"de" : "Moldawien",
+			"fr" : "Moldova, R\u00e9publique de",
+			"nl" : "Moldavi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|me|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "me",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Montenegro",
+			"fr" : "Mont\u00e9n\u00e9gro",
+			"nl" : "Montenegro"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Saint-Martin (france)",
+			"fr" : "Saint-Martin (france)",
+			"nl" : "Saint-Martin (france)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mf|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mf",
+		"version" : "3",
+		"label" : {
+			"de" : "Saint-Martin (france)",
+			"fr" : "Saint-Martin (france)",
+			"nl" : "Saint-Martin (france)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Madagaskar",
+			"fr" : "Madagascar",
+			"nl" : "Madagaskar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mg",
+		"version" : "2",
+		"label" : {
+			"de" : "Madagaskar",
+			"fr" : "Madagascar",
+			"nl" : "Madagaskar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mg|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mg",
+		"version" : "3",
+		"label" : {
+			"de" : "Madagaskar",
+			"fr" : "Madagascar",
+			"nl" : "Madagaskar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Marshall",
+			"fr" : "Marshall, R\u00e9publique des",
+			"nl" : "Marshalleilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mh|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mh",
+		"version" : "3",
+		"label" : {
+			"de" : "Marshall",
+			"fr" : "Marshall, R\u00e9publique des",
+			"nl" : "Marshalleilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mazedonien",
+			"fr" : "Mac\u00e9doine, L'ex-R\u00e9publique Yougoslave de",
+			"nl" : "Macedoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mk",
+		"version" : "2",
+		"label" : {
+			"de" : "Mazedonien",
+			"fr" : "Mac\u00e9doine, L'ex-R\u00e9publique Yougoslave de",
+			"nl" : "Macedoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mk",
+		"version" : "3",
+		"label" : {
+			"de" : "Mazedonien",
+			"fr" : "Mac\u00e9doine, L'ex-R\u00e9publique Yougoslave de",
+			"nl" : "Macedoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ml|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ml",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mali",
+			"fr" : "Mali",
+			"nl" : "Mali"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ml|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ml",
+		"version" : "3",
+		"label" : {
+			"de" : "Mali",
+			"fr" : "Mali",
+			"nl" : "Mali"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Myanmar",
+			"fr" : "Myanmar",
+			"nl" : "Myanmar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mm",
+		"version" : "3",
+		"label" : {
+			"de" : "Myanmar",
+			"fr" : "Myanmar",
+			"nl" : "Myanmar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mongolei",
+			"fr" : "Mongolie",
+			"nl" : "Mongoli\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mn",
+		"version" : "3",
+		"label" : {
+			"de" : "Mongolei",
+			"fr" : "Mongolie",
+			"nl" : "Mongoli\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mo|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mo",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Macau",
+			"fr" : "Macao",
+			"nl" : "Macau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mo|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mo",
+		"version" : "3",
+		"label" : {
+			"de" : "Macau",
+			"fr" : "Macao",
+			"nl" : "Macau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mp|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mp",
+		"version" : "1.2",
+		"label" : {
+			"de" : "N\u00f6rdlichen Marianen",
+			"fr" : "Mariannes Du Nord, \u00celes",
+			"nl" : "Noordelijke Marianen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mp|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mp",
+		"version" : "3",
+		"label" : {
+			"de" : "N\u00f6rdlichen Marianen",
+			"fr" : "Mariannes Du Nord, \u00celes",
+			"nl" : "Noordelijke Marianen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mq|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mq",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Martinique",
+			"fr" : "France - Martinique",
+			"nl" : "Frankrijk - Martinique"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mauretanien",
+			"fr" : "Mauritanie",
+			"nl" : "Mauritani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mr",
+		"version" : "2",
+		"label" : {
+			"de" : "Mauretanien",
+			"fr" : "Mauritanie",
+			"nl" : "Mauritani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mr",
+		"version" : "3",
+		"label" : {
+			"de" : "Mauretanien",
+			"fr" : "Mauritanie",
+			"nl" : "Mauritani\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ms|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ms",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Montserrat",
+			"fr" : "Royaume-Uni - Montserrat (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Montserrat (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Malta",
+			"fr" : "Malte",
+			"nl" : "Malta"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mt|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mt",
+		"version" : "2",
+		"label" : {
+			"de" : "Malta",
+			"fr" : "Malte",
+			"nl" : "Malta"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mauritius",
+			"fr" : "Maurice",
+			"nl" : "Mauritius"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Malediven",
+			"fr" : "Maldives",
+			"nl" : "Maldiven"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Malawi",
+			"fr" : "Malawi",
+			"nl" : "Malawi"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mw|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mw",
+		"version" : "3",
+		"label" : {
+			"de" : "Malawi",
+			"fr" : "Malawi",
+			"nl" : "Malawi"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mx|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mx",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mexiko",
+			"fr" : "Mexique",
+			"nl" : "Mexico"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mx|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mx",
+		"version" : "2",
+		"label" : {
+			"de" : "Mexiko",
+			"fr" : "Mexique",
+			"nl" : "Mexico"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|my|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "my",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Malaysia",
+			"fr" : "Malaisie",
+			"nl" : "Maleisi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|my|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "my",
+		"version" : "2",
+		"label" : {
+			"de" : "Malaysia",
+			"fr" : "Malaisie",
+			"nl" : "Maleisi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|my|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "my",
+		"version" : "3",
+		"label" : {
+			"de" : "Malaysia",
+			"fr" : "Malaisie",
+			"nl" : "Maleisi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Mosambik",
+			"fr" : "Mozambique",
+			"nl" : "Mozambique"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|mz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "mz",
+		"version" : "2",
+		"label" : {
+			"de" : "Mosambik",
+			"fr" : "Mozambique",
+			"nl" : "Mozambique"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|na|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "na",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Namibia",
+			"fr" : "Namibie",
+			"nl" : "Namibi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|na|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "na",
+		"version" : "3",
+		"label" : {
+			"de" : "Namibia",
+			"fr" : "Namibie",
+			"nl" : "Namibi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Neukaledonien",
+			"fr" : "France - Nouvelle Cal\u00e9donie",
+			"nl" : "Frankrijk - Nieuw-Caledoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nc|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nc",
+		"version" : "2",
+		"label" : {
+			"de" : "Frankreich - Neukaledonien",
+			"fr" : "France - Nouvelle Cal\u00e9donie",
+			"nl" : "Frankrijk - Nieuw-Caledoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nc|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nc",
+		"version" : "3",
+		"label" : {
+			"de" : "Frankreich - Neukaledonien",
+			"fr" : "France - Nouvelle Cal\u00e9donie",
+			"nl" : "Frankrijk - Nieuw-Caledoni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ne|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ne",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Niger",
+			"fr" : "Niger",
+			"nl" : "Niger"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ne|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ne",
+		"version" : "2",
+		"label" : {
+			"de" : "Niger",
+			"fr" : "Niger",
+			"nl" : "Niger"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ne|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ne",
+		"version" : "3",
+		"label" : {
+			"de" : "Niger",
+			"fr" : "Niger",
+			"nl" : "Niger"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Norfolkinsel",
+			"fr" : "\u00cele Norfolk",
+			"nl" : "Norfolk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nf|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nf",
+		"version" : "2",
+		"label" : {
+			"de" : "Norfolkinsel",
+			"fr" : "\u00cele Norfolk",
+			"nl" : "Norfolk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nf|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nf",
+		"version" : "3",
+		"label" : {
+			"de" : "Norfolkinsel",
+			"fr" : "\u00cele Norfolk",
+			"nl" : "Norfolk"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ng|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ng",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Nigeria",
+			"fr" : "Nig\u00e9ria",
+			"nl" : "Nigeria"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ng|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ng",
+		"version" : "2",
+		"label" : {
+			"de" : "Nigeria",
+			"fr" : "Nig\u00e9ria",
+			"nl" : "Nigeria"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ng|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ng",
+		"version" : "3",
+		"label" : {
+			"de" : "Nigeria",
+			"fr" : "Nig\u00e9ria",
+			"nl" : "Nigeria"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ni|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ni",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Nicaragua",
+			"fr" : "Nicaragua",
+			"nl" : "Nicaragua"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ni|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ni",
+		"version" : "3",
+		"label" : {
+			"de" : "Nicaragua",
+			"fr" : "Nicaragua",
+			"nl" : "Nicaragua"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Niederlande",
+			"fr" : "Pays-Bas",
+			"nl" : "Nederland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nl|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nl",
+		"version" : "3",
+		"label" : {
+			"de" : "Niederlande",
+			"fr" : "Pays-Bas",
+			"nl" : "Nederland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|no|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "no",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Norwegen",
+			"fr" : "Norv\u00e8ge",
+			"nl" : "Noorwegen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|no|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "no",
+		"version" : "3",
+		"label" : {
+			"de" : "Norwegen",
+			"fr" : "Norv\u00e8ge",
+			"nl" : "Noorwegen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|np|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "np",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Nepal",
+			"fr" : "N\u00e9pal",
+			"nl" : "Nepal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|np|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "np",
+		"version" : "3",
+		"label" : {
+			"de" : "Nepal",
+			"fr" : "N\u00e9pal",
+			"nl" : "Nepal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Nauru",
+			"fr" : "Nauru",
+			"nl" : "Nauru"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nr",
+		"version" : "2",
+		"label" : {
+			"de" : "Nauru",
+			"fr" : "Nauru",
+			"nl" : "Nauru"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien - Niue",
+			"fr" : "Australie - Niue",
+			"nl" : "Australi\u00eb - Niue"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nu|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nu",
+		"version" : "2",
+		"label" : {
+			"de" : "Australien - Niue",
+			"fr" : "Australie - Niue",
+			"nl" : "Australi\u00eb - Niue"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nu|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nu",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien - Niue",
+			"fr" : "Australie - Niue",
+			"nl" : "Australi\u00eb - Niue"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien - Neuseeland",
+			"fr" : "Australie - Nouvelle-Z\u00e9lande",
+			"nl" : "Australi\u00eb - Nieuw-Zeeland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nz",
+		"version" : "2",
+		"label" : {
+			"de" : "Australien - Neuseeland",
+			"fr" : "Australie - Nouvelle-Z\u00e9lande",
+			"nl" : "Australi\u00eb - Nieuw-Zeeland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|nz|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "nz",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien - Neuseeland",
+			"fr" : "Australie - Nouvelle-Z\u00e9lande",
+			"nl" : "Australi\u00eb - Nieuw-Zeeland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|om|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "om",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Oman",
+			"fr" : "Oman",
+			"nl" : "Oman"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|om|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "om",
+		"version" : "2",
+		"label" : {
+			"de" : "Oman",
+			"fr" : "Oman",
+			"nl" : "Oman"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pa|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pa",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Panama",
+			"fr" : "Panama",
+			"nl" : "Panama"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pe|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pe",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Peru",
+			"fr" : "P\u00e9rou",
+			"nl" : "Peru"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pe|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pe",
+		"version" : "3",
+		"label" : {
+			"de" : "Peru",
+			"fr" : "P\u00e9rou",
+			"nl" : "Peru"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Tahiti",
+			"fr" : "France - Tahiti (et Polyn\u00e9sie fran\u00e7aise)",
+			"nl" : "Frankrijk - Tahiti (Frans-Polynesi\u00eb)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Papua-Neuguinea",
+			"fr" : "Papouasie-Nouvelle-Guin\u00e9e",
+			"nl" : "Papoea-Nieuw-Guinea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pg",
+		"version" : "2",
+		"label" : {
+			"de" : "Papua-Neuguinea",
+			"fr" : "Papouasie-Nouvelle-Guin\u00e9e",
+			"nl" : "Papoea-Nieuw-Guinea"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ph|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ph",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Philippinen",
+			"fr" : "Philippines",
+			"nl" : "Filipijnen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ph|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ph",
+		"version" : "3",
+		"label" : {
+			"de" : "Philippinen",
+			"fr" : "Philippines",
+			"nl" : "Filipijnen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Pakistan",
+			"fr" : "Pakistan",
+			"nl" : "Pakistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pk",
+		"version" : "2",
+		"label" : {
+			"de" : "Pakistan",
+			"fr" : "Pakistan",
+			"nl" : "Pakistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pk",
+		"version" : "3",
+		"label" : {
+			"de" : "Pakistan",
+			"fr" : "Pakistan",
+			"nl" : "Pakistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Polen",
+			"fr" : "Pologne",
+			"nl" : "Polen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pl|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pl",
+		"version" : "2",
+		"label" : {
+			"de" : "Polen",
+			"fr" : "Pologne",
+			"nl" : "Polen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pl|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pl",
+		"version" : "3",
+		"label" : {
+			"de" : "Polen",
+			"fr" : "Pologne",
+			"nl" : "Polen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Saint Pierre und Miquelon",
+			"fr" : "France - Saint-Pierre et Miquelon",
+			"nl" : "Frankrijk - Saint-Pierre en Miquelon"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Pitcairn",
+			"fr" : "Royaume-Uni - Pitcairn (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Pitcairn (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pn",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Pitcairn",
+			"fr" : "Royaume-Uni - Pitcairn (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Pitcairn (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Staaten - Puerto Rico",
+			"fr" : "\u00c9tats-Unis - Porto Rico",
+			"nl" : "Verenigde Staten - Puerto Rico"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pr",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigte Staaten - Puerto Rico",
+			"fr" : "\u00c9tats-Unis - Porto Rico",
+			"nl" : "Verenigde Staten - Puerto Rico"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ps|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ps",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Pal\u00e4stina",
+			"fr" : "Autorit\u00e9 palestinienne (Cisjordanie et Gaza)",
+			"nl" : "Palestijnse Autoriteit"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ps|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ps",
+		"version" : "3",
+		"label" : {
+			"de" : "Pal\u00e4stina",
+			"fr" : "Autorit\u00e9 palestinienne (Cisjordanie et Gaza)",
+			"nl" : "Palestijnse Autoriteit"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Portugal",
+			"fr" : "Portugal",
+			"nl" : "Portugal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pt|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pt",
+		"version" : "2",
+		"label" : {
+			"de" : "Portugal",
+			"fr" : "Portugal",
+			"nl" : "Portugal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Palau",
+			"fr" : "Palaos",
+			"nl" : "Palau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pw|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pw",
+		"version" : "2",
+		"label" : {
+			"de" : "Palau",
+			"fr" : "Palaos",
+			"nl" : "Palau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|pw|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "pw",
+		"version" : "3",
+		"label" : {
+			"de" : "Palau",
+			"fr" : "Palaos",
+			"nl" : "Palau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|py|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "py",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Paraguay",
+			"fr" : "Paraguay",
+			"nl" : "Paraguay"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|py|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "py",
+		"version" : "2",
+		"label" : {
+			"de" : "Paraguay",
+			"fr" : "Paraguay",
+			"nl" : "Paraguay"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|py|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "py",
+		"version" : "3",
+		"label" : {
+			"de" : "Paraguay",
+			"fr" : "Paraguay",
+			"nl" : "Paraguay"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|qa|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "qa",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Katar",
+			"fr" : "Qatar",
+			"nl" : "Qatar"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|re|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "re",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - R\u00e9union",
+			"fr" : "France - R\u00e9union",
+			"nl" : "Frankrijk - R\u00e9union"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ro|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ro",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Rum\u00e4nien",
+			"fr" : "Roumanie",
+			"nl" : "Roemeni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ro|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ro",
+		"version" : "2",
+		"label" : {
+			"de" : "Rum\u00e4nien",
+			"fr" : "Roumanie",
+			"nl" : "Roemeni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ro|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ro",
+		"version" : "3",
+		"label" : {
+			"de" : "Rum\u00e4nien",
+			"fr" : "Roumanie",
+			"nl" : "Roemeni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|rs|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "rs",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Serbien",
+			"fr" : "Serbie",
+			"nl" : "Servi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ru|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ru",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Russland",
+			"fr" : "Russie, F\u00e9d\u00e9ration de",
+			"nl" : "Rusland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ru|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ru",
+		"version" : "2",
+		"label" : {
+			"de" : "Russland",
+			"fr" : "Russie, F\u00e9d\u00e9ration de",
+			"nl" : "Rusland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ru|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ru",
+		"version" : "3",
+		"label" : {
+			"de" : "Russland",
+			"fr" : "Russie, F\u00e9d\u00e9ration de",
+			"nl" : "Rusland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|rw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "rw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ruanda",
+			"fr" : "Rwanda",
+			"nl" : "Rwanda"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sa|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sa",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Saudi-Arabien",
+			"fr" : "Arabie Saoudite",
+			"nl" : "Saoedi-Arabi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sa|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sa",
+		"version" : "3",
+		"label" : {
+			"de" : "Saudi-Arabien",
+			"fr" : "Arabie Saoudite",
+			"nl" : "Saoedi-Arabi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sb|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sb",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Salomon",
+			"fr" : "Salomon",
+			"nl" : "Salomonseilanden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Seychellen",
+			"fr" : "Seychelles",
+			"nl" : "Seychellen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sc|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sc",
+		"version" : "3",
+		"label" : {
+			"de" : "Seychellen",
+			"fr" : "Seychelles",
+			"nl" : "Seychellen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sd|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sd",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sudan",
+			"fr" : "Soudan",
+			"nl" : "Soedan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|se|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "se",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Schweden",
+			"fr" : "Su\u00e8de",
+			"nl" : "Zweden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|se|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "se",
+		"version" : "2",
+		"label" : {
+			"de" : "Schweden",
+			"fr" : "Su\u00e8de",
+			"nl" : "Zweden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|se|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "se",
+		"version" : "3",
+		"label" : {
+			"de" : "Schweden",
+			"fr" : "Su\u00e8de",
+			"nl" : "Zweden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Singapur",
+			"fr" : "Singapour",
+			"nl" : "Singapore"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sg",
+		"version" : "2",
+		"label" : {
+			"de" : "Singapur",
+			"fr" : "Singapour",
+			"nl" : "Singapore"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sg|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sg",
+		"version" : "3",
+		"label" : {
+			"de" : "Singapur",
+			"fr" : "Singapour",
+			"nl" : "Singapore"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sh|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sh",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sankt Helena",
+			"fr" : "Sainte H\u00e9l\u00e8ne (Britanniques d'Outre-Mer)",
+			"nl" : "Sainte Helena (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sh|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sh",
+		"version" : "2",
+		"label" : {
+			"de" : "Sankt Helena",
+			"fr" : "Sainte H\u00e9l\u00e8ne (Britanniques d'Outre-Mer)",
+			"nl" : "Sainte Helena (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sh|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sh",
+		"version" : "3",
+		"label" : {
+			"de" : "Sankt Helena",
+			"fr" : "Sainte H\u00e9l\u00e8ne (Britanniques d'Outre-Mer)",
+			"nl" : "Sainte Helena (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|si|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "si",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Slowenien",
+			"fr" : "Slov\u00e9nie",
+			"nl" : "Sloveni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|si|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "si",
+		"version" : "2",
+		"label" : {
+			"de" : "Slowenien",
+			"fr" : "Slov\u00e9nie",
+			"nl" : "Sloveni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|si|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "si",
+		"version" : "3",
+		"label" : {
+			"de" : "Slowenien",
+			"fr" : "Slov\u00e9nie",
+			"nl" : "Sloveni\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sj|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sj",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Spitzbergen und Jan Mayen",
+			"fr" : "Svalbard et ile Jan Mayen",
+			"nl" : "Spitsbergen en Jan Mayen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Slowakei",
+			"fr" : "Slovaquie",
+			"nl" : "Slowakije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sk",
+		"version" : "2",
+		"label" : {
+			"de" : "Slowakei",
+			"fr" : "Slovaquie",
+			"nl" : "Slowakije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sierra Leone",
+			"fr" : "Sierra Leone",
+			"nl" : "Sierra Leone"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "San Marino",
+			"fr" : "Saint-Marin",
+			"nl" : "San Marino"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Senegal",
+			"fr" : "S\u00e9n\u00e9gal",
+			"nl" : "Senegal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sn|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sn",
+		"version" : "2",
+		"label" : {
+			"de" : "Senegal",
+			"fr" : "S\u00e9n\u00e9gal",
+			"nl" : "Senegal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sn|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sn",
+		"version" : "3",
+		"label" : {
+			"de" : "Senegal",
+			"fr" : "S\u00e9n\u00e9gal",
+			"nl" : "Senegal"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|so|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "so",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Somalia",
+			"fr" : "Somalie",
+			"nl" : "Somali\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|so|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "so",
+		"version" : "2",
+		"label" : {
+			"de" : "Somalia",
+			"fr" : "Somalie",
+			"nl" : "Somali\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|so|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "so",
+		"version" : "3",
+		"label" : {
+			"de" : "Somalia",
+			"fr" : "Somalie",
+			"nl" : "Somali\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Suriname",
+			"fr" : "Suriname",
+			"nl" : "Suriname"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ss|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ss",
+		"version" : "1.2",
+		"label" : {
+			"de" : "S\u00fcdsudan",
+			"fr" : "Soudan du Sud",
+			"nl" : "Zuid-Soedan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|st|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "st",
+		"version" : "1.2",
+		"label" : {
+			"de" : "S\u00e3o Tom\u00e9",
+			"fr" : "Sao Tom\u00e9-et-Principe",
+			"nl" : "Sao Tom\u00e9 en Principe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "El Salvador",
+			"fr" : "El Salvador",
+			"nl" : "El Salvador"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sv|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sv",
+		"version" : "2",
+		"label" : {
+			"de" : "El Salvador",
+			"fr" : "El Salvador",
+			"nl" : "El Salvador"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sv|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sv",
+		"version" : "3",
+		"label" : {
+			"de" : "El Salvador",
+			"fr" : "El Salvador",
+			"nl" : "El Salvador"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sx|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sx",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sint Maarten",
+			"fr" : "Saint-Martin",
+			"nl" : "Sint Maarten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sx|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sx",
+		"version" : "3",
+		"label" : {
+			"de" : "Sint Maarten",
+			"fr" : "Saint-Martin",
+			"nl" : "Sint Maarten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sy|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sy",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Syrien",
+			"fr" : "Syrienne, R\u00e9publique Arabe",
+			"nl" : "Syri\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ngwane",
+			"fr" : "Swaziland",
+			"nl" : "Swaziland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|sz|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "sz",
+		"version" : "3",
+		"label" : {
+			"de" : "Ngwane",
+			"fr" : "Swaziland",
+			"nl" : "Swaziland"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Turks",
+			"fr" : "Royaume-Uni - Turks et Caicos (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Turks- en Caicoseilanden (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tc|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tc",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Turks",
+			"fr" : "Royaume-Uni - Turks et Caicos (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Turks- en Caicoseilanden (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|td|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "td",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tschad",
+			"fr" : "Tchad",
+			"nl" : "Tsjaad"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Franz\u00f6sische S\u00fcd- und Antarktisgebiete",
+			"fr" : "Terres australes et antarctiques fran\u00e7aises",
+			"nl" : "Franse Zuidelijke Gebieden"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Togo",
+			"fr" : "Togo",
+			"nl" : "Togo"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tg|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tg",
+		"version" : "2",
+		"label" : {
+			"de" : "Togo",
+			"fr" : "Togo",
+			"nl" : "Togo"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|th|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "th",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Thailand",
+			"fr" : "Tha\u00eflande",
+			"nl" : "Thailand"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|th|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "th",
+		"version" : "2",
+		"label" : {
+			"de" : "Thailand",
+			"fr" : "Tha\u00eflande",
+			"nl" : "Thailand"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tj|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tj",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tadschikistan",
+			"fr" : "Tadjikistan",
+			"nl" : "Tadzjikistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Australien - Tokelau",
+			"fr" : "Australie - Tokelau",
+			"nl" : "Australi\u00eb - Tokelau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tk|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tk",
+		"version" : "3",
+		"label" : {
+			"de" : "Australien - Tokelau",
+			"fr" : "Australie - Tokelau",
+			"nl" : "Australi\u00eb - Tokelau"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tl|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tl",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Timor-Leste",
+			"fr" : "Timor-Leste",
+			"nl" : "Timor Leste"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tl|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tl",
+		"version" : "2",
+		"label" : {
+			"de" : "Timor-Leste",
+			"fr" : "Timor-Leste",
+			"nl" : "Timor Leste"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Turkmenistan",
+			"fr" : "Turkm\u00e9nistan",
+			"nl" : "Turkmenistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tm|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tm",
+		"version" : "2",
+		"label" : {
+			"de" : "Turkmenistan",
+			"fr" : "Turkm\u00e9nistan",
+			"nl" : "Turkmenistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tm",
+		"version" : "3",
+		"label" : {
+			"de" : "Turkmenistan",
+			"fr" : "Turkm\u00e9nistan",
+			"nl" : "Turkmenistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tunesien",
+			"fr" : "Tunisie",
+			"nl" : "Tunesi\u00eb"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|to|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "to",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tonga",
+			"fr" : "Tonga",
+			"nl" : "Tonga"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|to|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "to",
+		"version" : "3",
+		"label" : {
+			"de" : "Tonga",
+			"fr" : "Tonga",
+			"nl" : "Tonga"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "T\u00fcrkei",
+			"fr" : "Turquie",
+			"nl" : "Turkije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tr",
+		"version" : "2",
+		"label" : {
+			"de" : "T\u00fcrkei",
+			"fr" : "Turquie",
+			"nl" : "Turkije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tr",
+		"version" : "3",
+		"label" : {
+			"de" : "T\u00fcrkei",
+			"fr" : "Turquie",
+			"nl" : "Turkije"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Trinidad",
+			"fr" : "Trinit\u00e9-Et-Tobago",
+			"nl" : "Trinidad en Tobago"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tt|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tt",
+		"version" : "2",
+		"label" : {
+			"de" : "Trinidad",
+			"fr" : "Trinit\u00e9-Et-Tobago",
+			"nl" : "Trinidad en Tobago"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tv|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tv",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tuvalu",
+			"fr" : "Tuvalu",
+			"nl" : "Tuvalu"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Taiwan",
+			"fr" : "Ta\u00efwan",
+			"nl" : "Taiwan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tansania",
+			"fr" : "Tanzanie, R\u00e9publique-Unie de",
+			"nl" : "Tanzania"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|tz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "tz",
+		"version" : "2",
+		"label" : {
+			"de" : "Tansania",
+			"fr" : "Tanzanie, R\u00e9publique-Unie de",
+			"nl" : "Tanzania"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ua|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ua",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Ukraine",
+			"fr" : "Ukraine",
+			"nl" : "Oekra\u00efne"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ua|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ua",
+		"version" : "2",
+		"label" : {
+			"de" : "Ukraine",
+			"fr" : "Ukraine",
+			"nl" : "Oekra\u00efne"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ua|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ua",
+		"version" : "3",
+		"label" : {
+			"de" : "Ukraine",
+			"fr" : "Ukraine",
+			"nl" : "Oekra\u00efne"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ug|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ug",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Uganda",
+			"fr" : "Ouganda",
+			"nl" : "Oeganda"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ug|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ug",
+		"version" : "3",
+		"label" : {
+			"de" : "Uganda",
+			"fr" : "Ouganda",
+			"nl" : "Oeganda"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|um|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "um",
+		"version" : "1.2",
+		"label" : {
+			"de" : "United States Minor Outlying Islands",
+			"fr" : "\u00celes mineures \u00e9loign\u00e9es des \u00c9tats-Unis",
+			"nl" : "Kleine afgelegen eilanden van de Verenigde Staten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|um|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "um",
+		"version" : "3",
+		"label" : {
+			"de" : "United States Minor Outlying Islands",
+			"fr" : "\u00celes mineures \u00e9loign\u00e9es des \u00c9tats-Unis",
+			"nl" : "Kleine afgelegen eilanden van de Verenigde Staten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|us|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "us",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Staaten",
+			"fr" : "\u00c9tats-Unis",
+			"nl" : "Verenigde Staten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|us|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "us",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigte Staaten",
+			"fr" : "\u00c9tats-Unis",
+			"nl" : "Verenigde Staten"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|uy|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "uy",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Uruguay",
+			"fr" : "Uruguay",
+			"nl" : "Uruguay"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|uy|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "uy",
+		"version" : "2",
+		"label" : {
+			"de" : "Uruguay",
+			"fr" : "Uruguay",
+			"nl" : "Uruguay"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|uz|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "uz",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Usbekistan",
+			"fr" : "Ouzb\u00e9kistan",
+			"nl" : "Oezbekistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|uz|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "uz",
+		"version" : "2",
+		"label" : {
+			"de" : "Usbekistan",
+			"fr" : "Ouzb\u00e9kistan",
+			"nl" : "Oezbekistan"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|va|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "va",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Heiliger Stuhl",
+			"fr" : "Saint-Si\u00e8ge (\u00c9tat de la Cit\u00e9 du Vatican)",
+			"nl" : "Vaticaanstad"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vc|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vc",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sankt Vincent",
+			"fr" : "Saint-Vincent-et-les Grenadines",
+			"nl" : "Saint Vincent en de Grenadines"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vc|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vc",
+		"version" : "2",
+		"label" : {
+			"de" : "Sankt Vincent",
+			"fr" : "Saint-Vincent-et-les Grenadines",
+			"nl" : "Saint Vincent en de Grenadines"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ve|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ve",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Venezuela",
+			"fr" : "Venezuela",
+			"nl" : "Venezuela"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ve|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ve",
+		"version" : "2",
+		"label" : {
+			"de" : "Venezuela",
+			"fr" : "Venezuela",
+			"nl" : "Venezuela"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vg|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vg",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigtes K\u00f6nigreich - Britische Jungferninseln",
+			"fr" : "Royaume-Uni - Iles Vierges (Britanniques d'Outre-Mer)",
+			"nl" : "Verenigd Koninkrijk - Britse Maagdeneilanden (Britse overzeese staatsburgers)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vi|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vi",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vereinigte Staaten - Amerikanische Jungferninseln",
+			"fr" : "\u00c9tats-Unis - Iles Vierges (US) (et Antilles am\u00e9ricaines)",
+			"nl" : "Verenigde Staten - Maagdeneilanden, Amerikaanse"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vi|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vi",
+		"version" : "3",
+		"label" : {
+			"de" : "Vereinigte Staaten - Amerikanische Jungferninseln",
+			"fr" : "\u00c9tats-Unis - Iles Vierges (US) (et Antilles am\u00e9ricaines)",
+			"nl" : "Verenigde Staten - Maagdeneilanden, Amerikaanse"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vn|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vn",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vietnam",
+			"fr" : "Viet Nam",
+			"nl" : "Vietnam"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vn|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vn",
+		"version" : "2",
+		"label" : {
+			"de" : "Vietnam",
+			"fr" : "Viet Nam",
+			"nl" : "Vietnam"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|vu|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "vu",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Vanuatu",
+			"fr" : "Vanuatu",
+			"nl" : "Vanuatu"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|wf|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "wf",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Wallis-und-Futuna",
+			"fr" : "France - Wallis-et-Futuna",
+			"nl" : "Frankrijk - Wallis-en-Futuna"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ws|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ws",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Samoa",
+			"fr" : "Samoa",
+			"nl" : "Samoa"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xa|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xa",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Staatenlos",
+			"fr" : "Apatride",
+			"nl" : "Staatlozen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xa|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xa",
+		"version" : "2",
+		"label" : {
+			"de" : "Staatenlos",
+			"fr" : "Apatride",
+			"nl" : "Staatlozen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xe|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xe",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Unbestimmt",
+			"fr" : "Ind\u00e9termin\u00e9",
+			"nl" : "Onbepaald"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xi|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xi",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Tschechoslowakei",
+			"fr" : "Tch\u00e9coslovaquie (Ex)",
+			"nl" : "Tsjecho-Slovakije (ex)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xk|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xk",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Kosovo",
+			"fr" : "Kosovo",
+			"nl" : "Kosovo"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xk|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xk",
+		"version" : "2",
+		"label" : {
+			"de" : "Kosovo",
+			"fr" : "Kosovo",
+			"nl" : "Kosovo"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xr|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xr",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Fl\u00fcchtling",
+			"fr" : "R\u00e9fugi\u00e9",
+			"nl" : "Vluchteling"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xr|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xr",
+		"version" : "2",
+		"label" : {
+			"de" : "Fl\u00fcchtling",
+			"fr" : "R\u00e9fugi\u00e9",
+			"nl" : "Vluchteling"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xr|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xr",
+		"version" : "3",
+		"label" : {
+			"de" : "Fl\u00fcchtling",
+			"fr" : "R\u00e9fugi\u00e9",
+			"nl" : "Vluchteling"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xs|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xs",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sowjetunion",
+			"fr" : "Union Sovi\u00e9tique (Ex)",
+			"nl" : "Unie d. Socialist. Sovjetrep. (ex)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|xs|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "xs",
+		"version" : "3",
+		"label" : {
+			"de" : "Sowjetunion",
+			"fr" : "Union Sovi\u00e9tique (Ex)",
+			"nl" : "Unie d. Socialist. Sovjetrep. (ex)"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ye|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ye",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Jemen",
+			"fr" : "Y\u00e9men",
+			"nl" : "Jemen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ye|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ye",
+		"version" : "2",
+		"label" : {
+			"de" : "Jemen",
+			"fr" : "Y\u00e9men",
+			"nl" : "Jemen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|ye|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "ye",
+		"version" : "3",
+		"label" : {
+			"de" : "Jemen",
+			"fr" : "Y\u00e9men",
+			"nl" : "Jemen"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|yt|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "yt",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Frankreich - Mayotte",
+			"fr" : "France - Mayotte",
+			"nl" : "Frankrijk - Mayotte"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|yt|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "yt",
+		"version" : "2",
+		"label" : {
+			"de" : "Frankreich - Mayotte",
+			"fr" : "France - Mayotte",
+			"nl" : "Frankrijk - Mayotte"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|yt|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "yt",
+		"version" : "3",
+		"label" : {
+			"de" : "Frankreich - Mayotte",
+			"fr" : "France - Mayotte",
+			"nl" : "Frankrijk - Mayotte"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|za|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "za",
+		"version" : "1.2",
+		"label" : {
+			"de" : "S\u00fcdafrika",
+			"fr" : "Afrique Du Sud",
+			"nl" : "Zuid-Afrika"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|za|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "za",
+		"version" : "3",
+		"label" : {
+			"de" : "S\u00fcdafrika",
+			"fr" : "Afrique Du Sud",
+			"nl" : "Zuid-Afrika"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|zm|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "zm",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Sambia",
+			"fr" : "Zambie",
+			"nl" : "Zambia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|zm|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "zm",
+		"version" : "3",
+		"label" : {
+			"de" : "Sambia",
+			"fr" : "Zambie",
+			"nl" : "Zambia"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|zw|1.2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "zw",
+		"version" : "1.2",
+		"label" : {
+			"de" : "Simbabwe",
+			"fr" : "Zimbabwe",
+			"nl" : "Zimbabwe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|zw|2",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "zw",
+		"version" : "2",
+		"label" : {
+			"de" : "Simbabwe",
+			"fr" : "Zimbabwe",
+			"nl" : "Zimbabwe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "CD-FED-COUNTRY|zw|3",
+		"type" : "CD-FED-COUNTRY",
+		"code" : "zw",
+		"version" : "3",
+		"label" : {
+			"de" : "Simbabwe",
+			"fr" : "Zimbabwe",
+			"nl" : "Zimbabwe"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	},
+	{
+		"_id" : "ISO-639-1|nl|1",
+		"type" : "ISO-639-1",
+		"code" : "nl",
+		"version" : "1",
+		"label" : {
+			"de" : "Holl\u00e4ndisch",
+			"en" : "Dutch",
+			"fr" : "N\u00e9erlandais",
+			"nl" : "Nederlands"
+		},
+		"regions" : [
+			"be",
+			"fr"
+		]
+	}
+]

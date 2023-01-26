@@ -18,8 +18,14 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui.layout
 
 import java.io.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.services.external.rest.v1.dto.gui.Tag
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 class FormLayout : Serializable {
 	var name: String? = null
 	var width: Double? = null

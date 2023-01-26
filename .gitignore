@@ -56,3 +56,4 @@ misc/out
 # Test generated files
 src/test/resources/**/out*
 /.idea.bak/
+**/generated/

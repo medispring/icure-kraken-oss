@@ -18,8 +18,11 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui
 
 import java.io.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.handlers.JacksonEditorDeserializer
 import org.taktik.icure.handlers.JsonDiscriminator
 import org.taktik.icure.services.external.rest.v1.dto.gui.type.Data
@@ -29,6 +32,9 @@ import org.taktik.icure.services.external.rest.v1.dto.gui.type.Data
  */
 @JsonDiscriminator("key")
 @JsonDeserialize(using = JacksonEditorDeserializer::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 abstract class Editor(val left: Double? = null, val top: Double? = null, val width: Double? = null, val height: Double? = null, val isMultiline: Boolean = false, val labelPosition: LabelPosition? = null, val isReadOnly: Boolean = false, val defaultValue: Data? = null) : Serializable {
 
 	@JsonProperty("key")

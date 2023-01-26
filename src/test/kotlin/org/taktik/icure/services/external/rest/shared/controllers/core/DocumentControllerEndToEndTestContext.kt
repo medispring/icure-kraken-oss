@@ -23,6 +23,8 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.entities.Document
 import org.taktik.icure.entities.embed.DataAttachment
 import org.taktik.icure.properties.ObjectStorageProperties
+import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.authorizationString
 import org.taktik.icure.test.bytesContent
 import org.taktik.icure.test.jsonContent
 import org.taktik.icure.test.multipartContent
@@ -33,7 +35,13 @@ import reactor.core.publisher.Mono
 
 // Funny stuff happens if this is an interface with default implementations of functions
 abstract class DocumentControllerEndToEndTestContext<DTO : Any, BAO: Any> {
-	val host: String = System.getenv("ICURE_SERVICE_HOST")
+	val host: String = System.getenv("ICURE_URL") ?: "localhost"
+
+	private val hcpAuth = "Basic ${java.util.Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
+
+	val client: WebClient = WebClient.builder()
+		.defaultHeader(org.apache.http.HttpHeaders.AUTHORIZATION, hcpAuth)
+		.build()
 
 	abstract val port: Int
 
