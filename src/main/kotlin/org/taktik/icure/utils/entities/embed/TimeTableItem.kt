@@ -11,6 +11,7 @@ import org.taktik.icure.entities.embed.TimeTableHour
 import org.taktik.icure.entities.embed.TimeTableItem
 import org.taktik.icure.utils.FuzzyValues
 import org.taktik.icure.utils.isXDayweekOfMonthInRange
+import org.taktik.icure.utils.sortedMerge
 
 fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duration: Duration) = object : Iterator<Long> {
 	val startLdt = FuzzyValues.getDateTime(startDateAndTime - (startDateAndTime % 100))
@@ -104,27 +105,16 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 		}
 }
 
-fun List<TimeTableHour>.iterator(duration: Duration) = object : Iterator<Long> {
-	var current: LocalTime? = this@iterator.firstOrNull()?.let { (it.startHour ?: 0L).toLocalTime() } ?: throw NoSuchElementException()
-	var idx = 0
-
-	init {
-		if (!hasNext()) throw NoSuchElementException()
-	}
+fun List<TimeTableHour>.iterator(duration: Duration): Iterator<Long> = this.map { it.iterator(duration) }.sortedMerge()
+fun TimeTableHour.iterator(duration: Duration) = object : Iterator<Long> {
+	val normalisedEndLocalTime = (endHour?.takeIf { it > 0L } ?: 240000L).toLocalTime()
+	fun getAcceptableLocalTime(t: Long?) = (t ?: 0L).toLocalTime().takeIf { val end = it + duration; end <= normalisedEndLocalTime && end > it }
+	var current: LocalTime? = getAcceptableLocalTime(this@iterator.startHour)
 
 	override fun hasNext() = current != null
 	override fun next() = (current ?: throw NoSuchElementException()).let { c ->
 		c.toLongHour().also {
-			current = (c + duration).let {
-				when {
-					it.toLongHour() < (this@iterator[idx].endHour ?: 240000) -> it
-					idx < this@iterator.size - 1 -> {
-						idx++
-						(this@iterator[idx].startHour ?: 0L).toLocalTime()
-					}
-					else -> null
-				}
-			}
+			current = (c + duration).takeIf { it > c }?.let { getAcceptableLocalTime(it.toLongHour()) }
 		}
 	}
 }
