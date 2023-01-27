@@ -107,11 +107,7 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 
 fun List<TimeTableHour>.iterator(duration: Duration): Iterator<Long> = this.map { it.iterator(duration) }.sortedMerge()
 fun TimeTableHour.iterator(duration: Duration) = object : Iterator<Long> {
-	var current: LocalTime? = (this@iterator.startHour ?: 0L).toLocalTime()
-
-	init {
-		if (!hasNext()) throw NoSuchElementException()
-	}
+	var current: LocalTime? = (this@iterator.startHour ?: 0L).takeIf { (this@iterator.endHour ?: 0L) == 0L || it < (this@iterator.endHour ?: 240000) }?.toLocalTime()
 
 	override fun hasNext() = current != null
 	override fun next() = (current ?: throw NoSuchElementException()).let { c ->
