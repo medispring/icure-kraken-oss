@@ -36,7 +36,6 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
 import org.taktik.icure.asynclogic.objectstorage.testutils.xmlUti
 import org.taktik.icure.properties.ObjectStorageProperties
 import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext
-import org.taktik.icure.services.external.rest.shared.controllers.core.client
 import org.taktik.icure.services.external.rest.shared.controllers.core.documentControllerSharedEndToEndTests
 import org.taktik.icure.services.external.rest.v1.dto.DocumentDto
 import org.taktik.icure.services.external.rest.v1.dto.embed.DataAttachmentDto
@@ -93,9 +92,7 @@ class DocumentControllerEndToEndTest(
 			override val properties: ObjectStorageProperties = properties
 			override val dao: DocumentDAO = dao
 			override val objectStorageClient: DocumentObjectStorageClient = objectStorageClient
-			override val testUserId: String = runBlocking {
-				userLogic.getUserByLogin(System.getenv("ICURE_TEST_USER_NAME"))!!.id
-			}
+			override val testUserId: String = ICureTestApplication.masterHcp.userId
 
 			override fun WebClient.RequestBodySpec.dtoBody(dto: DocumentDto): WebClient.RequestHeadersSpec<*> =
 				body<DocumentDto>(Mono.just(dto))

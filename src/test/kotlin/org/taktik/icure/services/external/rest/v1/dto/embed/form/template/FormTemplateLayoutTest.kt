@@ -43,7 +43,7 @@ internal class FormTemplateLayoutTest {
 		val result = FormTemplateMapperImpl(DocumentGroupMapperImpl(), CodeStubMapperImpl()).map(
 			FormTemplate(
 				id = "123",
-				layout = layout
+				templateLayout = layout
 			)
 		)
 		assertNotNull(result)

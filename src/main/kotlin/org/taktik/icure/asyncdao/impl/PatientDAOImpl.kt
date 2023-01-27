@@ -284,6 +284,27 @@ class PatientDAOImpl(
 		emitAll(client.queryView<Array<String>, String>(viewQuery).mapNotNull { it.value })
 	}
 
+	@View(name = "by_hcparty_address_postalcode_housenumber", map = "classpath:js/patient/By_hcparty_address_postalcode_housenumber.js")
+	override fun listPatientIdsByHcPartyAndAddress(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val startKey: ComplexKey
+		val endKey: ComplexKey
+
+		if (streetAndCity != null) {
+			val cstreetAndCity = streetAndCity.replace(" ".toRegex(), "").replace("\\W".toRegex(), "")
+			startKey = ComplexKey.of(healthcarePartyId, cstreetAndCity, postalCode, houseNumber)
+			endKey = ComplexKey.of(healthcarePartyId, cstreetAndCity + "\ufff0", postalCode + "\ufff0", houseNumber + "\ufff0")
+		} else {
+			startKey = ComplexKey.of(healthcarePartyId, null)
+			endKey = ComplexKey.of(healthcarePartyId, "\ufff0")
+		}
+
+		val viewQuery = createQuery(client, "by_hcparty_address_postalcode_housenumber").startKey(startKey).endKey(endKey).includeDocs(false)
+		emitAll(client.queryView<Array<String>, String>(viewQuery).filter {
+			(houseNumber.isNullOrEmpty() || it.key?.get(3) == houseNumber)
+			&& (postalCode.isNullOrEmpty() || it.key?.get(2) == postalCode) }.mapNotNull { it.value })
+	}
+
 	override fun findPatientIdsByHcParty(healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val viewQuery = pagedViewQueryOfIds<Patient, ComplexKey>(client, "by_hcparty_name", pagination.startKey ?: ComplexKey.of(healthcarePartyId, null), ComplexKey.of(healthcarePartyId, ComplexKey.emptyObject()), pagination)

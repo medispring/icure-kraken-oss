@@ -30,6 +30,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.collect.ImmutableMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -46,11 +48,13 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.stereotype.Service
 import org.taktik.couchdb.ViewQueryResultEvent
 import org.taktik.couchdb.ViewRowWithDoc
+import org.taktik.couchdb.entity.Option
 import org.taktik.icure.asyncdao.CodeDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.domain.filter.chain.FilterChain
+import org.taktik.icure.entities.Form
 import org.taktik.icure.entities.base.Code
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.base.EnumVersion
@@ -234,6 +238,15 @@ class CodeLogicImpl(private val sessionLogic: AsyncSessionLogic, val codeDAO: Co
 			throw IllegalStateException(ex)
 		}
 	}
+
+	override fun solveConflicts(): Flow<Code> =
+		codeDAO.listConflicts().mapNotNull {
+			codeDAO.get(it.id, Option.CONFLICTS)?.let { code ->
+				code.conflicts?.mapNotNull { conflictingRevision -> codeDAO.get(code.id, conflictingRevision) }
+					?.fold(code) { kept, conflict -> kept.merge(conflict).also { codeDAO.purge(conflict) } }
+					?.let { mergedCode -> codeDAO.save(mergedCode) }
+			}
+		}
 
 	override suspend fun importCodesFromXml(md5: String, type: String, stream: InputStream) {
 		val check = getCodes(listOf(Code.from("ICURE-SYSTEM", md5, version = "1").id)).toList()

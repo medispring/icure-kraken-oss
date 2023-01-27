@@ -1,4 +1,4 @@
-package org.taktik.icure.test.fakedaos
+package org.taktik.icure.test.fake
 
 import java.net.URI
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +10,6 @@ import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.Patient
 import org.taktik.icure.entities.embed.Gender
 import org.taktik.icure.entities.embed.Identifier
-import org.taktik.icure.test.FakeGenericDAO
 
 class FakePatientDAO : PatientDAO, GenericDAO<Patient> by FakeGenericDAO() {
 	// Implement as needed by tests
@@ -84,6 +83,10 @@ class FakePatientDAO : PatientDAO, GenericDAO<Patient> by FakeGenericDAO() {
 	}
 
 	override fun listPatientIdsByHcPartyAndAddress(searchString: String?, healthcarePartyId: String): Flow<String> {
+		TODO("Not yet implemented")
+	}
+
+	override fun listPatientIdsByHcPartyAndAddress(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String> {
 		TODO("Not yet implemented")
 	}
 

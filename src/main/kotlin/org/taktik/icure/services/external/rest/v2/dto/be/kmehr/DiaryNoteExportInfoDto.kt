@@ -22,7 +22,7 @@ import java.io.Serializable
 import org.taktik.icure.services.external.rest.v2.dto.HealthcarePartyDto
 
 class DiaryNoteExportInfoDto : Serializable {
-	var secretForeignKeys: List<String> = emptyList()
+	var encryptionDecryptionKeys: List<String> = emptyList()
 	var excludedIds: List<String> = emptyList()
 	var recipient: HealthcarePartyDto? = null
 	var softwareName: String? = null
