@@ -23,4 +23,6 @@ import org.taktik.icure.entities.Patient
 interface PatientByHcPartyAndAddressFilter : Filter<String, Patient> {
 	val searchString: String?
 	val healthcarePartyId: String?
+	val postalCode: String?
+	val houseNumber: String?
 }

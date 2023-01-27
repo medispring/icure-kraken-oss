@@ -48,6 +48,8 @@ interface PatientDAO : GenericDAO<Patient> {
 	fun listPatientIdsByHcPartyAndExternalId(externalId: String?, healthcarePartyId: String): Flow<String>
 	fun listPatientIdsByHcPartyAndTelecom(searchString: String?, healthcarePartyId: String): Flow<String>
 	fun listPatientIdsByHcPartyAndAddress(searchString: String?, healthcarePartyId: String): Flow<String>
+	fun listPatientIdsByHcPartyAndAddress(streetAndCity: String?, postalCode: String?, houseNumber: String?, healthcarePartyId: String): Flow<String>
+
 
 	fun findPatientIdsByHcParty(healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent>
 	fun findPatientsByHcPartyAndName(name: String?, healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>, descending: Boolean): Flow<ViewQueryResultEvent>

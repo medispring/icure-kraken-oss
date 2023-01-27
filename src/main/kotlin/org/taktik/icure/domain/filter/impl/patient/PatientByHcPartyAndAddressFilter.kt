@@ -25,7 +25,9 @@ import org.taktik.icure.entities.Patient
 data class PatientByHcPartyAndAddressFilter(
 	override val desc: String? = null,
 	override val searchString: String? = null,
-	override val healthcarePartyId: String? = null
+	override val healthcarePartyId: String? = null,
+	override val postalCode: String? = null,
+	override val houseNumber: String? = null
 ) : AbstractFilter<Patient>, org.taktik.icure.domain.filter.patient.PatientByHcPartyAndAddressFilter {
 
 	override fun matches(item: Patient): Boolean {
