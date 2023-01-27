@@ -65,8 +65,8 @@ class SamV2ControllerEndToEndTest(
 		return responseBody?.let { objectMapper.readValue<PaginatedList<AmpDto>>(it) }
 	}
 
-	"Get amps with a label shorter than 3 characters - Failure" {
-		val responseBody = getAmpsByLabels("gl", 400)
+	"Get amps with a label shorter than 2 characters - Failure" {
+		val responseBody = getAmpsByLabels("g", 400)
 		responseBody shouldBe null
 	}
 })

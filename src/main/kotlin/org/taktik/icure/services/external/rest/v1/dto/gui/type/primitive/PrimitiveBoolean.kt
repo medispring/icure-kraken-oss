@@ -19,8 +19,14 @@ package org.taktik.icure.services.external.rest.v1.dto.gui.type.primitive
 
 import java.io.Serializable
 import java.util.*
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.services.external.rest.v1.dto.gui.type.Data
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 class PrimitiveBoolean(val value: Boolean? = null) : Data(), Primitive {
 	override fun getPrimitiveValue(): Serializable? {
 		return value

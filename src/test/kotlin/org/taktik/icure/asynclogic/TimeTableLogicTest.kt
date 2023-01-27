@@ -117,6 +117,8 @@ class TimeTableLogicTest : StringSpec({
 		days: List<String>?,
 		recurrenceTypes: List<String>?,
 		acceptsNewPatient: Boolean = true,
+		startHour:Long = 80000,
+		endHour:Long = 170000,
 	) {
 		TimeTable(
 			id = newId(),
@@ -132,8 +134,8 @@ class TimeTableLogicTest : StringSpec({
 					recurrenceTypes = recurrenceTypes ?: emptyList(),
 					hours = listOf(
 						TimeTableHour(
-							startHour = 80000,
-							endHour = 170000,
+							startHour = startHour,
+							endHour = endHour,
 						)
 					),
 					calendarItemTypeId = calendarItemTypeId,
@@ -314,6 +316,19 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
+
+	"In legacy and rrule version, it should return an empty array if the timeTableItem's startHour is equal or after the endHour" {
+		val legacyCalendarItemTypeId = newId()
+		val rruleCalendarItemTypeId = newId()
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,10000,8000)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,10000,8000)
+		withAuthenticatedHcpContext(hcpId) {
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			legacy.size shouldBe (0) //expected:<0> but was:<100>
+			rrule.size shouldBe (0) //expected:<0> but was:<100>
+		}
+	}
 
 
 })

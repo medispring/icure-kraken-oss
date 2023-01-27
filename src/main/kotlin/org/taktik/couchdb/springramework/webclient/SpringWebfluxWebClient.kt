@@ -28,6 +28,7 @@ import io.icure.asyncjacksonhttpclient.net.web.Request
 import io.icure.asyncjacksonhttpclient.net.web.Response
 import io.icure.asyncjacksonhttpclient.net.web.ResponseStatus
 import io.icure.asyncjacksonhttpclient.net.web.WebClient
+import io.icure.asyncjacksonhttpclient.netty.NettyResponse
 import io.netty.handler.codec.http.DefaultHttpHeaders
 import io.netty.handler.codec.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
@@ -73,7 +74,8 @@ class SpringWebfluxResponse(
 	private val requestHeaderSpec: org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec<*>,
 	private val statusHandlers: Map<Int, (ResponseStatus) -> Mono<out Throwable>> = mapOf(),
 	private val headerHandler: Map<String, (String) -> Mono<Unit>> = mapOf(),
-) : Response {
+	private val timingHandler: ((Long) -> Mono<Unit>)? = null,
+	) : Response {
 	override fun onStatus(status: Int, handler: (ResponseStatus) -> Mono<out Throwable>): Response {
 		return SpringWebfluxResponse(requestHeaderSpec, statusHandlers + (status to handler), headerHandler)
 	}
@@ -82,42 +84,51 @@ class SpringWebfluxResponse(
 		return SpringWebfluxResponse(requestHeaderSpec, statusHandlers, headerHandler + (header to handler))
 	}
 
-	override fun toFlux(): Flux<ByteBuffer> = requestHeaderSpec.exchangeToFlux { cr ->
-		val statusCode: Int = cr.statusCode().value()
+	override fun toFlux(): Flux<ByteBuffer> {
+		val start = System.currentTimeMillis()
+		return Flux.deferContextual { ctx -> requestHeaderSpec.exchangeToFlux { cr ->
+			val statusCode: Int = cr.statusCode().value()
 
-		val headers = cr.headers().asHttpHeaders()
-		val flatHeaders = headers.flatMap { (k, vals) -> vals.map { v -> AbstractMap.SimpleEntry(k, v) } }
+			val headers = cr.headers().asHttpHeaders()
+			val flatHeaders = headers.flatMap { (k, vals) -> vals.map { v -> AbstractMap.SimpleEntry(k, v) } }
 
-		val headerHandlers = if (headerHandler.isNotEmpty()) {
-			headers.flatMap { (k, values) -> values.map { k to it } }.fold(Mono.empty()) { m: Mono<*>, (k, v) -> m.then(headerHandler[k]?.let { it(v) } ?: Mono.empty()) }
-		} else Mono.empty()
+			val headerHandlers = if (headerHandler.isNotEmpty()) {
+				headers.flatMap { (k, values) -> values.map { k to it } }.fold(Mono.empty()) { m: Mono<*>, (k, v) -> m.then(headerHandler[k]?.let { it(v) } ?: Mono.empty()) }
+			} else Mono.empty()
 
-		headerHandlers.thenMany(
-			statusHandlers[statusCode]?.let { handler ->
-				cr.bodyToMono(ByteBuffer::class.java).flatMapMany { byteBuffer ->
-					val arr = ByteArray(byteBuffer.remaining())
-					byteBuffer.get(arr)
-					val res = handler(object : ResponseStatus(statusCode, flatHeaders) {
-						override fun responseBodyAsString() = arr.toString(Charsets.UTF_8)
-					})
-					if (res == Mono.empty<Throwable>()) {
-						Mono.just(ByteBuffer.wrap(arr))
-					} else {
-						res.flatMap { Mono.error(it) }
-					}
-				}.switchIfEmpty(
-					handler(object : ResponseStatus(statusCode, flatHeaders) {
-						override fun responseBodyAsString() = ""
-					}).let { res ->
+			headerHandlers.thenMany(
+				statusHandlers[statusCode]?.let { handler ->
+					cr.bodyToMono(ByteBuffer::class.java).flatMapMany { byteBuffer ->
+						val arr = ByteArray(byteBuffer.remaining())
+						byteBuffer.get(arr)
+						val res = handler(object : ResponseStatus(statusCode, flatHeaders) {
+							override fun responseBodyAsString() = arr.toString(Charsets.UTF_8)
+						})
 						if (res == Mono.empty<Throwable>()) {
-							Mono.just(ByteBuffer.wrap(ByteArray(0)))
+							Mono.just(ByteBuffer.wrap(arr))
 						} else {
 							res.flatMap { Mono.error(it) }
 						}
-					}
-				)
-			} ?: cr.bodyToFlux(ByteBuffer::class.java)
-		)
+					}.switchIfEmpty(
+						handler(object : ResponseStatus(statusCode, flatHeaders) {
+							override fun responseBodyAsString() = ""
+						}).let { res ->
+							if (res == Mono.empty<Throwable>()) {
+								Mono.just(ByteBuffer.wrap(ByteArray(0)))
+							} else {
+								res.flatMap { Mono.error(it) }
+							}
+						}
+					)
+				} ?: cr.bodyToFlux(ByteBuffer::class.java)
+			)
+		}.doOnTerminate {
+			timingHandler?.let { it(System.currentTimeMillis() - start).contextWrite(ctx).subscribe() }
+		} }
+	}
+
+	override fun withTiming(handler: (Long) -> Mono<Unit>): Response {
+		return SpringWebfluxResponse(requestHeaderSpec, statusHandlers, headerHandler, handler)
 	}
 }
 

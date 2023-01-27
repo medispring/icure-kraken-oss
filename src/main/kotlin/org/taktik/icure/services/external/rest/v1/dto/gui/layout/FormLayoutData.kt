@@ -18,12 +18,18 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui.layout
 
 import java.io.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.services.external.rest.v1.dto.embed.ContentDto
 import org.taktik.icure.services.external.rest.v1.dto.gui.*
 
 /**
  * Created by aduchate on 19/11/13, 10:50
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 open class FormLayoutData(
 	val isSubForm: Boolean? = null,
 	val isIrrelevant: Boolean? = null,
