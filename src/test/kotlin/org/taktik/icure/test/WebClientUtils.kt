@@ -12,7 +12,7 @@ import org.springframework.web.util.UriUtils
 val authorizationString by lazy {
 	"Basic ${
 		java.util.Base64.getEncoder()
-			.encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())
+			.encodeToString("${ICureTestApplication.masterHcp.userId}:${ICureTestApplication.masterHcp.password}".toByteArray())
 	}"
 }
 

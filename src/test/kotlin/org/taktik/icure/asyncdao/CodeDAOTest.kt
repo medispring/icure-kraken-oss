@@ -1,10 +1,15 @@
 package org.taktik.icure.asyncdao
 
+import java.io.File
 import java.net.URI
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.StringSpec
+import kotlin.random.Random.Default.nextInt
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +17,7 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
@@ -24,10 +30,13 @@ import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.icure.asynclogic.CodeLogic
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.base.Code
+import org.taktik.icure.exceptions.BulkUpdateConflictException
+import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.services.external.rest.v1.dto.CodeDto
 import org.taktik.icure.services.external.rest.v1.mapper.base.CodeMapper
 import org.taktik.icure.services.external.rest.v1.utils.paginatedList
 import org.taktik.icure.test.ICureTestApplication
+import org.taktik.icure.test.TestProperties
 
 suspend fun List<Code>.shouldContainAllTheVersions(codeDAO: CodeDAO) =
 	this.groupBy {
@@ -87,7 +96,9 @@ class CodeDAOTest(
 	@Autowired val codeDAO: CodeDAO,
 	@Autowired val codeMapper: CodeMapper,
 	@Autowired val codeLogic: CodeLogic,
-	@Autowired val objectMapper: ObjectMapper
+	@Autowired val objectMapper: ObjectMapper,
+	@Autowired val couchDbProperties: CouchDbProperties,
+	@Autowired val testProperties: TestProperties
 ): StringSpec() {
 
 	val region = "be"
@@ -96,14 +107,16 @@ class CodeDAOTest(
 	val startPaginationOffset = PaginationOffset<List<String?>>(null, null, null, 1001)
 
 	init {
+		val inputCodes = objectMapper.readValue<List<Code>>(
+			File("src/test/resources/org/taktik/icure/db/codes/codes_dao_test.json").inputStream()
+		)
 		runBlocking {
-			val resolver = PathMatchingResourcePatternResolver(javaClass.classLoader)
-
-			// Imports the codes into the database
-			resolver.getResources("classpath*:/org/taktik/icure/db/codes/region_codes.json").forEach {
-					codeLogic.importCodesFromJSON(it.inputStream)
+			try {
+				val savedCodes = codeDAO.save(inputCodes)
+				savedCodes.count() shouldBe inputCodes.size
+			} catch (e: BulkUpdateConflictException) {
+				//Already created
 			}
-
 			val totalUniqueCodes = codeDAO.listCodeIdsByTypeCodeVersionInterval(
 				startType = codeType,
 				startCode = null,
@@ -120,9 +133,61 @@ class CodeDAOTest(
 			testLatestVersionFilterOnFindCodesByLanguageLabel(codeDAO, region, language, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnFindCodesByLanguageTypeLabel(codeDAO, region, language, codeType, startPaginationOffset, totalUniqueCodes, codeMapper)
 			testLatestVersionFilterOnListCodesBy(codeDAO, region, codeType, totalUniqueCodes)
-
+			testListCodeIdsByTypeCodeVersionInterval(codeDAO, inputCodes)
 		}
 	}
+}
+
+private suspend fun StringSpec.testListCodeIdsByTypeCodeVersionInterval(
+	codeDAO: CodeDAO,
+	existingCodes: List<Code>
+) {
+
+	val existingIds = existingCodes.map { it.id }.sortedBy { it }
+	val sortedCodes = existingCodes.toSortedSet(compareBy { it.id }).toList()
+
+	"All ids are returned if both keys are null" {
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(null, null, null, null, null, null)
+			.filter { id -> id.startsWith("CD-FED-COUNTRY|") || id.startsWith("ISO-639-1|") }
+			.onEach {  id ->
+				existingIds shouldContain id
+			}.count() shouldBe existingCodes.size
+	}
+
+	"If the starting key is specified only the results that come after it are returned" {
+		val startIndex = nextInt(0, sortedCodes.size)
+		val startCode = sortedCodes[startIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(startCode.type, startCode.code, startCode.version, null, null, null)
+			.filter { id -> id.startsWith("CD-FED-COUNTRY|") || id.startsWith("ISO-639-1|") }
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
+ 			}.count() shouldBe (existingCodes.size - startIndex)
+	}
+
+	"If the end key is specified only the results that come before it are returned" {
+		val endIndex = nextInt(0, sortedCodes.size)
+		val endCode = sortedCodes[endIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(null, null, null, endCode.type, endCode.code, endCode.version)
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeLessThanOrEqual endIndex
+			}.count() shouldBe (endIndex + 1)
+	}
+
+	"If the start key and the end key are specified all the in-between results are returned" {
+		val startIndex = nextInt(0, sortedCodes.size/2)
+		val startCode = sortedCodes[startIndex]
+		val endIndex = nextInt(sortedCodes.size/2, sortedCodes.size)
+		val endCode = sortedCodes[endIndex]
+		codeDAO.listCodeIdsByTypeCodeVersionInterval(startCode.type, startCode.code, startCode.version, endCode.type, endCode.code, endCode.version)
+			.onEach {  id ->
+				existingIds shouldContain id
+				existingIds.indexOf(id) shouldBeGreaterThanOrEqual startIndex
+				existingIds.indexOf(id) shouldBeLessThanOrEqual endIndex
+			}.count() shouldBe (endIndex + 1 - startIndex)
+	}
+
 }
 
 private suspend fun StringSpec.testLatestVersionFilterOnListCodesBy(

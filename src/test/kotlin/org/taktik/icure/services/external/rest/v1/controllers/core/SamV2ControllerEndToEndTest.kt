@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.SingletonSupport
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.TestInstance
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
@@ -37,27 +39,15 @@ private const val TEST_CACHE = "build/tests/icureCache"
 @ActiveProfiles("app")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SamV2ControllerEndToEndTest(
-	@LocalServerPort val port: Int
+	@LocalServerPort val port: Int,
+	@Autowired val objectMapper: ObjectMapper
 ) : StringSpec({
 
 	val apiHost = System.getenv("ICURE_BE_URL") ?: "http://localhost"
 	val apiEndpoint = "/rest/v1/be_samv2"
-	val objectMapper: ObjectMapper by lazy {
-		ObjectMapper().registerModule(
-			KotlinModule.Builder()
-				.nullIsSameAsDefault(nullIsSameAsDefault = false)
-				.reflectionCacheSize(reflectionCacheSize = 512)
-				.nullToEmptyMap(nullToEmptyMap = false)
-				.nullToEmptyCollection(nullToEmptyCollection = false)
-				.singletonSupport(singletonSupport = SingletonSupport.DISABLED)
-				.strictNullChecks(strictNullChecks = false)
-				.build()
-		)
-	}
-
 
 	fun getAmpsByLabels(label: String, expectedCode: Int): PaginatedList<AmpDto>? {
-		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())}"
+		val auth = "Basic ${Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}"
 		val client = HttpClient.create().headers { h ->
 			h.set("Authorization", auth) //
 			h.set("Content-type", "application/json")
@@ -72,11 +62,11 @@ class SamV2ControllerEndToEndTest(
 				buffer.asString(StandardCharsets.UTF_8)
 			}.block()
 
-		return responseBody?.let { objectMapper.readValue(it, object : TypeReference<PaginatedList<AmpDto>>() {}) }
+		return responseBody?.let { objectMapper.readValue<PaginatedList<AmpDto>>(it) }
 	}
 
-	"Get amps with a label shorter than 3 characters - Failure" {
-		val responseBody = getAmpsByLabels("gl", 400)
+	"Get amps with a label shorter than 2 characters - Failure" {
+		val responseBody = getAmpsByLabels("g", 400)
 		responseBody shouldBe null
 	}
 })

@@ -18,11 +18,17 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui.layout
 
 import java.io.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.dto.gui.layout.FormColumn
 
 /**
  * Created by aduchate on 07/02/13, 17:10
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 class FormSection : Serializable {
 	var icon: String? = null
 	var title: String? = null

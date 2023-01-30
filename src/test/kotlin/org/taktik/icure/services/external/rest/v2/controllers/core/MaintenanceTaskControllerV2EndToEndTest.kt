@@ -57,7 +57,7 @@ class MaintenanceTaskControllerV2EndToEndTest(
 
 
 	fun createMaintenanceTaskRequest(task: MaintenanceTaskDto, expectedCode: Int): String? {
-		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${System.getenv("ICURE_TEST_USER_NAME")}:${System.getenv("ICURE_TEST_USER_PASSWORD")}".toByteArray())}"
+		val auth = "Basic ${java.util.Base64.getEncoder().encodeToString("${ICureTestApplication.masterHcp.userId}:${ICureTestApplication.masterHcp.password}".toByteArray())}"
 		val client = HttpClient.create().headers { h ->
 			h.set("Authorization", auth) //
 			h.set("Content-type", "application/json")

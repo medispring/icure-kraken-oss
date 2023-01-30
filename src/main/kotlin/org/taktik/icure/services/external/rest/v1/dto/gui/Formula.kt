@@ -18,11 +18,17 @@
 package org.taktik.icure.services.external.rest.v1.dto.gui
 
 import java.io.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.github.pozo.KotlinBuilder
 import org.taktik.icure.dto.gui.FormLifecycle
 
 /**
  * Created by aduchate on 03/12/13, 17:22
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@KotlinBuilder
 class Formula(
 	val value: String? = null,
 	val lifecycle: FormLifecycle? = null,

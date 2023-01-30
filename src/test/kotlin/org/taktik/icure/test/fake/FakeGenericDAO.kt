@@ -1,27 +1,22 @@
-package org.taktik.icure.test
+package org.taktik.icure.test.fake
 
-import java.lang.IllegalStateException
 import java.net.URI
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.apache.http.HttpStatus
-import org.taktik.couchdb.BulkUpdateResult
 import org.taktik.couchdb.Client
 import org.taktik.couchdb.DocIdentifier
 import org.taktik.couchdb.entity.Option
 import org.taktik.couchdb.entity.Versionable
 import org.taktik.couchdb.exception.CouchDbConflictException
-import org.taktik.couchdb.exception.CouchDbException
 import org.taktik.icure.asyncdao.GenericDAO
-import org.taktik.icure.asyncdao.InternalDAO
 
 class FakeGenericDAO<T : Versionable<String>> : GenericDAO<T> {
 	private val allLatestEntitiesMap =

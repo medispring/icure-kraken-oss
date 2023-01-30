@@ -8,7 +8,7 @@ import org.taktik.icure.asyncdao.objectstorage.ObjectStorageTasksDAO
 import org.taktik.icure.entities.base.HasDataAttachments
 import org.taktik.icure.entities.objectstorage.ObjectStorageMigrationTask
 import org.taktik.icure.entities.objectstorage.ObjectStorageTask
-import org.taktik.icure.test.FakeInternalDAO
+import org.taktik.icure.test.fake.FakeInternalDAO
 
 class FakeObjectStorageTasksDAO : ObjectStorageTasksDAO, InternalDAO<ObjectStorageTask> by FakeInternalDAO() {
 	override fun findRelatedTasks(task: ObjectStorageTask): Flow<ObjectStorageTask> =

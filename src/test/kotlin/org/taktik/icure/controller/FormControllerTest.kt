@@ -14,11 +14,23 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
 import org.taktik.icure.services.external.rest.v1.dto.FormDto
+import org.taktik.icure.test.ICureTestApplication
 import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+private const val TEST_CACHE = "build/tests/icureCache"
+
+@SpringBootTest(
+	classes = [ICureTestApplication::class],
+	properties = [
+	"spring.main.allow-bean-definition-overriding=true",
+	"icure.objectstorage.icureCloudUrl=test",
+	"icure.objectstorage.cacheLocation=$TEST_CACHE",
+	"icure.objectstorage.backlogToObjectStorage=true",
+	"icure.objectstorage.sizeLimit=1000",
+	"icure.objectstorage.migrationDelayMs=1000",
+], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("app")
 class FormControllerTest {
 	private val log = LoggerFactory.getLogger(this.javaClass)
@@ -29,7 +41,7 @@ class FormControllerTest {
 	@Test
 	fun testCreateDeleteBulk() {
 		val client = HttpClient.create().headers { h ->
-			h.set("Authorization", "Basic YW5vdWtAaWN1cmUuY2xvdWQ6a25hbG91")
+			h.set("Authorization", "Basic ${java.util.Base64.getEncoder().encodeToString("john:LetMeIn".toByteArray())}")
 			h.set("Content-type", "application/json")
 		}
 		val objectMapper = ObjectMapper().registerModule(
@@ -46,7 +58,7 @@ class FormControllerTest {
 		runBlocking {
 			val res = client.delete()
 				.uri(
-					"https://127.0.0.1:$port/rest/v1/form/${
+					"http://127.0.0.1:$port/rest/v1/form/${
 					flow {
 						(1..100).map {
 							UUID.randomUUID().toString().also {
@@ -54,7 +66,7 @@ class FormControllerTest {
 								log.info(
 									"${
 									client.post()
-										.uri("https://127.0.0.1:$port/rest/v1/form")
+										.uri("http://127.0.0.1:$port/rest/v1/form")
 										.send(ByteBufFlux.fromString(Mono.just(form)))
 										.response()
 										.awaitFirstOrNull()?.status() ?: "000"

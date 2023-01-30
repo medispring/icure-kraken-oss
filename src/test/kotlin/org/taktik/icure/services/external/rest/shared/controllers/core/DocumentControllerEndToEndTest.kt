@@ -20,17 +20,17 @@ import org.taktik.icure.asynclogic.objectstorage.testutils.key1
 import org.taktik.icure.asynclogic.objectstorage.testutils.key2
 import org.taktik.icure.asynclogic.objectstorage.testutils.key3
 import org.taktik.icure.asynclogic.objectstorage.testutils.sampleUtis
-import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.*
+import org.taktik.icure.services.external.rest.shared.controllers.core.DocumentControllerEndToEndTestContext.DataFactory.UpdateAttachmentMetadata
+import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.authorizationString
+import org.taktik.icure.test.fake.SessionMock
 import org.taktik.icure.test.randomBytes
 import org.taktik.icure.test.retryUntil
 import org.taktik.icure.test.shouldContainExactly
 import org.taktik.icure.test.shouldRespondErrorStatus
 import org.taktik.icure.utils.toByteArray
 
-val client = WebClient.builder()
-	.defaultHeader(HttpHeaders.AUTHORIZATION, authorizationString)
-	.build()
+
 
 fun <DTO : Any, METADTO : Any> StringSpec.documentControllerSharedEndToEndTests(
 	context: DocumentControllerEndToEndTestContext<DTO, METADTO>,

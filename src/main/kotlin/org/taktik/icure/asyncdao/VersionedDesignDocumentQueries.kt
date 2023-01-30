@@ -72,7 +72,7 @@ open class VersionedDesignDocumentQueries<T : StoredDocument>(protected open val
 				.catch { emit(false) }
 				.firstOrNull() ?: true
 
-	private suspend fun designDocId(client: Client): String {
+	suspend fun designDocId(client: Client): String {
 		val cacheKey = Pair(client, this.entityClass)
 		return runCatching {
 			designDocIdProvider.get(cacheKey).await() }.onFailure { designDocIdProvider.invalidate(cacheKey) }.getOrThrow()
