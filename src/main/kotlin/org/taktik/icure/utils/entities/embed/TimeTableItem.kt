@@ -107,8 +107,8 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 
 fun List<TimeTableHour>.iterator(duration: Duration): Iterator<Long> = this.map { it.iterator(duration) }.sortedMerge()
 fun TimeTableHour.iterator(duration: Duration) = object : Iterator<Long> {
-	val normalisedEndLocalTime = (endHour?.takeIf { it > 0L } ?: 240000L).toLocalTime()
-	fun getAcceptableLocalTime(t: Long?) = (t ?: 0L).toLocalTime().takeIf { val end = it + duration; end <= normalisedEndLocalTime && end > it }
+	val normalisedEndLocalTime = (endHour?.takeIf { it > 0L && it != 240000L } ?: 235959L).toLocalTime()
+	fun getAcceptableLocalTime(t: Long?) = (t ?: 0L).toLocalTime().takeIf { val end = it + duration - Duration.ofSeconds(60); end <= normalisedEndLocalTime && end > it }
 	var current: LocalTime? = getAcceptableLocalTime(this@iterator.startHour)
 
 	override fun hasNext() = current != null
