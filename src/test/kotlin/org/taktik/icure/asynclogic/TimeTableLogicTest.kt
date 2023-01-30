@@ -354,7 +354,7 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
-	"In legacy and rrule version, it should return an empty array if the timeTableItem's startHour is equal or after the endHour - duration" {
+	"In legacy and rrule version, it should return an empty array if the time interval between timeTableItem's startHour and endHour is smaller than the requested duration" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
 		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,100000,101000)
