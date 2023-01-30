@@ -37,6 +37,6 @@ class IncapacityExportInfoDto : Serializable {
 	var recoveryAddress: AddressDto? = null
 	var foreignStayBegin: Long = 0 //MMEDIATT-ITEM foreignstay
 	var foreignStayEnd: Long = 0
-	var softwareName: String? = ""
-	var softwareVersion: String? = ""
+	var softwareName: String? = null
+	var softwareVersion: String? = null
 }
