@@ -43,4 +43,6 @@ data class IncapacityExportInfoDto(
 	val recoveryAddress: AddressDto? = null,
 	val foreignStayBegin: Long = 0, //MMEDIATT-ITEM foreignstay
 	val foreignStayEnd: Long = 0,
+	val softwareName: String? = null,
+	val softwareVersion: String? = null
 ) : Serializable
