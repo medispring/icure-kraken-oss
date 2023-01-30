@@ -259,8 +259,8 @@ open class KmehrExport(
 			sex = SexType().apply {
 				cd = CDSEX().apply {
 					s = "CD-SEX"; sv = "1.0"; value = p.gender?.let {
-						try {
-							CDSEXvalues.fromValue(it.name)
+								try {
+									it?.name?.toSEXvalues()
 						} catch (e: Exception) {
 							CDSEXvalues.UNKNOWN
 						}
