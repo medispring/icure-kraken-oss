@@ -26,30 +26,34 @@ fun TimeTableItem.iterator(startDateAndTime: Long, endDateAndTime: Long, duratio
 			}
 		}
 
+		private fun getNextValidLegacyDay() = generateSequence(day) { (it + Duration.ofDays(1)).takeIf { d -> d <= coercedEndLdt } }.firstOrNull { d ->
+			(days.any { dd ->
+				dd.toInt() == d.dayOfWeek.value
+			} && //The day of week of the timestamp is listed in the days property
+				recurrenceTypes.any { r -> //The day of the week of the slot matches a weekly recurrence condition
+					r == "EVERY_WEEK" || listOf("ONE" to 1, "TWO" to 2, "THREE" to 3, "FOUR" to 4, "FIVE" to 5).any { (rt, i) ->
+						(r == rt && isXDayweekOfMonthInRange(d.dayOfWeek, i.toLong(), startLdt, coercedEndLdt))
+					}
+				})
+		}
+
 		override fun hasNext(): Boolean {
 			return rrit?.let {
 				try {
 					it.peekMillis().let { n ->
-						LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(n), ZoneOffset.UTC) < coercedEndLdt
+						LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(n), ZoneOffset.UTC) <= coercedEndLdt
 					}
-				} catch(e:ArrayIndexOutOfBoundsException) { false } } ?: (day < coercedEndLdt)
+				} catch(e:ArrayIndexOutOfBoundsException) { false } } ?: (getNextValidLegacyDay() != null)
 		}
+
 		override fun next(): LocalDateTime {
 			return rrit?.nextMillis()?.let {
 				LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(it), ZoneOffset.UTC).also { day = it }
 			} ?: run {
-				generateSequence(day) { (it + Duration.ofDays(1)).takeIf { it <= coercedEndLdt } }.first { d ->
-					(days.any { dd ->
-						dd.toInt() == d.dayOfWeek.value
-					} && //The day of week of the timestamp is listed in the days property
-						recurrenceTypes.any { r -> //The day of the week of the slot matches a weekly recurrence condition
-							r == "EVERY_WEEK" || listOf("ONE" to 1, "TWO" to 2, "THREE" to 3, "FOUR" to 4, "FIVE" to 5).any { (rt, i) ->
-								(r == rt && isXDayweekOfMonthInRange(d.dayOfWeek, i.toLong(), startLdt, coercedEndLdt))
-							}
-						})
-				}.also { day = it + Duration.ofDays(1) }
+				getNextValidLegacyDay()?.also { day = it + Duration.ofDays(1) } ?: throw NoSuchElementException()
 			}
 		}
+
 	}
 
 	var hoursIterator = hours.iterator(duration)
