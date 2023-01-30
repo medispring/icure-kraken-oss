@@ -329,6 +329,18 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
+	"When a recurrence is specified both in legacy and rrule format, it should use the rrule format and ignore the legacy properties" {
+		val rruleAloneCalendarItemTypeId = newId()
+		val rruleWithLegacyCalendarItemTypeId = newId()
+		makeTimeTable(rruleAloneCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO", 20221016L, null, null)
+		makeTimeTable( rruleWithLegacyCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO", 20221016L, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
+		withAuthenticatedHcpContext(hcpId) {
+			val rruleAlone = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleAloneCalendarItemTypeId, null, false, true, hcpId).toList()
+			val rruleWithLegacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleWithLegacyCalendarItemTypeId, null, false, true, hcpId).toList()
+			rruleAlone shouldBe rruleWithLegacy
+		}
+	}
+
 	"In legacy and rrule version, it should return an empty array if the timeTableItem's startHour is equal or after the endHour - duration" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
