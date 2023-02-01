@@ -727,7 +727,7 @@ class SumehrExport(
 
 	internal suspend fun addHealthCareElement(trn: TransactionType, he: HealthElement) {
 		try {
-			val items = if (he.closingDate != null && FuzzyValues.getDateTime(he.closingDate?.takeIf { it > 0 } ?: 99991231) < LocalDateTime.now()) {
+			val items = if (FuzzyValues.getDateTime(he.closingDate?.takeIf { it > 0 } ?: 99991231) < LocalDateTime.now()) {
 				getHistory(trn).headingsAndItemsAndTexts
 			} else {
 				getAssessment(trn).headingsAndItemsAndTexts
