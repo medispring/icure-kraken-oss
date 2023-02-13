@@ -324,8 +324,8 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			legacy.size shouldBe (0) //expected:<0> but was:<100>
-			rrule.size shouldBe (0) //expected:<0> but was:<100>
+			legacy.size shouldBe (0)
+			rrule.size shouldBe (0)
 		}
 	}
 
@@ -337,8 +337,8 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			legacy.size shouldBe (0) //expected:<0> but was:<100>
-			rrule.size shouldBe (0) //expected:<0> but was:<100>
+			legacy.size shouldBe (0)
+			rrule.size shouldBe (0)
 		}
 	}
 
@@ -362,8 +362,8 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			legacy.size shouldBe (0) //expected:<0> but was:<100>
-			rrule.size shouldBe (0) //expected:<0> but was:<100>
+			legacy.size shouldBe (0)
+			rrule.size shouldBe (0)
 		}
 	}
 
@@ -388,6 +388,8 @@ class TimeTableLogicTest : StringSpec({
 		}
 	}
 
+	/* This test was making no sense: a start hour is a start hour. If the start hour is 08:00:30... Slots will be scheduled at 08:00:30, 08:20:30, ... Same for 08:01:05
+		the test that needs to be done is that the last period is allowed */
 	"In legacy and rrule version, it should return a slot when the available duration before an existing calendarItem is shorter than the requested duration BUT the difference is less than 1 minute" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
@@ -408,8 +410,8 @@ class TimeTableLogicTest : StringSpec({
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
 			val legacyMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, legacyDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
 			val rruleMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, rruleDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
-			legacy[0] shouldBe 20200102080000L //Index 0 out of bounds for length 0
-			rrule[0] shouldBe 20200102080000L //Index 0 out of bounds for length 0
+			legacy[0] shouldBe 20200102080030L
+			rrule[0] shouldBe 20200102080030L
 			legacyMoreThan1.size shouldBe 0
 			rruleMoreThan1.size shouldBe 0
 		}
@@ -423,8 +425,8 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			legacy.size shouldBe (96) // Fail: expected:<96> but was:<97> / wrongly contains 20230121000000 while endDate is 20230121000000L
-			rrule.size shouldBe (96) // Fail: expected:<96> but was:<97> / wrongly contains 20230121000000 while endDate is 20230121000000L
+			legacy.size shouldBe (96)
+			rrule.size shouldBe (96)
 		}
 	}
 
@@ -449,8 +451,8 @@ class TimeTableLogicTest : StringSpec({
 		withAuthenticatedHcpContext(hcpId) {
 			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
 			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			legacy.size shouldBe (4) // expected:<4> but was:<5> // wrongly contains 20230121000000 while endDate is 20230121000000L
-			rrule.size shouldBe (4) //expected:<4> but was:<5> //wrongly contains 20230121000000 while endDate is 20230121000000L
+			legacy.size shouldBe (4)
+			rrule.size shouldBe (4)
 		}
 	}
 

@@ -42,6 +42,8 @@ import org.taktik.icure.utils.distinct
 import org.taktik.icure.utils.entities.embed.iterator
 import org.taktik.icure.utils.map
 import org.taktik.icure.utils.sortedMerge
+import org.taktik.icure.utils.toFuzzyLong
+import org.taktik.icure.utils.toLocalDateTime
 
 class SlotAndAgenda(val slot: Long, val agendaId: String?): Comparable<SlotAndAgenda> {
 	override fun compareTo(other: SlotAndAgenda) = compareBy<SlotAndAgenda>({ it.slot }, { it.agendaId }).compare(this, other)
@@ -107,13 +109,13 @@ class TimeTableLogicImpl(
 				val end = FuzzyValues.getFuzzyDateTime(FuzzyValues.getDateTime(start) + Duration.ofSeconds(secs), ChronoUnit.SECONDS)
 
 				when {
-					start > coercedEnd -> {
+					start.toLocalDateTime() - Duration.ofSeconds(60) >= coercedEnd.toLocalDateTime() -> {
 						null
 					}
 
 					!cis.filter { it.startTime != null && it.agendaId == agendaId }
 						.any { ci -> //No existing ci conflicts
-							(ci.startTime ?: 0) < end && (
+							(((ci.startTime ?: 0).toLocalDateTime() + Duration.ofSeconds(60)).toFuzzyLong() /* allows for startHours with parasite seconds */) <= end && (
 								if (ci.allDay == true)
 									((ci.startTime ?: 0) - ((ci.startTime ?: 0) % 1000000)) + 240000
 								else

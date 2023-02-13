@@ -30,3 +30,5 @@ fun Long.toFuzzyDateTime() = FuzzyValues.getFuzzyDateTime(FuzzyValues.getDateTim
 fun Long.toHms() = this.takeIf { this <= 240000 } ?: (this.toFuzzyDateTime() % 1000000)
 fun Long.toSec() = (this / 10000) * 3600 + ((this / 100) % 100) * 60 + (this % 100)
 fun Long.toEpochMillisecond() = FuzzyValues.getDateTime(this).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
+fun Long.toLocalDateTime() = FuzzyValues.getDateTime(this)
+fun LocalDateTime.toFuzzyLong() = FuzzyValues.getFuzzyDateTime(this, ChronoUnit.SECONDS)
