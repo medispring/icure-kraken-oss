@@ -65,7 +65,7 @@ data class FormTemplate(
 	val mediumReport: String? = null,
 	val longReport: String? = null,
 	val reports: Set<String> = emptySet(),
-	
+
 	val templateLayoutAttachmentId: String? = null,
 
 	@Deprecated("Use templateLayoutAttachmentId")
@@ -99,9 +99,14 @@ data class FormTemplate(
 		"longReport" to (this.longReport ?: other.longReport),
 		"reports" to (other.reports + this.reports),
 		"layoutAttachmentId" to (this.layoutAttachmentId ?: other.layoutAttachmentId),
+		"templateLayoutAttachmentId" to (this.templateLayoutAttachmentId ?: other.templateLayoutAttachmentId),
 		"layout" to (
 			this.layout?.let { if (it.size >= other.layout?.size ?: 0) it else other.layout }
 				?: other.layout
+			),
+		"templateLayout" to (
+			this.templateLayout?.let { if (it.size >= other.templateLayout?.size ?: 0) it else other.templateLayout }
+				?: other.templateLayout
 			)
 	)
 
