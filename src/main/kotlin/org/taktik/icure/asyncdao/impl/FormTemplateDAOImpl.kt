@@ -154,7 +154,7 @@ internal class FormTemplateDAOImpl(
 	override suspend fun afterSave(entity: FormTemplate) =
 		super.afterSave(entity).let { formTemplate ->
 			if (formTemplate.isAttachmentDirty && formTemplate.templateLayoutAttachmentId != null && formTemplate.rev != null && formTemplate.templateLayout != null) {
-				createAttachment(formTemplate.id, formTemplate.templateLayoutAttachmentId, formTemplate.rev, "application/json", flowOf(ByteBuffer.wrap(formTemplate.templateLayout))).let {
+				createAttachment(formTemplate.id, formTemplate.templateLayoutAttachmentId, formTemplate.rev, "application/octet-stream", flowOf(ByteBuffer.wrap(formTemplate.templateLayout))).let {
 					formTemplate.copy(
 						rev = it,
 						isAttachmentDirty = false
