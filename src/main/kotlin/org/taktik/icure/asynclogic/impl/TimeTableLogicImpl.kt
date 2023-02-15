@@ -93,8 +93,7 @@ class TimeTableLogicImpl(
 
 		val secs = (cit.duration.toLong() * 60).coerceAtLeast(60) //s
 		val duration = Duration.ofSeconds(secs)
-		val coercedEndLdt = (startLdt + Duration.ofDays(120)).coerceAtMost(endLdt)
-		val coercedEnd = FuzzyValues.getFuzzyDateTime(coercedEndLdt, ChronoUnit.SECONDS)
+		val coercedEnd = FuzzyValues.getFuzzyDateTime((startLdt + Duration.ofDays(120)).coerceAtMost(endLdt), ChronoUnit.SECONDS)
 
 		val ttis = tts.filter {
 			(it.startTime ?: 0) <= roundedEndDate && (it.endTime ?: Long.MAX_VALUE) >= roundedStartDate
@@ -109,7 +108,7 @@ class TimeTableLogicImpl(
 				val end = FuzzyValues.getFuzzyDateTime(FuzzyValues.getDateTime(start) + Duration.ofSeconds(secs), ChronoUnit.SECONDS)
 
 				when {
-					start.toLocalDateTime() - Duration.ofSeconds(60) >= coercedEnd.toLocalDateTime() -> {
+					start.toLocalDateTime() - Duration.ofSeconds(60) + duration >= coercedEnd.toLocalDateTime() -> {
 						null
 					}
 

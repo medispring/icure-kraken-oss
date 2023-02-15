@@ -237,7 +237,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106080000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106081500L, calendarItemTypeId, null, false, true, hcpId).toList()
 			everyWeek [0] shouldBe 20200106080000L
 			everyWeek.size shouldBe 1
 		}
@@ -256,7 +256,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
 		}
 	}
@@ -265,7 +265,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1", "2", "3", "4", "5", "6", "7" ) , listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L) //Fail:  Element 20200102080000L expected at index 0 but there were no further elements
 		}
 	}
