@@ -320,6 +320,6 @@ class FormController(
 	) = mono {
 		val formTemplate = formTemplateLogic.getFormTemplate(formTemplateId)
 			?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "FormTemplate with id $formTemplateId not found")
-		formTemplateLogic.modifyFormTemplate(formTemplate.copy(layout = payload))?.rev ?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Form Template modification failed")
+		formTemplateLogic.modifyFormTemplate(formTemplate.copy(templateLayout = payload))?.rev ?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Form Template modification failed")
 	}
 }

@@ -126,20 +126,25 @@ internal class FormTemplateDAOImpl(
 						formTemplate.copy(
 							rev = deleteAttachment(formTemplate.id, formTemplate.rev, formTemplate.templateLayoutAttachmentId),
 							attachments = formTemplate.attachments - formTemplate.templateLayoutAttachmentId,
-							layoutAttachmentId = newAttachmentId,
+							templateLayoutAttachmentId = newAttachmentId,
 							isAttachmentDirty = true
 						)
 					} ?: formTemplate.copy(
-						layoutAttachmentId = newAttachmentId,
+						templateLayoutAttachmentId = newAttachmentId,
 						isAttachmentDirty = true
 					)
-				} else
-					formTemplate
+				} else{
+					formTemplate.copy(
+						rev = formTemplate.rev,
+						templateLayoutAttachmentId = newAttachmentId,
+						isAttachmentDirty = true
+					)
+				}
 			} else {
 				if (formTemplate.templateLayoutAttachmentId != null && formTemplate.rev != null) {
 					formTemplate.copy(
 						rev = deleteAttachment(formTemplate.id, formTemplate.rev, formTemplate.templateLayoutAttachmentId),
-						layoutAttachmentId = null,
+						templateLayoutAttachmentId = null,
 						isAttachmentDirty = false
 					)
 				} else formTemplate
