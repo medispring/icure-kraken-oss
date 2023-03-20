@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1.2</VERSION>
+	<DATE>2015-12-01</DATE>
+	<STATUS>published</STATUS>
+	<NAME>Therapeutic Link Type</NAME>
+	<VALUE>
+		<CODE>hospitalstay</CODE>
+		<DESCRIPTION L="en">Relation between care givers and inpatients.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hospitalambulatory</CODE>
+		<DESCRIPTION L="en">Relation between care givers and outpatients.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hospitalurgency</CODE>
+		<DESCRIPTION L="en">Relation between care givers and patients  in a hospital for urgent situations.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>gmd</CODE>
+		<DESCRIPTION L="en">Relation between family doctor and patients when the family doctor handles all patients medical data across time.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>carepath</CODE>
+		<DESCRIPTION L="en">Relation between care givers and patients for a sequence of care processes.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>medicalhouse</CODE>
+		<DESCRIPTION L="en">Relation between care givers and patients in a medical house.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>patientmanagement</CODE>
+		<DESCRIPTION L="en">Relation managed by patients themselves with their care givers.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>gpconsultation</CODE>
+		<DESCRIPTION L="en">Relation between general practitioners and patients for general consultation.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>specialistconsultation</CODE>
+		<DESCRIPTION L="en">Relation between specialists and patients for specialist consultation.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>nurseconsultation</CODE>
+		<DESCRIPTION L="en">Relation between nurses and patients for nurse consultation.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>pharmacydelivery</CODE>
+		<DESCRIPTION L="en">Relation between pharmacists  and patients for a prescription delivery.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>gpreferral</CODE>
+		<DESCRIPTION L="en">Relation between general practitioners and patients created by other general practitioners.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>specialistreferral</CODE>
+		<DESCRIPTION L="en">Relation between specialists and patients created by other specialists.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>pharmacistreferral</CODE>
+		<DESCRIPTION L="en">Relation between pharmacists and patients created by other pharmacists .</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>nursereferral</CODE>
+		<DESCRIPTION L="en">Relation between nurses and patients created by other nurses.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>consultation</CODE>
+		<DESCRIPTION L="en">Relation between some healthcare providers and patients for general consultation.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>delivery</CODE>
+		<DESCRIPTION L="en">Relation between some healthcare providers and patients for a delivery, e.g. medication, glasses…</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>referral</CODE>
+		<DESCRIPTION L="en">Relation between some healthcare providers and patients created by other healthcare providers.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

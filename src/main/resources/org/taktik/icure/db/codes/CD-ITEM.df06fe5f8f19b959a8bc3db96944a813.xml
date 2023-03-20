@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1.11</VERSION>
+	<DATE>2016-12-01</DATE>
+	<STATUS>published</STATUS>
+	<NAME>Item Type</NAME>
+	<VALUE>
+		<CODE>encountertype</CODE>
+		<DESCRIPTION L="en">encounter type</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encounterresponsible</CODE>
+		<DESCRIPTION L="en">responsible physician for the encounter</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encounternumber</CODE>
+		<DESCRIPTION L="en">encounter number</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>healthcareelement</CODE>
+		<DESCRIPTION L="en">healthcare element</DESCRIPTION>
+		<DESCRIPTION L="fr">élément de soins</DESCRIPTION>
+		<DESCRIPTION L="en">zorg element</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>reimbursementcertificate</CODE>
+		<DESCRIPTION L="en">            certificate justifying the reimbursement of a treatment/procedure        </DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>admissiontype</CODE>
+		<DESCRIPTION L="en">admission type</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>referringtype</CODE>
+		<DESCRIPTION L="en">referring type</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>expirationdatetime</CODE>
+		<DESCRIPTION L="en">expiration date and time</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>risk</CODE>
+		<DESCRIPTION L="en">risk factor</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encounterdatetime</CODE>
+		<DESCRIPTION L="en">encounter date and time</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encounterlocation</CODE>
+		<DESCRIPTION L="en">encounter location</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encounterlegalservice</CODE>
+		<DESCRIPTION L="en">encounter legal service</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>transferdatetime</CODE>
+		<DESCRIPTION L="en">transfer datetime</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>dischargetype</CODE>
+		<DESCRIPTION L="en">type of discharge</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>dischargedestination</CODE>
+		<DESCRIPTION L="en">discharge destination</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requesteddischargedestination</CODE>
+		<DESCRIPTION L="en">discharge preferred destination</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requestdatetime</CODE>
+		<DESCRIPTION L="en">request date and time</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requestnumber</CODE>
+		<DESCRIPTION L="en">request number</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requestor</CODE>
+		<DESCRIPTION L="en">requestor / referrer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>lab</CODE>
+		<DESCRIPTION L="en">laboratory item</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>evolution</CODE>
+		<DESCRIPTION L="en">evolution</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>transcriptionist</CODE>
+		<DESCRIPTION L="en">transcriptionist</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>transactionreason</CODE>
+		<DESCRIPTION L="en">reason for transaction</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requestedencountertype</CODE>
+		<DESCRIPTION L="en">requested encounter type</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requesteddecisionsharing</CODE>
+		<DESCRIPTION L="en">requested decision sharing</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>conclusion</CODE>
+		<DESCRIPTION L="en">conclusion</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>healthissue</CODE>
+		<DESCRIPTION L="en">health issue</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>habit</CODE>
+		<DESCRIPTION L="en">habits</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>allergy</CODE>
+		<DESCRIPTION L="en">allergy</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>adr</CODE>
+		<DESCRIPTION L="en">adverse drug reaction</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>complaint</CODE>
+		<DESCRIPTION L="en">complaint</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>clinical</CODE>
+		<DESCRIPTION L="en">clinical examination</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>technical</CODE>
+		<DESCRIPTION L="en">technical examination</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>medication</CODE>
+		<DESCRIPTION L="en">medication</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>complementaryproduct</CODE>
+		<DESCRIPTION L="en">complementary product</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>vaccine</CODE>
+		<DESCRIPTION L="en">vaccine</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>treatment</CODE>
+		<DESCRIPTION L="en">treatment</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>contactperson</CODE>
+		<DESCRIPTION L="en">contact person</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>autonomy</CODE>
+		<DESCRIPTION L="en">autonomy level</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>specimendatetime</CODE>
+		<DESCRIPTION L="en">specimen date and time</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hcpartyavailability</CODE>
+		<DESCRIPTION L="en">availability of an healthcare party</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>gmdmanager</CODE>
+		<DESCRIPTION L="en">global medical record manager</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>ntbr</CODE>
+		<DESCRIPTION L="en">not to be resuscitated</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>bloodtransfusionrefusal</CODE>
+		<DESCRIPTION L="en">blood transfusion refusal</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>socialrisk</CODE>
+		<DESCRIPTION L="en">social risk factor</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>encountersafetyissue</CODE>
+		<DESCRIPTION L="en">safety issues related to the encounter</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>emergencyevaluation</CODE>
+		<DESCRIPTION L="en">evaluation of emergency justification</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>incapacity</CODE>
+		<DESCRIPTION L="en">incapacity description</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>dischargedatetime</CODE>
+		<DESCRIPTION L="en">discharge date and time</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>insurancystatus</CODE>
+		<DESCRIPTION L="en">insurancy status</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>patientwill</CODE>
+		<DESCRIPTION L="en">patient's will</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>professionalrisk </CODE>
+		<DESCRIPTION L="en">professional risk</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>familyrisk</CODE>
+		<DESCRIPTION L="en">family risk</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>parameter</CODE>
+		<DESCRIPTION L="en">parameter</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>careplansubscription</CODE>
+		<DESCRIPTION L="en">Care Plan Subscription</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>diagnosis</CODE>
+		<DESCRIPTION L="en">Diagnosis</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>actionplan</CODE>
+		<DESCRIPTION L="en">Action Plan</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>contacthcparty</CODE>
+		<DESCRIPTION L="en">Contact Healthcare Party</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>acts</CODE>
+		<DESCRIPTION L="en">Acts (curatif and prevention)</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>healthcareapproach</CODE>
+		<DESCRIPTION L="en">Healthcare Approach</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>memberinsurancystatus</CODE>
+		<DESCRIPTION L="en">Member Insurancy Status</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>referrer</CODE>
+		<DESCRIPTION L="en">Referrer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requestedrecipient</CODE>
+		<DESCRIPTION L="en">Requested Recipient</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>claim</CODE>
+		<DESCRIPTION L="en">Claim</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>outcome</CODE>
+		<DESCRIPTION L="en">Outcome</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>agreementwithpatient</CODE>
+		<DESCRIPTION L="en">Agreement with Patient</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>patientcooperation</CODE>
+		<DESCRIPTION L="en">Patient Cooperation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>reimbursementclass</CODE>
+		<DESCRIPTION L="en">Reimbursement Class</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>financialcontract</CODE>
+		<DESCRIPTION L="en">Financial Contract</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>justification</CODE>
+		<DESCRIPTION L="en">Justification</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>result</CODE>
+		<DESCRIPTION L="en">Result</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>autonomy</CODE>
+		<DESCRIPTION L="en">Autonomy</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>membership</CODE>
+		<DESCRIPTION L="en">Membership</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>problem</CODE>
+		<DESCRIPTION L="en">Diagnosis, problem, complaint, symptom, etc</DESCRIPTION>
+		<DESCRIPTION L="fr">Diagnostic, problème, plainte, symptôme, etc</DESCRIPTION>
+		<DESCRIPTION L="nl">Diagnose , klacht, symptoom, probleem, enz</DESCRIPTION>
+		<DESCRIPTION L="de">Diagnose, Problem, Klage, Symptom, usw</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

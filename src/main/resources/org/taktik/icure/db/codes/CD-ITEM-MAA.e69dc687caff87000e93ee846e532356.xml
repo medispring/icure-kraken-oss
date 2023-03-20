@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2011-07-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>MAA Items</NAME>
+	<VALUE>
+		<CODE>agreementenddate</CODE>
+		<DESCRIPTION L='fr'>Date de fin de la demande</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>agreementstartdate</CODE>
+		<DESCRIPTION L='fr'>Date de début de la demande</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>agreementtype</CODE>
+		<DESCRIPTION L='fr'>Type d’accord</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>careproviderreference</CODE>
+		<DESCRIPTION L='fr'>Référence demande prescripteur</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>chapter4annexreference</CODE>
+		<DESCRIPTION L='fr'>Référence à la base règlementaire annexe chapitre IV</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>chapter4reference</CODE>
+		<DESCRIPTION L='fr'>Référence à la base règlementaire chapitre IV</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>consultationenddate</CODE>
+		<DESCRIPTION L='fr'>Date de fin de consultation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>consultationstartdate</CODE>
+		<DESCRIPTION L='fr'>Date de fin de la demande</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>coveragetype</CODE>
+		<DESCRIPTION L='fr'>Type de couverture</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>decisionreference</CODE>
+		<DESCRIPTION L='fr'>Référence de la decision</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>iorequestreference</CODE>
+		<DESCRIPTION L='fr'>Référence demande attribuée par OA</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>orphandrugdeliveryid</CODE>
+		<DESCRIPTION L='fr'>Numéro unique – medicaments orphelins</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>orphandrugdeliveryplace</CODE>
+		<DESCRIPTION L='fr'>Etablissement hospitalier – medicaments orphelins</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>refusaljustification</CODE>
+		<DESCRIPTION L='fr'>Motif de refus</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>requesttype</CODE>
+		<DESCRIPTION L='fr'>Type de demande</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>responsetype</CODE>
+		<DESCRIPTION L='fr'>Type de réponse</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>reststrength</CODE>
+		<DESCRIPTION L='fr'>Strength restant à délivrer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>restunitnumber</CODE>
+		<DESCRIPTION L='fr'>Strength restant à délivrer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>strength</CODE>
+		<DESCRIPTION L='fr'>Nombre d’unités restant à délivrer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>unitnumber</CODE>
+		<DESCRIPTION L='fr'>Strength accordé</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

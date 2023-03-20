@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1.9</VERSION>
+	<DATE>2016-12-01</DATE>
+	<STATUS>published</STATUS>
+	<NAME>Lifecycle</NAME>
+	<VALUE>
+		<CODE>active</CODE>
+		<DESCRIPTION L="en">Service object is active or on-going.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>inactive</CODE>
+		<DESCRIPTION L="en">Service object is inactive.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>cancelled</CODE>
+		<DESCRIPTION L="en">Service object has been abandoned before activation.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>completed</CODE>
+		<DESCRIPTION L="en">Service object is completed.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>prescribed</CODE>
+		<DESCRIPTION L="en">Service object has been prescribed/requested.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>added</CODE>
+		<DESCRIPTION L="en">Service object has been added by the performer.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>planned</CODE>
+		<DESCRIPTION L="en">Service object has been planned.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>delivered</CODE>
+		<DESCRIPTION L="en">Service object has been delivered to the patient.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>substituted</CODE>
+		<DESCRIPTION L="en">Service object has been delivered to the patient but as a substitution of the originally prescribed service.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>administrated</CODE>
+		<DESCRIPTION L="en">Service object has been administrated to the patient.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>reported</CODE>
+		<DESCRIPTION L="en">Service object has been completed and reported.</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>corrected</CODE>
+		<DESCRIPTION L="en">Service object has been corrected</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>refused</CODE>
+		<DESCRIPTION L="en">Service object has been refused</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>switched</CODE>
+		<DESCRIPTION L="en">Service object has been switched</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>suspended</CODE>
+		<DESCRIPTION L="en">Service object has been suspended</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>stopped</CODE>
+		<DESCRIPTION L="en">Service object has been stopped</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>aborted</CODE>
+		<DESCRIPTION L="en">Service object has been aborted</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>excluded</CODE>
+		<DESCRIPTION L="en">Service object has been excluded</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>notpresent</CODE>
+		<DESCRIPTION L="en">Service object is not present</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>ordered</CODE>
+		<DESCRIPTION L="en">Service object has been ordered</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>scheduled</CODE>
+		<DESCRIPTION L="en">Service object has been scheduled</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>todo</CODE>
+		<DESCRIPTION L="en">Service object has to be done</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>postponed</CODE>
+		<DESCRIPTION L="en">Service object has been postponed</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>pending</CODE>
+		<DESCRIPTION L="en">Service object is pending</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>expected</CODE>
+		<DESCRIPTION L="en">Service object is expected</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>obtained</CODE>
+		<DESCRIPTION L="en">Service object has been obtained</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>proposed</CODE>
+		<DESCRIPTION L="en">Proposed</DESCRIPTION>
+		<DESCRIPTION L="fr">Proposé</DESCRIPTION>
+		<DESCRIPTION L="nl">Vorgeschlagen</DESCRIPTION>
+		<DESCRIPTION L="de">Voorgesteld</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>retracted</CODE>
+		<DESCRIPTION L="en">Retracted</DESCRIPTION>
+		<DESCRIPTION L="fr">Rétracté </DESCRIPTION>
+		<DESCRIPTION L="nl">Ingetrokken</DESCRIPTION>
+		<DESCRIPTION L="de">zurückgezogn</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

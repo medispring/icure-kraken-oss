@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2003-08-07</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Vaccine Code</NAME>
+	<VALUE>
+		<CODE>dite12</CODE>
+		<DESCRIPTION L='en'>Di-Te 12 years</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>diteper</CODE>
+		<DESCRIPTION L='en'>Di-Te-Per</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>ditepro</CODE>
+		<DESCRIPTION L='en'>Di-Te Pro</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hepatitiesb</CODE>
+		<DESCRIPTION L='en'>hepatitis B</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>infanrixhexa</CODE>
+		<DESCRIPTION L='en'>Di-Te-Per, haemophilus b, hepatitis B, polio</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>influenza</CODE>
+		<DESCRIPTION L='en'>influenza</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>meningitisc</CODE>
+		<DESCRIPTION L='en'>meningitis C</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>mmr</CODE>
+		<DESCRIPTION L='en'>MMR</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>mmr12</CODE>
+		<DESCRIPTION L='en'>MMR 12 years</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>pneumonia</CODE>
+		<DESCRIPTION L='en'>pneumonia</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>polio</CODE>
+		<DESCRIPTION L='en'>Polio</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

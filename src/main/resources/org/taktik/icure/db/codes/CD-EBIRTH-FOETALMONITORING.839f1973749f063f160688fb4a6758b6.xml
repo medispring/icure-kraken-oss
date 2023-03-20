@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2009-07-30</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>eBirth monitoring foetal</NAME>
+	<VALUE>
+		<CODE>CTG</CODE>
+		<DESCRIPTION L='de'>KTG (Kardio(toko)gramm)</DESCRIPTION>
+		<DESCRIPTION L='fr'>CTG (cardio(toco)gramme)</DESCRIPTION>
+		<DESCRIPTION L='nl'>CTG (cardiotocogram)</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>MBE</CODE>
+		<DESCRIPTION L='de'>pH an der Kopfhaut</DESCRIPTION>
+		<DESCRIPTION L='fr'>pH au scalp</DESCRIPTION>
+		<DESCRIPTION L='nl'>MBO (microbloedonderzoek)</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>STAN</CODE>
+		<DESCRIPTION L='de'>STAN</DESCRIPTION>
+		<DESCRIPTION L='fr'>STAN</DESCRIPTION>
+		<DESCRIPTION L='nl'>STAN-monitor</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>intermittent-auscultation</CODE>
+		<DESCRIPTION L='de'>Intermittente Auskultation</DESCRIPTION>
+		<DESCRIPTION L='fr'>Auscultation intermittente</DESCRIPTION>
+		<DESCRIPTION L='nl'>Intermittente ausculatie</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

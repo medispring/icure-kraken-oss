@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2012-04-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Ortho Approach</NAME>
+	<VALUE>
+		<CODE>anterior</CODE>
+		<DESCRIPTION L='en'>Anterior</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>bytrochanterotomy</CODE>
+		<DESCRIPTION L='en'>By Trochanterotomy</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>lateral</CODE>
+		<DESCRIPTION L='en'>Lateral</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>midvastus</CODE>
+		<DESCRIPTION L='en'>Midvastus</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>other</CODE>
+		<DESCRIPTION L='en'>Other</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>parapatellarlateral</CODE>
+		<DESCRIPTION L='en'>Parapatellar Lateral</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>parapatellarmedial</CODE>
+		<DESCRIPTION L='en'>Parapatellar Medial</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>posterior</CODE>
+		<DESCRIPTION L='en'>Posterior</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>subvastus</CODE>
+		<DESCRIPTION L='en'>Subvastus</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>tuberositasosteotomie</CODE>
+		<DESCRIPTION L='en'>Tuberositasosteotomie</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>withfemoralosteotomy</CODE>
+		<DESCRIPTION L='en'>With Femoral Osteotomy</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

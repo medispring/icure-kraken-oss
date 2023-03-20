@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2011-07-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>MAA Request Type</NAME>
+	<VALUE>
+		<CODE>cancellation</CODE>
+		<DESCRIPTION L='fr'>Annulation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>closure</CODE>
+		<DESCRIPTION L='fr'>Annulation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>complimentaryannex</CODE>
+		<DESCRIPTION L='fr'>Annexe complémentaire suite à un refus motif 502</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>extension</CODE>
+		<DESCRIPTION L='fr'>Prolongation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>newrequest</CODE>
+		<DESCRIPTION L='fr'>Nouvelles demande</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>noncontinuousextension</CODE>
+		<DESCRIPTION L='fr'>Prolongation non continue</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

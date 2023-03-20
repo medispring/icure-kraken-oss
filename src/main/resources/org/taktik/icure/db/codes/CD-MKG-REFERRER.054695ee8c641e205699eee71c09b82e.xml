@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2002-07-17</DATE>
+	<STATUS>Published</STATUS>
+	<NAME>Referrer</NAME>
+	<VALUE>
+		<CODE>0</CODE>
+		<DESCRIPTION L='fr'>Inconnu</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>1</CODE>
+		<DESCRIPTION L='fr'>De sa propre initiative</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>2</CODE>
+		<DESCRIPTION L='fr'>Médecin généraliste</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>3</CODE>
+		<DESCRIPTION L='fr'>Médecin spécialiste de l'hôpital</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>4</CODE>
+		<DESCRIPTION L='fr'>Médecin spécialiste autre</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>5</CODE>
+		<DESCRIPTION L='fr'>Organisme assureur</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>6</CODE>
+		<DESCRIPTION L='fr'>Tiers</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>8</CODE>
+		<DESCRIPTION L='fr'>Né à l'hôpital</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

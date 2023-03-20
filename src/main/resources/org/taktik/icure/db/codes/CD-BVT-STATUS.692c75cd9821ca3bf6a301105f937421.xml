@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2011-07-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>BVT Sample Status</NAME>
+	<VALUE>
+		<CODE>inactive</CODE>
+		<DESCRIPTION L='fr'>Inactif</DESCRIPTION>
+		<DESCRIPTION L='en'>Inactive</DESCRIPTION>
+		<DESCRIPTION L='nl'>Inactief</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>published</CODE>
+		<DESCRIPTION L='fr'>Publié</DESCRIPTION>
+		<DESCRIPTION L='en'>Published</DESCRIPTION>
+		<DESCRIPTION L='nl'>Gepubliceerd</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>rejected</CODE>
+		<DESCRIPTION L='fr'>Rejeté</DESCRIPTION>
+		<DESCRIPTION L='en'>Rejected</DESCRIPTION>
+		<DESCRIPTION L='nl'>Geweigerd</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>saved</CODE>
+		<DESCRIPTION L='fr'>Sauvé</DESCRIPTION>
+		<DESCRIPTION L='en'>Saved</DESCRIPTION>
+		<DESCRIPTION L='nl'>Opgeslagen</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>submitted</CODE>
+		<DESCRIPTION L='fr'>Envoyé</DESCRIPTION>
+		<DESCRIPTION L='en'>Submitted</DESCRIPTION>
+		<DESCRIPTION L='nl'>Ingezonden</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

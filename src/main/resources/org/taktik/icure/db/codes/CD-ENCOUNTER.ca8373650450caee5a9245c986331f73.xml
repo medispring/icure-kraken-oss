@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1.1</VERSION>
+	<DATE>2013-10-01</DATE>
+	<STATUS>published</STATUS>
+	<NAME>Encounter type</NAME>
+	<VALUE>
+		<CODE>telephonicconsultation</CODE>
+		<DESCRIPTION L="en">Consultation by phone</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hospital</CODE>
+		<DESCRIPTION L="en">Hospitalisation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>emergency</CODE>
+		<DESCRIPTION L="en">Emergency admission</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>consultation</CODE>
+		<DESCRIPTION L="en">Ambulatory consultation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>oneday</CODE>
+		<DESCRIPTION L="en">One day stay</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>technical</CODE>
+		<DESCRIPTION L="en">Technical investigation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>homevisit</CODE>
+		<DESCRIPTION L="en">Home visit</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>emergencyhomevisit</CODE>
+		<DESCRIPTION L="en">Home visit in a context of emergency</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>resthomevisit</CODE>
+		<DESCRIPTION L="en">Resthome visit</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>consult</CODE>
+		<DESCRIPTION L="en">Consult</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>multidisciplinaryconsult</CODE>
+		<DESCRIPTION L="en">Multidisciplinary consult</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

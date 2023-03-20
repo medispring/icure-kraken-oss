@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2012-04-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Ortho Interface</NAME>
+	<VALUE>
+		<CODE>allpoly</CODE>
+		<DESCRIPTION L='en'>All-poly (only for acetabular)</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>cementwithab</CODE>
+		<DESCRIPTION L='en'>Cement With AB</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>cementwithoutab</CODE>
+		<DESCRIPTION L='en'>Cement Without AB</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>hacoated</CODE>
+		<DESCRIPTION L='en'>HA-coated</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>metalbacked</CODE>
+		<DESCRIPTION L='en'>Metal-backed</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>none</CODE>
+		<DESCRIPTION L='en'>None</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>other</CODE>
+		<DESCRIPTION L='en'>Other</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>porous</CODE>
+		<DESCRIPTION L='en'>Porous</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>smouth</CODE>
+		<DESCRIPTION L='en'>Smouth</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2012-04-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Bearing Surface</NAME>
+	<VALUE>
+		<CODE>ceramceram</CODE>
+		<DESCRIPTION L='en'>Ceramics - Ceramics</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>cerampoly</CODE>
+		<DESCRIPTION L='en'>Ceramics - Polyethylene</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>metalmetal</CODE>
+		<DESCRIPTION L='en'>Metal - Metal</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>metalpoly</CODE>
+		<DESCRIPTION L='en'>Metal - Polyethylene</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>other</CODE>
+		<DESCRIPTION L='en'>Other</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2011-07-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>MAA Response Type</NAME>
+	<VALUE>
+		<CODE>agreement</CODE>
+		<DESCRIPTION L='fr'>Accord</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>intreatment</CODE>
+		<DESCRIPTION L='fr'>En traitement</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>refusal</CODE>
+		<DESCRIPTION L='fr'>Refus</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>
