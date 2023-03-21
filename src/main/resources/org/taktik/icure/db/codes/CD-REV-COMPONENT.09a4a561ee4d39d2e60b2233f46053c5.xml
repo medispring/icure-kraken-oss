@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2012-04-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Revised Component</NAME>
+	<VALUE>
+		<CODE>femur</CODE>
+		<DESCRIPTION L='en'>Femur</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>insert</CODE>
+		<DESCRIPTION L='en'>Insert</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>patella</CODE>
+		<DESCRIPTION L='en'>Patella</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>tibia</CODE>
+		<DESCRIPTION L='en'>Tibia</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

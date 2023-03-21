@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2012-04-01</DATE>
+	<STATUS>Draft</STATUS>
+	<NAME>Implantation Device</NAME>
+	<VALUE>
+		<CODE>hipprosthesis</CODE>
+		<DESCRIPTION L='en'>Hip Prosthesis</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>kneeprosthesis</CODE>
+		<DESCRIPTION L='en'>Knee Prosthesis</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>spacer</CODE>
+		<DESCRIPTION L='en'>Spacer</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

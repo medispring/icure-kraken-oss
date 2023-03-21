@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1.2</VERSION>
+	<DATE>2017-06-01</DATE>
+	<STATUS>published</STATUS>
+	<NAME>Incapacity type</NAME>
+	<VALUE>
+		<CODE>work</CODE>
+		<DESCRIPTION L="en">incapacity to work</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>school</CODE>
+		<DESCRIPTION L="en">incapacity to follow courses</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>swim</CODE>
+		<DESCRIPTION L="en">incapacity to swim</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>sport</CODE>
+		<DESCRIPTION L="en">incapacity to perform gymnastics</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>schoolsports</CODE>
+		<DESCRIPTION L="en">incapacity to perform school sports</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>travel</CODE>
+		<DESCRIPTION L="en">incapacity to travel</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>vote</CODE>
+		<DESCRIPTION L="en">incapacity to vote</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>heavyphysicalactivity</CODE>
+		<DESCRIPTION L="en">heavy physical activity</DESCRIPTION>
+		<DESCRIPTION L="fr">activité physique intense</DESCRIPTION>
+		<DESCRIPTION L="nl">zware fysieke inspanning</DESCRIPTION>
+		<DESCRIPTION L="de">schwerer physischer Aktivitit</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

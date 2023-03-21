@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2002-07-17</DATE>
+	<STATUS>Published</STATUS>
+	<NAME>Type of discharge</NAME>
+	<VALUE>
+		<CODE>0</CODE>
+		<DESCRIPTION L='fr'>Inconnu</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>1</CODE>
+		<DESCRIPTION L='fr'>Sur avis médical</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>2</CODE>
+		<DESCRIPTION L='fr'>Contre avis médical</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>3</CODE>
+		<DESCRIPTION L='fr'>Décès avec autopsie</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>4</CODE>
+		<DESCRIPTION L='fr'>Décès sans autopsie</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>5</CODE>
+		<DESCRIPTION L='fr'>Transfert vers autre institution spécialisée</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>6</CODE>
+		<DESCRIPTION L='fr'>Transfert/retour réadaptation/soins</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>D</CODE>
+		<DESCRIPTION L='fr'>Retour à l'hôpital d'origine</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

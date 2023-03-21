@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2002-07-17</DATE>
+	<STATUS>Published</STATUS>
+	<NAME>Technical services</NAME>
+	<VALUE>
+		<CODE>452723</CODE>
+		<DESCRIPTION L='en'>Radiography of the thorax, 2 slides</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>453132</CODE>
+		<DESCRIPTION L='en'>coronarography</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>460121</CODE>
+		<DESCRIPTION L='en'>CT Neck Thorax Abdomen</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>475086</CODE>
+		<DESCRIPTION L='en'>Electrocardiography - 12 derivations</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>476254</CODE>
+		<DESCRIPTION L='en'>Holter minimum 24 hours</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>

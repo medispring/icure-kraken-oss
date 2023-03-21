@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmehr-cd>
+	<VERSION>1</VERSION>
+	<DATE>2002-07-17</DATE>
+	<STATUS>Published</STATUS>
+	<NAME>Temporality</NAME>
+	<VALUE>
+		<CODE>acute</CODE>
+		<DESCRIPTION L='en'>Acute</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>chronic</CODE>
+		<DESCRIPTION L='en'>Chronic</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>oneshot</CODE>
+		<DESCRIPTION L='en'>One shot</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>reactivation</CODE>
+		<DESCRIPTION L='en'>Reactivation</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>remission</CODE>
+		<DESCRIPTION L='en'>Remission</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>subacute</CODE>
+		<DESCRIPTION L='en'>Subacute</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+</kmehr-cd>
