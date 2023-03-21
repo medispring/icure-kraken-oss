@@ -518,7 +518,7 @@ class CodeLogicImpl(private val sessionLogic: AsyncSessionLogic, val codeDAO: Co
 								version = ch
 							}
 							"VALUE" -> {
-								code = mutableMapOf("type" to type, "version" to version, "label" to mapOf<String, String>())
+								code = mutableMapOf("type" to type, "version" to version, "label" to mapOf<String, String>(), "regions" to setOf<String>())
 							}
 							"CODE" -> charsHandler = { ch -> code["code"] = ch }
 							"DESCRIPTION" -> charsHandler = {
@@ -526,6 +526,7 @@ class CodeLogicImpl(private val sessionLogic: AsyncSessionLogic, val codeDAO: Co
 									code["label"] = (code["label"] as Map<*, *>) + (attributesValue to it.trim())
 								}
 							}
+							"REGIONS" -> charsHandler = { code["regions"] = (code["regions"] as Set<String>) + it.trim() }
 							else -> charsHandler = null
 						}
 					}
