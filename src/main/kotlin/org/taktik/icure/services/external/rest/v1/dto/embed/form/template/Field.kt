@@ -21,4 +21,5 @@ open class Field(
 	val tags: List<String>? = null,
 	val codifications: List<String>? = null,
 	val options: Map<String, *>? = null,
+	hideCondition: Boolean? = null,
 ) : StructureElement

@@ -8,8 +8,8 @@ import com.github.pozo.KotlinBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
 data class Section(
-	val section: String,
-	val fields: List<StructureElement>,
+	val section: String? = null,
+	val fields: List<StructureElement> = emptyList(),
 	val description: String? = null,
 	val keywords: List<String>? = null,
 )
