@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.taktik.icure.entities.FormTemplate
 import org.taktik.icure.services.external.rest.v1.mapper.FormTemplateMapperImpl
@@ -227,6 +228,48 @@ sections:
 
 		try {
 			val result = yaml.readValue<FormTemplateLayout>(layout)
+
+			// Assertions
+			assertEquals("Entretien préliminaire Psycho Social", result.form)
+			assertEquals("Entretien préliminaire Psycho Social", result.description)
+			assertNotNull(result.sections)
+			assertEquals(1, result.sections.size)
+
+			val section = result.sections[0]
+			assertNotNull(section)
+			assertNotNull(section.fields)
+			assertEquals(14, section.fields.size)
+
+			val field1 = section.fields[0]
+
+			assert(field1 is DropdownField)
+			field1 as DropdownField
+
+			assertEquals("Type de consultation", field1.field)
+			assertEquals(FieldType.dropdown, field1.type)
+			assertEquals("contactType", field1.shortLabel)
+			assertTrue(field1.required!!)
+
+			val field2 = section.fields[1]
+
+			assert(field2 is NumberField)
+			field2 as NumberField
+
+			assertEquals("waitingRoomFollowersNumber", field2.shortLabel)
+			assertEquals(FieldType.`number-field`, field2.type)
+			assertEquals("0", field2.value)
+			assertTrue(field2.required!!)
+
+			val field3 = section.fields[2]
+
+			assert(field3 is NumberField)
+			field3 as NumberField
+
+			assertEquals("consultationFollowersNumber", field3.shortLabel)
+			assertEquals(FieldType.`number-field`, field3.type)
+			assertEquals("0", field3.value)
+			assertTrue(field3.required!!)
+
 		} catch (e: Exception) {
 			e.printStackTrace()
 			throw e

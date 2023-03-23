@@ -21,6 +21,7 @@ class TextField(
 	shortLabel: String? = null,
 	rows: Int? = null,
 	grows: Boolean? = null,
+	multiline: Boolean? = null,
 	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
