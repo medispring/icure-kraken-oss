@@ -26,11 +26,14 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.mono
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.codec.multipart.Part
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -57,6 +60,7 @@ import org.taktik.icure.services.external.rest.v1.mapper.FormTemplateMapper
 import org.taktik.icure.services.external.rest.v1.mapper.StubMapper
 import org.taktik.icure.services.external.rest.v1.mapper.embed.DelegationMapper
 import org.taktik.icure.utils.injectReactorContext
+import org.taktik.icure.utils.toByteArray
 import reactor.core.publisher.Flux
 
 @ExperimentalCoroutinesApi
@@ -316,10 +320,14 @@ class FormController(
 	@PutMapping("/template/{formTemplateId}/attachment/multipart", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
 	fun setTemplateAttachmentMulti(
 		@PathVariable formTemplateId: String,
-		@RequestPart("attachment") payload: ByteArray
+		@RequestPart("attachment") payload: Part
 	) = mono {
 		val formTemplate = formTemplateLogic.getFormTemplate(formTemplateId)
 			?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "FormTemplate with id $formTemplateId not found")
-		formTemplateLogic.modifyFormTemplate(formTemplate.copy(templateLayout = payload))?.rev ?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Form Template modification failed")
+		formTemplateLogic.modifyFormTemplate(formTemplate.copy(templateLayout = payload.also {
+			require(it.headers().contentType != null) {
+				"attachment part must specify ${HttpHeaders.CONTENT_TYPE} header."
+			}
+		}.content().asFlow().toByteArray(true)))?.rev ?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Form Template modification failed")
 	}
 }
