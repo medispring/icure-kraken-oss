@@ -94,9 +94,9 @@ class MultipleChoice(
 		tags: List<String>? = null,
 		codifications: List<String>? = null,
 		options: Map<String, Any>? = null,
-		labels: Map<String, String>?,
-		value: String?,
-		unit: String?,
+		labels: Map<String, String>? = null,
+		value: String? = null,
+		unit: String? = null,
 	): Field(field, FieldType.`multiple-choice`, shortLabel, rows, columns, null, null, tags, codifications, options)
 
 
@@ -113,8 +113,8 @@ class DropdownField(
 		tags: List<String>? = null,
 		codifications: List<String>? = null,
 		options: Map<String, Any>? = null,
-		labels: Map<String, String>?,
-		value: String?,
+		labels: Map<String, String>? = null,
+		value: String? = null,
 	): Field(field, FieldType.`dropdown`, shortLabel, rows, columns, null, null, tags, codifications, options)
 
 @JsonPolymorphismRoot(Field::class)
@@ -130,7 +130,7 @@ class RadioButton(
 		tags: List<String>? = null,
 		codifications: List<String>? = null,
 		options: Map<String, Any>? = null,
-		value: String?,
+		value: String? = null,
 	): Field(field, FieldType.`radio-button`, shortLabel, rows, columns, null, null, tags, codifications, options)
 
 @JsonPolymorphismRoot(Field::class)
@@ -146,7 +146,7 @@ class CheckBox(
 		tags: List<String>? = null,
 		codifications: List<String>? = null,
 		options: Map<String, Any>? = null,
-		value: String?,
+		value: String? = null,
 	): Field(field, FieldType.`checkbox`, shortLabel, rows, columns, null, null, tags, codifications, options)
 
 
