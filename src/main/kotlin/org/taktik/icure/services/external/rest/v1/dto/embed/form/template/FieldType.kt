@@ -9,4 +9,7 @@ enum class FieldType {
 	`time-picker`,
 	`date-time-picker`,
 	`multiple-choice`,
+    `dropdown`,
+	`radio-button`,
+	checkbox,
 }

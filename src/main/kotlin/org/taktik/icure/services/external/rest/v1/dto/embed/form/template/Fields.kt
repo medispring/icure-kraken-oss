@@ -21,6 +21,7 @@ class TextField(
 	shortLabel: String? = null,
 	rows: Int? = null,
 	grows: Boolean? = null,
+	multiline: Boolean? = null,
 	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
@@ -79,6 +80,76 @@ class TimePicker(
 	options: Map<String, Any>? = null,
 ) : Field(field, FieldType.`time-picker`, shortLabel, null, null, null, null, tags, codifications, options)
 
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("multiple-choice")
+class MultipleChoice(
+		field: String,
+		shortLabel: String? = null,
+		rows: Int? = null,
+		columns: Int? = null,
+		tags: List<String>? = null,
+		codifications: List<String>? = null,
+		options: Map<String, Any>? = null,
+		labels: Map<String, String>? = null,
+		value: String? = null,
+		unit: String? = null,
+	): Field(field, FieldType.`multiple-choice`, shortLabel, rows, columns, null, null, tags, codifications, options)
+
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("dropdown")
+class DropdownField(
+		field: String,
+		shortLabel: String? = null,
+		rows: Int? = null,
+		columns: Int? = null,
+		tags: List<String>? = null,
+		codifications: List<String>? = null,
+		options: Map<String, Any>? = null,
+		labels: Map<String, String>? = null,
+		value: String? = null,
+	): Field(field, FieldType.`dropdown`, shortLabel, rows, columns, null, null, tags, codifications, options)
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("radio-button")
+class RadioButton(
+		field: String,
+		shortLabel: String? = null,
+		rows: Int? = null,
+		columns: Int? = null,
+		tags: List<String>? = null,
+		codifications: List<String>? = null,
+		options: Map<String, Any>? = null,
+		value: String? = null,
+	): Field(field, FieldType.`radio-button`, shortLabel, rows, columns, null, null, tags, codifications, options)
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("checkbox")
+class CheckBox(
+		field: String,
+		shortLabel: String? = null,
+		rows: Int? = null,
+		columns: Int? = null,
+		tags: List<String>? = null,
+		codifications: List<String>? = null,
+		options: Map<String, Any>? = null,
+		value: String? = null,
+	): Field(field, FieldType.`checkbox`, shortLabel, rows, columns, null, null, tags, codifications, options)
+
+
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -92,15 +163,3 @@ class DateTimePicker(
 	options: Map<String, Any>? = null,
 ) : Field(field, FieldType.`date-time-picker`, shortLabel, null, null, null, null, tags, codifications, options)
 
-@JsonPolymorphismRoot(Field::class)
-@JsonDeserialize(using = JsonDeserializer.None::class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDiscriminated("multiple-choice")
-class MultipleChoice(
-	field: String,
-	shortLabel: String? = null,
-	tags: List<String>? = null,
-	codifications: List<String>? = null,
-	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`multiple-choice`, shortLabel, null, null, null, null, tags, codifications, options)
