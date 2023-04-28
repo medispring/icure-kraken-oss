@@ -124,7 +124,7 @@ class AccessLogController(
 	@Operation(summary = "List access logs found By Healthcare Party and secret foreign keyelementIds.")
 	@GetMapping("/byHcPartySecretForeignKeys")
 	fun listAccessLogsByHCPartyAndPatientForeignKeys(@RequestParam("hcPartyId") hcPartyId: String, @RequestParam("secretFKeys") secretFKeys: String) = flow {
-		val secretPatientKeys = HashSet(secretFKeys.split(",")).toList()
+		val secretPatientKeys = secretFKeys.split(",").toSet().toList()
 		emitAll(accessLogLogic.listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys).map { accessLogV2Mapper.map(it) })
 	}.injectReactorContext()
 
