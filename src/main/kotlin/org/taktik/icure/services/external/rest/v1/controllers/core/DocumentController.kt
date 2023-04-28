@@ -350,7 +350,17 @@ class DocumentController(
 	): Flux<DocumentDto> {
 
 		val secretMessageKeys = secretFKeys.split(',').map { it.trim() }
-		val documentList = documentLogic.listDocumentsByHCPartySecretMessageKeys(hcPartyId, ArrayList(secretMessageKeys))
+		val documentList = documentLogic.listDocumentsByHCPartySecretMessageKeys(hcPartyId, secretMessageKeys)
+		return documentList.map { document -> documentMapper.map(document) }.injectReactorContext()
+	}
+
+	@Operation(summary = "List documents found By Healthcare Party and secret foreign keys.")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findDocumentsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretMessageKeys: List<String>,
+	): Flux<DocumentDto> {
+		val documentList = documentLogic.listDocumentsByHCPartySecretMessageKeys(hcPartyId, secretMessageKeys)
 		return documentList.map { document -> documentMapper.map(document) }.injectReactorContext()
 	}
 
@@ -366,7 +376,7 @@ class DocumentController(
 		}
 
 		val secretMessageKeys = secretFKeys.split(',').map { it.trim() }
-		val documentList = documentLogic.listDocumentsByDocumentTypeHCPartySecretMessageKeys(documentTypeCode, hcPartyId, ArrayList(secretMessageKeys))
+		val documentList = documentLogic.listDocumentsByDocumentTypeHCPartySecretMessageKeys(documentTypeCode, hcPartyId, secretMessageKeys)
 
 		return documentList.map { document -> documentMapper.map(document) }.injectReactorContext()
 	}

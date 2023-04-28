@@ -120,7 +120,7 @@ class ClassificationTemplateLogicImpl(
 		emitAll(classificationTemplateDAO.getEntities(ids))
 	}
 
-	override fun listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: ArrayList<String>): Flow<ClassificationTemplate> = flow {
+	override fun listClasificationsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>): Flow<ClassificationTemplate> = flow {
 		emitAll(classificationTemplateDAO.listClassificationsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys))
 	}
 

@@ -87,7 +87,7 @@ class TimeTableController(
 					rrule = null,
 					calendarItemTypeId = "consult",
 					days = mutableListOf("monday"),
-					recurrenceTypes = ArrayList(),
+					recurrenceTypes = emptyList(),
 					hours = mutableListOf(timeTableHour)
 				)
 				//Create the timeTable

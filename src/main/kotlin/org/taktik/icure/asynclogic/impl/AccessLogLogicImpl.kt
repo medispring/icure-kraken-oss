@@ -67,7 +67,7 @@ class AccessLogLogicImpl(
 		}
 	}
 
-	override fun listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<AccessLog> = flow {
+	override fun listAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretForeignKeys: List<String>): Flow<AccessLog> = flow {
 		emitAll(accessLogDAO.findAccessLogsByHCPartyAndSecretPatientKeys(hcPartyId, secretForeignKeys))
 	}
 

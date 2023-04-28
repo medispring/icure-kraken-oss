@@ -25,11 +25,11 @@ import org.taktik.icure.entities.Document
 interface DocumentDAO : GenericDAO<Document> {
 	fun listConflicts(): Flow<Document>
 
-	fun listDocumentsByHcPartyAndSecretMessageKeys(hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document>
+	fun listDocumentsByHcPartyAndSecretMessageKeys(hcPartyId: String, secretForeignKeys: List<String>): Flow<Document>
 
 	fun listDocumentsWithNoDelegations(limit: Int): Flow<Document>
 
-	fun listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document>
+	fun listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: List<String>): Flow<Document>
 
 	fun readAttachment(documentId: String, attachmentId: String, rev: String?): Flow<ByteBuffer>
 

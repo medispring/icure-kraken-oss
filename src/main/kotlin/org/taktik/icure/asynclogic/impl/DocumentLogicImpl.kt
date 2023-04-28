@@ -113,11 +113,11 @@ class DocumentLogicImpl(
 			} ?: secondaryAttachmentsChanges
 		)
 
-	override fun listDocumentsByDocumentTypeHCPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document> = flow {
+	override fun listDocumentsByDocumentTypeHCPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: List<String>): Flow<Document> = flow {
 		emitAll(documentDAO.listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode, hcPartyId, secretForeignKeys))
 	}
 
-	override fun listDocumentsByHCPartySecretMessageKeys(hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document> = flow {
+	override fun listDocumentsByHCPartySecretMessageKeys(hcPartyId: String, secretForeignKeys: List<String>): Flow<Document> = flow {
 		emitAll(documentDAO.listDocumentsByHcPartyAndSecretMessageKeys(hcPartyId, secretForeignKeys))
 	}
 

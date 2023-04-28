@@ -66,7 +66,7 @@ class DocumentDAOImpl(
 	}
 
 	@View(name = "by_hcparty_message", map = "classpath:js/document/By_hcparty_message_map.js")
-	override fun listDocumentsByHcPartyAndSecretMessageKeys(hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document> = flow {
+	override fun listDocumentsByHcPartyAndSecretMessageKeys(hcPartyId: String, secretForeignKeys: List<String>): Flow<Document> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 
 		val keys = secretForeignKeys.map { fk -> ComplexKey.of(hcPartyId, fk) }
@@ -90,7 +90,7 @@ class DocumentDAOImpl(
 	}
 
 	@View(name = "by_type_hcparty_message", map = "classpath:js/document/By_document_type_hcparty_message_map.js")
-	override fun listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: ArrayList<String>): Flow<Document> = flow {
+	override fun listDocumentsByDocumentTypeHcPartySecretMessageKeys(documentTypeCode: String, hcPartyId: String, secretForeignKeys: List<String>): Flow<Document> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 
 		val keys = secretForeignKeys.map { fk -> ComplexKey.of(documentTypeCode, hcPartyId, fk) }

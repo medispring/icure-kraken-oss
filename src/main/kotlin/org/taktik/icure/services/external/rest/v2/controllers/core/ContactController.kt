@@ -209,7 +209,7 @@ class ContactController(
 		@RequestParam(required = false) skipClosedContacts: Boolean?
 	): Flux<ContactDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, ArrayList(secretPatientKeys))
+		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys)
 
 		return if (planOfActionsIds != null) {
 			val poaids = planOfActionsIds.split(',')
@@ -218,6 +218,25 @@ class ContactController(
 			contactList.filter { c -> skipClosedContacts == null || !skipClosedContacts || c.closingDate == null }.map { contact -> contactV2Mapper.map(contact) }.injectReactorContext()
 		}
 	}
+
+	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun listContactsByHCPartyAndPatientSecretFKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+		@RequestParam(required = false) planOfActionsIds: String?,
+		@RequestParam(required = false) skipClosedContacts: Boolean?
+	): Flux<ContactDto> {
+		val contactList = contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys)
+
+		return if (planOfActionsIds != null) {
+			val poaids = planOfActionsIds.split(',')
+			contactList.filter { c -> (skipClosedContacts == null || !skipClosedContacts || c.closingDate == null) && !Collections.disjoint(c.subContacts.map { it.planOfActionId }, poaids) }.map { contact -> contactV2Mapper.map(contact) }.injectReactorContext()
+		} else {
+			contactList.filter { c -> skipClosedContacts == null || !skipClosedContacts || c.closingDate == null }.map { contact -> contactV2Mapper.map(contact) }.injectReactorContext()
+		}
+	}
+
 
 	@Operation(summary = "Update delegations in healthElements.", description = "Keys must be delimited by coma")
 	@PostMapping("/delegations")
@@ -244,6 +263,15 @@ class ContactController(
 		@RequestParam secretFKeys: String
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
+		return contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys).map { contact -> stubV2Mapper.mapToStub(contact) }.injectReactorContext()
+	}
+
+	@Operation(summary = "List contacts found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys/delegations")
+	fun findContactsDelegationsStubsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+	): Flux<IcureStubDto> {
 		return contactLogic.listContactsByHCPartyAndPatient(hcPartyId, secretPatientKeys).map { contact -> stubV2Mapper.mapToStub(contact) }.injectReactorContext()
 	}
 

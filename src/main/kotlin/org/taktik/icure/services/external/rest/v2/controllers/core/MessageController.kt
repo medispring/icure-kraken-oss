@@ -134,6 +134,14 @@ class MessageController(
 			.injectReactorContext()
 	}
 
+	@Operation(summary = "List messages found By Healthcare Party and secret foreign keys.")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findMessagesByHCPartyPatientForeignKeys(@RequestBody secretPatientKeys: List<String>): Flux<MessageDto> {
+		return messageLogic.listMessagesByHCPartySecretPatientKeys(secretPatientKeys)
+			.map { contact -> messageV2Mapper.map(contact) }
+			.injectReactorContext()
+	}
+
 	@Operation(summary = "Get all messages (paginated) for current HC Party")
 	@GetMapping
 	fun findMessages(

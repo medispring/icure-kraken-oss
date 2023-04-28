@@ -250,6 +250,14 @@ class InvoiceController(
 		return elementList.map { element -> invoiceV2Mapper.map(element) }.injectReactorContext()
 	}
 
+	@Operation(summary = "List invoices found By Healthcare Party and secret foreign patient keys.", description = "Keys have to delimited by coma")
+	@PostMapping("/byHcPartySecretForeignKeys")
+	fun findInvoicesByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<InvoiceDto> {
+		val elementList = invoiceLogic.listInvoicesByHcPartyAndPatientSks(hcPartyId, secretPatientKeys.toSet())
+
+		return elementList.map { element -> invoiceV2Mapper.map(element) }.injectReactorContext()
+	}
+
 	@Operation(summary = "List helement stubs found By Healthcare Party and secret foreign keys.", description = "Keys must be delimited by coma")
 	@GetMapping("/byHcPartySecretForeignKeys/delegations")
 	fun listInvoicesDelegationsStubsByHCPartyAndPatientForeignKeys(
@@ -258,6 +266,15 @@ class InvoiceController(
 	): Flux<IcureStubDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }.toSet()
 		return invoiceLogic.listInvoicesByHcPartyAndPatientSks(hcPartyId, secretPatientKeys).map { invoice -> stubV2Mapper.mapToStub(invoice) }.injectReactorContext()
+	}
+
+	@Operation(summary = "List helement stubs found By Healthcare Party and secret foreign keys.")
+	@PostMapping("/byHcPartySecretForeignKeys/delegations")
+	fun findInvoicesDelegationsStubsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+	): Flux<IcureStubDto> {
+		return invoiceLogic.listInvoicesByHcPartyAndPatientSks(hcPartyId, secretPatientKeys.toSet()).map { invoice -> stubV2Mapper.mapToStub(invoice) }.injectReactorContext()
 	}
 
 	@Operation(summary = "List invoices by groupId", description = "Keys have to delimited by coma")
