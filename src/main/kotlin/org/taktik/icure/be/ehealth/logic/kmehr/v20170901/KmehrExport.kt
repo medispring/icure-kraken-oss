@@ -408,7 +408,7 @@ open class KmehrExport(
 				}
 			}
 			isIsrelevant = ServiceStatus.isRelevant(he.status)
-			beginmoment = (he.valueDate ?: he.openingDate).let { Utils.makeMomentTypeFromFuzzyLong(it) }
+			beginmoment = (he.openingDate ?: he.valueDate).let { Utils.makeMomentTypeFromFuzzyLong(it) }
 			endmoment = he.closingDate?.let { Utils.makeMomentTypeFromFuzzyLong(it) }
 			recorddatetime = makeXGC(he.modified)
 		}

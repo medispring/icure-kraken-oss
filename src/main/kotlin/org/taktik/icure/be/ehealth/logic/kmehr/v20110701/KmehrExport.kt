@@ -363,7 +363,7 @@ open class KmehrExport(
 				}
 			}
 			isIsrelevant = (he.status and 2) == 0
-			beginmoment = (he.valueDate ?: he.openingDate).let { Utils.makeMomentTypeFromFuzzyLong(it) }
+			beginmoment = (he.openingDate ?: he.valueDate).let { Utils.makeMomentTypeFromFuzzyLong(it) }
 			endmoment = he.closingDate?.let { Utils.makeMomentTypeFromFuzzyLong(it) }
 			recorddatetime = makeXGC(he.modified)
 		}
