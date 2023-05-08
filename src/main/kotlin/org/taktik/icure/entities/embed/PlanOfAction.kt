@@ -28,6 +28,7 @@ import org.taktik.icure.entities.utils.MergeUtil
 import org.taktik.icure.utils.DynamicInitializer
 import org.taktik.icure.utils.invoke
 import org.taktik.icure.validation.AutoFix
+import org.taktik.icure.validation.NotBlank
 import org.taktik.icure.validation.NotNull
 import org.taktik.icure.validation.ValidCode
 
@@ -75,7 +76,7 @@ import org.taktik.icure.validation.ValidCode
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
 data class PlanOfAction(
-	@JsonProperty("_id") override val id: String,
+	@field:NotBlank(autoFix = AutoFix.UUID) @JsonProperty("_id") override val id: String = "",
 	@field:NotNull(autoFix = AutoFix.NOW) override val created: Long? = null,
 	@field:NotNull(autoFix = AutoFix.NOW) override val modified: Long? = null,
 	@field:NotNull(autoFix = AutoFix.CURRENTUSERID) override val author: String? = null,

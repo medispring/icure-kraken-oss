@@ -27,12 +27,14 @@ import org.taktik.couchdb.id.Identifiable
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.utils.DynamicInitializer
 import org.taktik.icure.utils.invoke
+import org.taktik.icure.validation.AutoFix
+import org.taktik.icure.validation.NotBlank
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
 data class CareTeamMember(
-	@JsonProperty("_id") override val id: String,
+	@field:NotBlank(autoFix = AutoFix.UUID) @JsonProperty("_id") override val id: String = "",
 	val careTeamMemberType: CareTeamMemberType? = null,
 	val healthcarePartyId: String? = null,
 	val quality: CodeStub? = null,
