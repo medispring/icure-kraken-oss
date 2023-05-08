@@ -320,5 +320,6 @@ data class UserCredentials(
 	val privateKey: String?
 ) {
 	fun auth() = "Basic ${java.util.Base64.getEncoder().encodeToString("${username}:${password}".toByteArray())}"
-
 }
+
+fun uuid() = UUID.randomUUID().toString()
