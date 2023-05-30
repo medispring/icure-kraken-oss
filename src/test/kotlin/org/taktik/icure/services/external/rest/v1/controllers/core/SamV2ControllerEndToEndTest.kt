@@ -56,7 +56,7 @@ class SamV2ControllerEndToEndTest(
 
 			val res = client
 				.post()
-				.uri("${testProperties.couchdb.serverUrl}/icure-__-drugs/_bulk_docs")
+				.uri("${testProperties.couchdb.serverUrl}/icure-drugs/_bulk_docs")
 				.send(Flux.using(
 					{ GZIPInputStream(this::class.java.getResourceAsStream("/org/taktik/icure/be/samv2/amps.json.gz")) },
 					{ f ->

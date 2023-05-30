@@ -60,6 +60,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.startKey(from)
 			.endKey(to)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -72,7 +73,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 					.startKey(ampCode)
 					.endKey(ampCode)
 					.includeDocs(true)
-					.limit(100),
+					.limit(101),
 				String::class.java, String::class.java, Amp::class.java
 			)
 		)
@@ -86,7 +87,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val from = vmpgCode
 		val to = vmpgCode
 
-		val viewQuery = pagedViewQuery<Amp, String>(client, "by_groupcode", from, to, paginationOffset, false)
+		val viewQuery = pagedViewQuery<Amp, String>(client, "by_groupcode", from, to, paginationOffset.let {
+			it.copy(limit = it.limit.coerceAtMost(101))
+		}, false)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -98,7 +101,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val from = atc
 		val to = atc
 
-		val viewQuery = pagedViewQuery<Amp, String>(client, "by_atc", from, to, paginationOffset, false)
+		val viewQuery = pagedViewQuery<Amp, String>(client, "by_atc", from, to, paginationOffset.let {
+			it.copy(limit = it.limit.coerceAtMost(101))
+		}, false)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -110,7 +115,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val from = vmpgId
 		val to = vmpgId
 
-		val viewQuery = pagedViewQuery<Amp, String>(client, "by_groupid", from, to, paginationOffset, false)
+		val viewQuery = pagedViewQuery<Amp, String>(client, "by_groupid", from, to, paginationOffset.let {
+			it.copy(limit = it.limit.coerceAtMost(101))
+		}, false)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -122,7 +129,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val from = vmpCode
 		val to = vmpCode
 
-		val viewQuery = pagedViewQuery<Amp, String>(client, "by_vmpcode", from, to, paginationOffset, false)
+		val viewQuery = pagedViewQuery<Amp, String>(client, "by_vmpcode", from, to, paginationOffset.let {
+			it.copy(limit = it.limit.coerceAtMost(101))
+		}, false)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -134,7 +143,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val from = vmpId
 		val to = vmpId
 
-		val viewQuery = pagedViewQuery<Amp, String>(client, "by_vmpid", from, to, paginationOffset, false)
+		val viewQuery = pagedViewQuery<Amp, String>(client, "by_vmpid", from, to, paginationOffset.let {
+			it.copy(limit = it.limit.coerceAtMost(101))
+		}, false)
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
@@ -233,7 +244,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			"by_language_label",
 			from,
 			to,
-			paginationOffset.toPaginationOffset { sk -> ComplexKey.of(*sk.mapIndexed { i, s -> if (i == 1) s.let { StringUtils.sanitizeString(it) } else s }.toTypedArray()) },
+			paginationOffset.toPaginationOffset { sk -> ComplexKey.of(*sk.mapIndexed { i, s -> if (i == 1) s.let { StringUtils.sanitizeString(it) } else s }.toTypedArray()) }.let {
+				it.copy(limit = it.limit.coerceAtMost(101))
+			},
 			false
 		)
 		emitAll(client.queryView(viewQuery, ComplexKey::class.java, String::class.java, Amp::class.java))
@@ -249,7 +262,9 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			"by_chapter_paragraph",
 			ComplexKey.of(chapter, paragraph),
 			ComplexKey.of(chapter, paragraph),
-			paginationOffset.toPaginationOffset { sk -> ComplexKey.of(*sk.mapIndexed { i, s -> if (i == 1) s.let { StringUtils.sanitizeString(it) } else s }.toTypedArray()) },
+			paginationOffset.toPaginationOffset { sk -> ComplexKey.of(*sk.mapIndexed { i, s -> if (i == 1) s.let { StringUtils.sanitizeString(it) } else s }.toTypedArray()) }.let {
+				it.copy(limit = it.limit.coerceAtMost(101))
+			},
 			false
 		)
 		emitAll(client.queryView(viewQuery, ComplexKey::class.java, Int::class.java, Amp::class.java))
@@ -284,6 +299,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.keys(vmpgCodes)
 			.reduce(false)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryViewIncludeDocs<String, Int, Amp>(viewQuery).map { it.doc })
 	}
 
@@ -295,6 +311,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.keys(dmppCodes)
 			.reduce(false)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryViewIncludeDocs<String, Int, Amp>(viewQuery).map { it.doc })
 	}
 
@@ -306,6 +323,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.keys(vmpGroupIds)
 			.reduce(false)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryViewIncludeDocs<String, Int, Amp>(viewQuery).map { it.doc })
 	}
 
@@ -317,6 +335,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.keys(vmpCodes)
 			.reduce(false)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryViewIncludeDocs<String, Int, Amp>(viewQuery).map { it.doc })
 	}
 
@@ -328,6 +347,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 			.keys(vmpIds)
 			.reduce(false)
 			.includeDocs(true)
+			.limit(101)
 		emitAll(client.queryViewIncludeDocs<String, Int, Amp>(viewQuery).map { it.doc })
 	}
 }
