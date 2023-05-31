@@ -328,7 +328,10 @@ class SamV2Controller(
 	@GetMapping("/amp/byAmpCode/{ampCode}")
 	fun findAmpsByAmpCode(
 		@Parameter(description = "ampCode", required = true) @PathVariable ampCode: String
-	) = addProductIdsToAmps(samV2Logic.findAmpsByAmpCode(ampCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampMapper.map(it.doc) }).injectReactorContext()
+	): Flux<AmpDto> = flow {
+		val filterIsInstance = samV2Logic.findAmpsByAmpCode(ampCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().toList()
+		addProductIdsToAmps(filterIsInstance.map { ampMapper.map(it.doc) }).forEach { emit(it) }
+	}.injectReactorContext()
 
 	@Operation(summary = "Finding VMP groups by language label with pagination.", description = "Returns a list of codes matched with given input. If several types are provided, paginantion is not supported")
 	@GetMapping("/vmpgroup")

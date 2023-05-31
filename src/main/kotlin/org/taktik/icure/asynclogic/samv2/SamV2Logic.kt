@@ -48,6 +48,7 @@ interface SamV2Logic {
 	fun findAmpsByVmpId(vmpId: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 	fun findAmpsByAtcCode(atcCode: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 	fun findAmpsByDmppCode(dmppCode: String): Flow<ViewQueryResultEvent>
+	fun findAmpsByAmpCode(ampCode: String): Flow<ViewQueryResultEvent>
 
 	fun listAmpIdsByLabel(language: String?, label: String?): Flow<String>
 	fun listNmpIdsByLabel(language: String?, label: String?): Flow<String>
@@ -87,5 +88,4 @@ interface SamV2Logic {
 
 	fun getAmpsForParagraph(chapterName: String, paragraphName: String): Flow<Amp>
 	fun getVtmNamesForParagraph(chapterName: String, paragraphName: String, language: String): Flow<String>
-    fun findAmpsByAmpCode(ampCode: String): Flow<ViewQueryResultEvent>
 }
