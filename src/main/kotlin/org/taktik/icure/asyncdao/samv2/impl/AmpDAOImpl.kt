@@ -63,6 +63,21 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		emitAll(client.queryView(viewQuery, String::class.java, String::class.java, Amp::class.java))
 	}
 
+	@View(name = "by_ampcode", map = "classpath:js/amp/By_ampcode.js")
+	override fun findAmpsByAmpCode(ampCode: String) = flow {
+		val client = couchDbDispatcher.getClient(URI(couchDbProperties.url))
+		emitAll(
+			client.queryView(
+				createQuery<Amp>("by_ampcode")
+					.startKey(ampCode)
+					.endKey(ampCode)
+					.includeDocs(true)
+					.limit(100),
+				String::class.java, String::class.java, Amp::class.java
+			)
+		)
+	}
+
 	@View(name = "by_groupcode", map = "classpath:js/amp/By_groupcode.js")
 	override fun findAmpsByVmpGroupCode(vmpgCode: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent> = flow {
 		val dbInstanceUri = URI(couchDbProperties.url)

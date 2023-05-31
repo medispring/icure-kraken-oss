@@ -324,6 +324,12 @@ class SamV2Controller(
 		@Parameter(description = "dmppCode", required = true) @PathVariable dmppCode: String
 	) = addProductIdsToAmps(samV2Logic.findAmpsByDmppCode(dmppCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampMapper.map(it.doc) }).injectReactorContext()
 
+	@Operation(summary = "Finding AMPs by ampp code", description = "Returns a list of amps matched with given input. Paginantion is not supported")
+	@GetMapping("/amp/byAmpCode/{ampCode}")
+	fun findAmpsByAmpCode(
+		@Parameter(description = "ampCode", required = true) @PathVariable ampCode: String
+	) = addProductIdsToAmps(samV2Logic.findAmpsByAmpCode(ampCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampMapper.map(it.doc) }).injectReactorContext()
+
 	@Operation(summary = "Finding VMP groups by language label with pagination.", description = "Returns a list of codes matched with given input. If several types are provided, paginantion is not supported")
 	@GetMapping("/vmpgroup")
 	fun findPaginatedVmpGroupsByLabel(

@@ -32,6 +32,7 @@ interface AmpDAO : InternalDAO<Amp> {
 	fun findAmpsByVmpCode(vmpCode: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 	fun findAmpsByVmpId(vmpId: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 	fun findAmpsByDmppCode(dmppCode: String): Flow<ViewQueryResultEvent>
+	fun findAmpsByAmpCode(ampCode: String): Flow<ViewQueryResultEvent>
 	fun findAmpsByAtc(atc: String, paginationOffset: PaginationOffset<String>): Flow<ViewQueryResultEvent>
 	fun findAmpsByChapterParagraph(chapter: String, paragraph: String, paginationOffset: PaginationOffset<List<String>>): Flow<ViewQueryResultEvent>
 
@@ -49,4 +50,5 @@ interface AmpDAO : InternalDAO<Amp> {
 
 	suspend fun getVersion(): SamVersion?
 	suspend fun getProductIdsFromSignature(type: String): Map<String, String>
+	suspend fun getSignature(clazz: String): SamVersion?
 }

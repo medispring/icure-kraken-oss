@@ -87,4 +87,5 @@ interface SamV2Logic {
 
 	fun getAmpsForParagraph(chapterName: String, paragraphName: String): Flow<Amp>
 	fun getVtmNamesForParagraph(chapterName: String, paragraphName: String, language: String): Flow<String>
+    fun findAmpsByAmpCode(ampCode: String): Flow<ViewQueryResultEvent>
 }

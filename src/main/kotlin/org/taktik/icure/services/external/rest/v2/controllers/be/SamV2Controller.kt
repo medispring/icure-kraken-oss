@@ -28,7 +28,6 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
@@ -323,6 +322,13 @@ class SamV2Controller(
 	fun findAmpsByDmppCode(
 		@Parameter(description = "dmppCode", required = true) @PathVariable dmppCode: String
 	) = addProductIdsToAmps(samV2Logic.findAmpsByDmppCode(dmppCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampV2Mapper.map(it.doc) }).injectReactorContext()
+
+	@Operation(summary = "Finding AMPs by amp code", description = "Returns a list of amps matched with given input. Paginantion is not supported")
+	@GetMapping("/amp/byAmpCode/{ampCode}")
+	fun findAmpsByAmpCode(
+		@Parameter(description = "ampCode", required = true) @PathVariable ampCode: String
+	) = addProductIdsToAmps(samV2Logic.findAmpsByAmpCode(ampCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampV2Mapper.map(it.doc) }).injectReactorContext()
+
 
 	@Operation(summary = "Finding VMP groups by language label with pagination.", description = "Returns a list of codes matched with given input. If several types are provided, paginantion is not supported")
 	@GetMapping("/vmpgroup")
