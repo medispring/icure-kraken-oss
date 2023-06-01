@@ -50,5 +50,4 @@ interface AmpDAO : InternalDAO<Amp> {
 
 	suspend fun getVersion(): SamVersion?
 	suspend fun getProductIdsFromSignature(type: String): Map<String, String>
-	suspend fun getSignature(clazz: String): SamVersion?
 }

@@ -68,7 +68,7 @@ class AmpDAOImpl(couchDbProperties: CouchDbProperties, @Qualifier("drugCouchDbDi
 		val client = couchDbDispatcher.getClient(URI(couchDbProperties.url))
 		emitAll(
 			client.queryView(
-				createQuery<Amp>("by_ampcode")
+				createQuery(client, "by_ampcode")
 					.startKey(ampCode)
 					.endKey(ampCode)
 					.includeDocs(true)
