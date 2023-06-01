@@ -104,6 +104,10 @@ class SamV2LogicImpl(
 		return ampDAO.findAmpsByDmppCode(dmppCode)
 	}
 
+	override fun findAmpsByAmpCode(ampCode: String): Flow<ViewQueryResultEvent> {
+		return ampDAO.findAmpsByAmpCode(ampCode)
+	}
+
 	override fun listVmpIdsByGroupCode(vmpgCode: String): Flow<String> {
 		return vmpDAO.listVmpIdsByGroupCode(vmpgCode)
 	}

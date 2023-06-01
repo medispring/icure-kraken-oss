@@ -21,6 +21,7 @@ data class TestProperties(
 )
 
 class CouchDbProperties(
+	var serverUrl: String? = null,
 	var databaseName: String? = null,
 	var username: String? = null,
 	var password: String? = null,
