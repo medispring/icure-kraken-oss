@@ -359,7 +359,8 @@ class CodeLogicImpl(private val sessionLogic: AsyncSessionLogic, val codeDAO: Co
 									"version" to version,
 									"label" to mutableMapOf<String, String>(),
 									"searchTerms" to mutableMapOf<String, Set<String>>(),
-									"links" to mutableSetOf<String>()
+									"links" to mutableSetOf<String>(),
+									"regions" to setOf<String>()
 								)
 							}
 							"IBUI" -> charsHandler = { ch -> code["code"] = ch }
@@ -394,6 +395,7 @@ class CodeLogicImpl(private val sessionLogic: AsyncSessionLogic, val codeDAO: Co
 										("nl" to ch.split(" ").map { it.trim() }.toSet())
 								}
 							}
+							"REGIONS" -> charsHandler = { code["regions"] = (code["regions"] as Set<String>) + it.trim() }
 							else -> charsHandler = null
 						}
 					}
