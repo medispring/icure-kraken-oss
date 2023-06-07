@@ -3130,7 +3130,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>diphteria,tetanus</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>diphteria,tetanus</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.003</CISP>
@@ -3159,7 +3160,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>774</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.004</CISP>
@@ -3188,7 +3190,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>hib</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>hib</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.005</CISP>
@@ -3217,7 +3220,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>measles</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>measles</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.006</CISP>
@@ -3248,7 +3252,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>141</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>measles,rubella,mumps</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>measles,rubella,mumps</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.007</CISP>
@@ -3277,7 +3282,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>rubella</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>rubella</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.008</CISP>
@@ -3370,7 +3376,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>varicella</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>varicella</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.012</CISP>
@@ -3401,7 +3408,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>122</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>papillomavirus</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>papillomavirus</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.013</CISP>
@@ -3430,7 +3438,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>measles,rubella,mumps,varicella</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>measles,rubella,mumps,varicella</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.100</CISP>
@@ -3459,7 +3468,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>diphteria,tetanus,poliomyelitis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>diphteria,tetanus,poliomyelitis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.101</CISP>
@@ -3490,7 +3500,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>164</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis,poliomyelitis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis,poliomyelitis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.102</CISP>
@@ -3523,7 +3534,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>59</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis,poliomyelitis,hib,hepatitisb</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>diphteria,tetanus,pertussis,poliomyelitis,hib,hepatitisb</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.103</CISP>
@@ -3553,7 +3565,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>yellowfever</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>yellowfever</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.104</CISP>
@@ -3582,7 +3595,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>tuberculosis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>tuberculosis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>A44.105</CISP>
@@ -21233,7 +21247,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>28</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>hepatitisa</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>hepatitisa</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D44.004</CISP>
@@ -21262,7 +21277,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>236</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>hepatitisb</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>hepatitisb</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D44.005</CISP>
@@ -21291,7 +21307,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>mumps</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>mumps</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D44.006</CISP>
@@ -21351,7 +21368,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>30</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>hepatitisa,hepatitisb</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>hepatitisa,hepatitisb</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D44.008</CISP>
@@ -21411,7 +21429,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>5</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>rotavirus</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>rotavirus</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D44.100</CISP>
@@ -21440,7 +21459,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>20</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>typhoid</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>typhoid</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>D45.001</CISP>
@@ -35515,7 +35535,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>35</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>poliomyelitis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>poliomyelitis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.002</CISP>
@@ -35544,7 +35565,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>tetanus</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>tetanus</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.003</CISP>
@@ -35604,7 +35626,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>40</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>meningitisc</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>meningitisc</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.101</CISP>
@@ -35633,7 +35656,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>ej</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>ej</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.102</CISP>
@@ -35662,7 +35686,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>rabies</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>rabies</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.103</CISP>
@@ -35691,7 +35716,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>meningitis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>meningitis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.104</CISP>
@@ -35720,7 +35746,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>meningitis,meningitisc</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>meningitis,meningitisc</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.105</CISP>
@@ -35749,7 +35776,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>2</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>meningitis,meningitisc</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>meningitis,meningitisc</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N44.106</CISP>
@@ -35778,7 +35806,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>tickborneencephalitis</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>tickborneencephalitis</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>N45.001</CISP>
@@ -42906,7 +42935,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>900</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>seasonalinfluenza</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>seasonalinfluenza</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>R44.004</CISP>
@@ -42935,7 +42965,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse>62</Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>pneumonia23,pneumonia7</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>pneumonia23,pneumonia7</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>R44.005</CISP>
@@ -43026,7 +43057,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM>vaccine</CD-ITEM>
-		<CD-VACCINEINDICATION>pandemics</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>pandemics</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>R45.001</CISP>
@@ -105795,7 +105827,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM></CD-ITEM>
-		<CD-VACCINEINDICATION>treatment</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>treatment</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>MSP008079</CISP>
@@ -105824,7 +105857,8 @@
 		<Freq_Physio></Freq_Physio>
 		<Freq_deptnurse></Freq_deptnurse>
 		<CD-ITEM></CD-ITEM>
-		<CD-VACCINEINDICATION>treatment</CD-VACCINEINDICATION>
+		<CD-VACCINEINDICATION>treatment</CD-VACCINEINDICATION><REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
 	</Procedure>
 	<Procedure>
 		<CISP>MSP008080</CISP>
