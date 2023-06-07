@@ -21,7 +21,13 @@ open class Field(
 	val tags: List<String>? = null,
 	val codifications: List<String>? = null,
 	val options: Map<String, *>? = null,
-	val hideCondition: Boolean? = null,
+	val hideCondition: String? = null,
 	val required: Boolean? = null,
+	val multiline: Boolean? = null,
 	val value: String? = null,
+	val labels: Map<String, *>? = null,
+	val unit: String? = null,
+	val now: Boolean? = null,
+	val translate: Boolean? = null,
+
 ) : StructureElement

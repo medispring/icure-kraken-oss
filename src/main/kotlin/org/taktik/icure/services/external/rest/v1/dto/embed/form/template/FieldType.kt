@@ -11,5 +11,5 @@ enum class FieldType {
 	`multiple-choice`,
     `dropdown`,
 	`radio-button`,
-	checkbox,
+	`checkbox`,
 }
