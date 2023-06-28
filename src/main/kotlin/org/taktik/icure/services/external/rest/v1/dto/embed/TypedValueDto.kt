@@ -47,8 +47,8 @@ data class TypedValueDto<T>(
 	override val encryptedSelf: String? = null
 ) : Comparable<TypedValueDto<T>>, EncryptedDto, Serializable {
 	companion object {
-		fun <T> withValue(value: T): TypedValueDto<T> = withTypeAndValue(
-			when (value) {
+		fun <T> withValue(value: T?): TypedValueDto<T>? = value?.let { withTypeAndValue(
+			when (it) {
 				is Boolean -> TypedValuesType.BOOLEAN
 				is Int -> TypedValuesType.INTEGER
 				is Long -> TypedValuesType.INTEGER
@@ -57,29 +57,35 @@ data class TypedValueDto<T>(
 				is Date -> TypedValuesType.DATE
 				else -> throw IllegalArgumentException("Unknown value type")
 			},
-			value
-		)
+			it
+		) }
 
-		fun <T> withTypeAndValue(type: TypedValuesType, value: T): TypedValueDto<T> = when (type) {
-			TypedValuesType.BOOLEAN -> if (value is Boolean) {
-				TypedValueDto(booleanValue = value, type = type)
-			} else throw IllegalArgumentException("Illegal boolean value")
-			TypedValuesType.INTEGER -> when (value) {
-				is Int -> TypedValueDto(integerValue = value.toLong(), type = type)
-				is Long -> TypedValueDto(integerValue = value, type = type)
-				else -> throw IllegalArgumentException("Illegal integer value")
+		fun <T> withTypeAndValue(type: TypedValuesType, value: T?): TypedValueDto<T>? = value?.let {
+			when (type) {
+				TypedValuesType.BOOLEAN -> if (it is Boolean) {
+					TypedValueDto(booleanValue = it, type = type)
+				} else throw IllegalArgumentException("Illegal boolean value")
+
+				TypedValuesType.INTEGER -> when (it) {
+					is Int -> TypedValueDto(integerValue = it.toLong(), type = type)
+					is Long -> TypedValueDto(integerValue = it, type = type)
+					else -> throw IllegalArgumentException("Illegal integer value")
+				}
+
+				TypedValuesType.DOUBLE -> if (it is Double) {
+					TypedValueDto(doubleValue = it, type = type)
+				} else throw IllegalArgumentException("Illegal double value")
+
+				TypedValuesType.STRING, TypedValuesType.JSON, TypedValuesType.CLOB -> if (it is String) {
+					TypedValueDto(stringValue = it, type = type)
+				} else throw IllegalArgumentException("Illegal string value")
+
+				TypedValuesType.DATE -> if (it is Instant) {
+					TypedValueDto(dateValue = it, type = type)
+				} else if (it is Date) {
+					TypedValueDto(dateValue = (it as Date).toInstant(), type = type)
+				} else throw IllegalArgumentException("Illegal date value")
 			}
-			TypedValuesType.DOUBLE -> if (value is Double) {
-				TypedValueDto(doubleValue = value, type = type)
-			} else throw IllegalArgumentException("Illegal double value")
-			TypedValuesType.STRING, TypedValuesType.JSON, TypedValuesType.CLOB -> if (value is String) {
-				TypedValueDto(stringValue = value, type = type)
-			} else throw IllegalArgumentException("Illegal string value")
-			TypedValuesType.DATE -> if (value is Instant) {
-				TypedValueDto(dateValue = value, type = type)
-			} else if (value is Date) {
-				TypedValueDto(dateValue = (value as Date).toInstant(), type = type)
-			} else throw IllegalArgumentException("Illegal date value")
 		}
 	}
 
