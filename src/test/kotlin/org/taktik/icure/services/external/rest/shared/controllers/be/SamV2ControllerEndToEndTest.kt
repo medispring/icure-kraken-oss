@@ -27,6 +27,7 @@ import org.taktik.icure.test.ICureTestApplication
 import org.taktik.icure.test.TestProperties
 import org.taktik.icure.test.createHcpUser
 import org.taktik.icure.test.createHttpClient
+import org.taktik.icure.test.createPatientUser
 import org.taktik.icure.test.makeGetRequest
 import org.taktik.icure.test.uuid
 import reactor.core.publisher.Flux
@@ -36,6 +37,7 @@ import reactor.netty.http.client.HttpClient
 	classes = [ICureTestApplication::class],
 	properties = [
 		"spring.main.allow-bean-definition-overriding=true",
+		"icure.sync.global.databases=true",
 	],
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
@@ -53,22 +55,26 @@ class SamV2ControllerEndToEndTest(
 
 	init {
 		runBlocking {
-			val client = createHttpClient(ICureTestApplication.masterHcp.username, ICureTestApplication.masterHcp.password)
+			val client = createHttpClient(ICureTestApplication.masterHcp!!.username, ICureTestApplication.masterHcp!!.password)
 
 			val hcpUser = createHcpUser(client, apiUrl, passwordEncoder)
 			val hcpClient = createHttpClient(hcpUser.userId, hcpUser.password)
 
+			val patientUser = createPatientUser(client, apiUrl, passwordEncoder)
+			val patientClient = createHttpClient(patientUser.userId, patientUser.password)
+
 			uploadTestData()
 
 			listOf("v1", "v2").forEach { v ->
-				findAmpsByLabelE2ETest(hcpClient, objectMapper, apiUrl, v)
-				findAmpsByCodeE2ETest(hcpClient, objectMapper, apiUrl, v)
+				findAmpsByLabelE2ETest(hcpClient, patientClient, objectMapper, apiUrl, v)
+				findAmpsByCodeE2ETest(hcpClient, patientClient, objectMapper, apiUrl, v)
 			}
 		}
 	}
 
 	private fun StringSpec.findAmpsByLabelE2ETest(
 		hcpClient: HttpClient,
+		patientClient: HttpClient,
 		objectMapper: ObjectMapper,
 		apiUrl: String,
 		apiVersion: String
@@ -111,6 +117,14 @@ class SamV2ControllerEndToEndTest(
 			response.rows.size shouldBe 0
 		}
 
+		"$apiVersion - A Patient cannot get Amps by label" {
+			makeGetRequest(
+				patientClient,
+				"$apiUrl/rest/$apiVersion/be_samv2/amp?language=en&label=${uuid()}",
+				403
+			)
+		}
+
 		"$apiVersion - A HCP cannot get Amps if the passed label is too short" {
 			makeGetRequest(
 				hcpClient,
@@ -123,6 +137,7 @@ class SamV2ControllerEndToEndTest(
 
 	private fun StringSpec.findAmpsByCodeE2ETest(
 		hcpClient: HttpClient,
+		patientClient: HttpClient,
 		objectMapper: ObjectMapper,
 		apiUrl: String,
 		apiVersion: String
@@ -139,6 +154,14 @@ class SamV2ControllerEndToEndTest(
 			response.onEach {
 				it.code shouldBe code
 			}.size shouldBeGreaterThan 0
+		}
+
+		"$apiVersion - A Patient cannot get Amps by code" {
+			makeGetRequest(
+				patientClient,
+				"$apiUrl/rest/$apiVersion/be_samv2/amp?language=en&label=SAM426605-00",
+				403
+			)
 		}
 
 	}
