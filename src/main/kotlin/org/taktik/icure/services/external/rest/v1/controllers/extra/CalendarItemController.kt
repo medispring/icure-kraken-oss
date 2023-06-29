@@ -18,7 +18,9 @@
 
 package org.taktik.icure.services.external.rest.v1.controllers.extra
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.emitAll
@@ -39,11 +41,14 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import org.taktik.couchdb.DocIdentifier
 import org.taktik.icure.asynclogic.CalendarItemLogic
+import org.taktik.icure.db.PaginationOffset
+import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.services.external.rest.v1.dto.CalendarItemDto
 import org.taktik.icure.services.external.rest.v1.dto.IcureStubDto
 import org.taktik.icure.services.external.rest.v1.dto.ListOfIdsDto
 import org.taktik.icure.services.external.rest.v1.mapper.CalendarItemMapper
 import org.taktik.icure.services.external.rest.v1.mapper.embed.DelegationMapper
+import org.taktik.icure.services.external.rest.v1.utils.paginatedList
 import org.taktik.icure.utils.injectReactorContext
 import reactor.core.publisher.Flux
 
@@ -54,8 +59,11 @@ import reactor.core.publisher.Flux
 class CalendarItemController(
 	private val calendarItemLogic: CalendarItemLogic,
 	private val calendarItemMapper: CalendarItemMapper,
-	private val delegationMapper: DelegationMapper
+	private val delegationMapper: DelegationMapper,
+	private val objectMapper: ObjectMapper,
 ) {
+
+	private val calendarItemToCalendarItemDto = { it: CalendarItem -> calendarItemMapper.map(it) }
 
 	@Operation(summary = "Gets all calendarItems")
 	@GetMapping
@@ -130,7 +138,7 @@ class CalendarItemController(
 		return calendars.map { calendarItemMapper.map(it) }.injectReactorContext()
 	}
 
-	@Operation(summary = "Get calendarItems by id")
+	@Operation(summary = "Get calendarItems by ids")
 	@PostMapping("/byIds")
 	fun getCalendarItemsWithIds(@RequestBody calendarItemIds: ListOfIdsDto?): Flux<CalendarItemDto> {
 		if (calendarItemIds == null) {
@@ -142,7 +150,10 @@ class CalendarItemController(
 
 	@Operation(summary = "Find CalendarItems by hcparty and patient", description = "")
 	@GetMapping("/byHcPartySecretForeignKeys")
-	fun findCalendarItemsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestParam secretFKeys: String): Flux<CalendarItemDto> {
+	fun listCalendarItemsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestParam secretFKeys: String
+	): Flux<CalendarItemDto> {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
 		val elementList = calendarItemLogic.listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 
@@ -151,12 +162,47 @@ class CalendarItemController(
 
 	@Operation(summary = "Find CalendarItems by hcparty and patient")
 	@PostMapping("/byHcPartySecretForeignKeys")
-	fun findCalendarItemsByHCPartyPatientForeignKeys(@RequestParam hcPartyId: String, @RequestBody secretPatientKeys: List<String>): Flux<CalendarItemDto> {
+	fun listCalendarItemsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>
+	): Flux<CalendarItemDto> {
 		val elementList = calendarItemLogic.listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys)
 
 		return elementList.map { calendarItemMapper.map(it) }.injectReactorContext()
 	}
 
+	@Operation(summary = "Find CalendarItems by hcparty and patient", description = "")
+	@GetMapping("/byHcPartySecretForeignKeys/page/{limit}")
+	fun findCalendarItemsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestParam secretFKeys: String,
+		@Parameter(description = "The start key for pagination: a JSON representation of an array containing all the necessary " + "components to form the Complex Key's startKey") @RequestParam(required = false) startKey: String?,
+		@Parameter(description = "A patient document ID") @RequestParam(required = false) startDocumentId: String?,
+		@Parameter(description = "Number of rows") @PathVariable limit: Int,
+	) = mono {
+		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
+		val startKeyElements = startKey?.let { objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)) }
+		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
+		val elementList = calendarItemLogic.findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys, paginationOffset)
+
+		elementList.paginatedList(calendarItemToCalendarItemDto, limit)
+	}
+
+	@Operation(summary = "Find CalendarItems by hcparty and patient")
+	@PostMapping("/byHcPartySecretForeignKeys/page/{limit}")
+	fun findCalendarItemsByHCPartyPatientForeignKeys(
+		@RequestParam hcPartyId: String,
+		@RequestBody secretPatientKeys: List<String>,
+		@Parameter(description = "The start key for pagination: a JSON representation of an array containing all the necessary " + "components to form the Complex Key's startKey") @RequestParam(required = false) startKey: String?,
+		@Parameter(description = "A patient document ID") @RequestParam(required = false) startDocumentId: String?,
+		@Parameter(description = "Number of rows") @PathVariable(required = false) limit: Int,
+	) = mono {
+		val startKeyElements = startKey?.let { objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)) }
+		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
+		val elementList = calendarItemLogic.findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys, paginationOffset)
+
+		elementList.paginatedList(calendarItemToCalendarItemDto, limit)
+	}
 
 	@Operation(summary = "Update delegations in calendarItems")
 	@PostMapping("/delegations")
