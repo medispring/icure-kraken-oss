@@ -73,9 +73,13 @@ class CalendarItemLogicImpl(
 	override fun findCalendarItemsByHCPartyAndSecretPatientKeys(
 		hcPartyId: String,
 		secretPatientKeys: List<String>,
-		paginationOffset: PaginationOffset<List<String>>,
+		paginationOffset: PaginationOffset<List<Any>>,
 	) = flow {
-		emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+		if (secretPatientKeys.size == 1) {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.first(), paginationOffset.toComplexKeyPaginationOffset()))
+		} else {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+		}
 	}
 
 	override fun getCalendarItems(ids: List<String>): Flow<CalendarItem> = flow {

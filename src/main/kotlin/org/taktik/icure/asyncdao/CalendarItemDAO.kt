@@ -43,4 +43,6 @@ interface CalendarItemDAO : GenericDAO<CalendarItem> {
 	fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent>
 
 	fun listCalendarItemsByRecurrenceId(recurrenceId: String): Flow<CalendarItem>
+
+	fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent>
 }
