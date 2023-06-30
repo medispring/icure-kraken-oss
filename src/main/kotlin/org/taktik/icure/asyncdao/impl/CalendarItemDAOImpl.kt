@@ -166,10 +166,10 @@ class CalendarItemDAOImpl(
 		emitAll(client.queryViewIncludeDocs<Array<String>, String, CalendarItem>(viewQuery).distinctBy { it.id }.map { it.doc })
 	}
 
-	@View(name = "by_hcparty_patient_start_time_desc", map = "classpath:js/calendarItem/By_hcparty_patient_start_time_map.js")
+	@View(name = "by_hcparty_patient_start_time", map = "classpath:js/calendarItem/By_hcparty_patient_start_time_map.js")
 	override fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>(client, "by_hcparty_patient_start_time_desc", ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), ComplexKey.of(hcPartyId, secretPatientKey, null), pagination, true)
+		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>(client, "by_hcparty_patient_start_time", ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), ComplexKey.of(hcPartyId, secretPatientKey, null), pagination, true)
 		emitAll(client.queryViewIncludeDocs<Array<Any>, String, CalendarItem>(viewQuery))
 	}
 
