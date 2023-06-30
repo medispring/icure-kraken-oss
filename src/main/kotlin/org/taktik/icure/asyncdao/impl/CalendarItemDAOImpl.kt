@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.toList
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 import org.taktik.couchdb.ViewRowWithDoc
@@ -44,7 +43,6 @@ import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.utils.FuzzyValues
 import org.taktik.icure.utils.distinctBy
-import org.taktik.icure.utils.pagedViewQuery
 import org.taktik.icure.utils.distinctById
 
 @FlowPreview
@@ -169,9 +167,9 @@ class CalendarItemDAOImpl(
 	}
 
 	@View(name = "by_hcparty_patient_start_time_desc", map = "classpath:js/calendarItem/By_hcparty_patient_start_time_desc_map.js")
-	override fun findCalendarItemsByHcPartyAndPatient(dbInstanceUri: URI, groupId: String, hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>) = flow {
-		val client = couchDbDispatcher.getClient(dbInstanceUri, groupId)
-		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>("by_hcparty_patient_start_time_desc", ComplexKey.of(hcPartyId, secretPatientKey, null), ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), pagination)
+	override fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>(client, "by_hcparty_patient_start_time_desc", ComplexKey.of(hcPartyId, secretPatientKey, null), ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), pagination, true)
 		emitAll(client.queryViewIncludeDocs<Array<Any>, String, CalendarItem>(viewQuery))
 	}
 

@@ -75,11 +75,10 @@ class CalendarItemLogicImpl(
 		secretPatientKeys: List<String>,
 		paginationOffset: PaginationOffset<List<Any>>,
 	) = flow {
-		val (dbInstanceUri, groupId) = sessionLogic.getInstanceAndGroupInformationFromSecurityContext()
 		if (secretPatientKeys.size == 1) {
-			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(dbInstanceUri, groupId, hcPartyId, secretPatientKeys.first(), paginationOffset.toComplexKeyPaginationOffset()))
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.first(), paginationOffset.toComplexKeyPaginationOffset()))
 		} else {
-			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(dbInstanceUri, groupId, hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
 		}
 	}
 
