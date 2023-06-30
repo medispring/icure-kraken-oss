@@ -19,6 +19,7 @@
 package org.taktik.icure.services.external.rest.v2.controllers.extra
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -185,7 +186,7 @@ class CalendarItemController(
 		@Parameter(description = "Number of rows") @PathVariable limit: Int,
 	) = mono {
 		val secretPatientKeys = secretFKeys.split(',').map { it.trim() }
-		val startKeyElements = startKey?.let { objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)) }
+		val startKeyElements = startKey?.let { objectMapper.readValue<List<Any>>(startKey) }
 		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
 		val elementList = calendarItemLogic.findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys, paginationOffset)
 
@@ -201,7 +202,7 @@ class CalendarItemController(
 		@Parameter(description = "A patient document ID") @RequestParam(required = false) startDocumentId: String?,
 		@Parameter(description = "Number of rows") @PathVariable(required = false) limit: Int,
 	) = mono {
-		val startKeyElements = startKey?.let { objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)) }
+		val startKeyElements = startKey?.let { objectMapper.readValue<List<Any>>(startKey) }
 		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
 		val elementList = calendarItemLogic.findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys, paginationOffset)
 

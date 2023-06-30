@@ -73,9 +73,14 @@ class CalendarItemLogicImpl(
 	override fun findCalendarItemsByHCPartyAndSecretPatientKeys(
 		hcPartyId: String,
 		secretPatientKeys: List<String>,
-		paginationOffset: PaginationOffset<List<String>>,
+		paginationOffset: PaginationOffset<List<Any>>,
 	) = flow {
-		emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+		val (dbInstanceUri, groupId) = sessionLogic.getInstanceAndGroupInformationFromSecurityContext()
+		if (secretPatientKeys.size == 1) {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(dbInstanceUri, groupId, hcPartyId, secretPatientKeys.first(), paginationOffset.toComplexKeyPaginationOffset()))
+		} else {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(dbInstanceUri, groupId, hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+		}
 	}
 
 	override fun getCalendarItems(ids: List<String>): Flow<CalendarItem> = flow {

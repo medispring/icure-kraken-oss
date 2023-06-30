@@ -20,6 +20,7 @@ package org.taktik.icure.asyncdao
 
 import kotlinx.coroutines.flow.Flow
 import org.taktik.couchdb.ViewQueryResultEvent
+import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.couchdb.entity.ComplexKey
 import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.CalendarItem
@@ -43,4 +44,6 @@ interface CalendarItemDAO : GenericDAO<CalendarItem> {
 	fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent>
 
 	fun listCalendarItemsByRecurrenceId(recurrenceId: String): Flow<CalendarItem>
+
+	fun findCalendarItemsByHcPartyAndPatient(dbInstanceUri: URI, groupId: String, hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewRowWithDoc<Array<Any>, String, CalendarItem>>
 }

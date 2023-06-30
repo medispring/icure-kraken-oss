@@ -44,6 +44,7 @@ import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.utils.FuzzyValues
 import org.taktik.icure.utils.distinctBy
+import org.taktik.icure.utils.pagedViewQuery
 import org.taktik.icure.utils.distinctById
 
 @FlowPreview
@@ -167,8 +168,14 @@ class CalendarItemDAOImpl(
 		emitAll(client.queryViewIncludeDocs<Array<String>, String, CalendarItem>(viewQuery).distinctBy { it.id }.map { it.doc })
 	}
 
-	/** keys have to be sorted Couchdb way */
+	@View(name = "by_hcparty_patient_start_time_desc", map = "classpath:js/calendarItem/By_hcparty_patient_start_time_desc_map.js")
+	override fun findCalendarItemsByHcPartyAndPatient(dbInstanceUri: URI, groupId: String, hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUri, groupId)
+		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>("by_hcparty_patient_start_time_desc", ComplexKey.of(hcPartyId, secretPatientKey, null), ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), pagination)
+		emitAll(client.queryViewIncludeDocs<Array<Any>, String, CalendarItem>(viewQuery))
+	}
 
+	/** keys have to be sorted Couchdb way */
 	override fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>, pagination: PaginationOffset<ComplexKey>) = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val keys = secretPatientKeys.map { fk -> ComplexKey.of(hcPartyId, fk) }

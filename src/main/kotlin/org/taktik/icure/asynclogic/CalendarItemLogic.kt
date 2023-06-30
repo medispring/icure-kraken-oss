@@ -32,7 +32,7 @@ interface CalendarItemLogic : EntityPersister<CalendarItem, String> {
 	fun getCalendarItemByPeriodAndHcPartyId(startDate: Long, endDate: Long, hcPartyId: String): Flow<CalendarItem>
 	fun getCalendarItemByPeriodAndAgendaId(startDate: Long, endDate: Long, agendaId: String): Flow<CalendarItem>
 	fun listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>): Flow<CalendarItem>
-	fun findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>, paginationOffset: PaginationOffset<List<String>>): Flow<ViewQueryResultEvent>
+	fun findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>, paginationOffset: PaginationOffset<List<Any>>): Flow<ViewQueryResultEvent>
 
 	suspend fun modifyCalendarItem(calendarItem: CalendarItem): CalendarItem?
 	fun getGenericDAO(): CalendarItemDAO
