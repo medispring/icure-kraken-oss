@@ -1,7 +1,7 @@
 function(doc) {
 	var emit_calendarItems = function(d,doc) {
 		doc.secretForeignKeys.forEach(function(fk) {
-			emit([d.delegatedTo, fk, -doc.startTime], null);
+			emit([d.delegatedTo, fk, doc.startTime], null);
 		});
 	};
 

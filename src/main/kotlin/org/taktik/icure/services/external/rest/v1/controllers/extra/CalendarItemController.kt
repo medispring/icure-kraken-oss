@@ -186,7 +186,6 @@ class CalendarItemController(
 		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
 		val elementList = calendarItemLogic.findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId, secretPatientKeys, paginationOffset)
 
-
 		elementList.paginatedList(calendarItemToCalendarItemDto, limit)
 	}
 

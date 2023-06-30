@@ -200,7 +200,7 @@ class CalendarItemController(
 		@RequestBody secretPatientKeys: List<String>,
 		@Parameter(description = "The start key for pagination: a JSON representation of an array containing all the necessary " + "components to form the Complex Key's startKey") @RequestParam(required = false) startKey: String?,
 		@Parameter(description = "A patient document ID") @RequestParam(required = false) startDocumentId: String?,
-		@Parameter(description = "Number of rows") @PathVariable(required = false) limit: Int,
+		@Parameter(description = "Number of rows") @PathVariable limit: Int,
 	) = mono {
 		val startKeyElements = startKey?.let { objectMapper.readValue<List<Any>>(startKey) }
 		val paginationOffset = PaginationOffset(startKeyElements, startDocumentId, null, limit + 1)
