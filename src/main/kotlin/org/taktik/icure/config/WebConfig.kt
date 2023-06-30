@@ -19,6 +19,7 @@
 package org.taktik.icure.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.core.json.JsonReadFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.netty.channel.ChannelOption
@@ -93,6 +94,7 @@ class WebConfig : WebFluxConfigurer {
 			.build()
 	).apply {
 		setSerializationInclusion(JsonInclude.Include.NON_NULL)
+		configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true)
 	}
 
 	@Bean
