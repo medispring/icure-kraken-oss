@@ -123,7 +123,7 @@ data class HealthElement(
 	val laterality: Laterality? = null,
 	@field:Valid val plansOfAction: List<PlanOfAction> = emptyList(),
 	@field:Valid val episodes: List<Episode> = emptyList(),
-	val careTeam: List<CareTeamMember> = emptyList(),
+	@field:Valid val careTeam: List<CareTeamMember> = emptyList(),
 
 	override val secretForeignKeys: Set<String> = emptySet(),
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
