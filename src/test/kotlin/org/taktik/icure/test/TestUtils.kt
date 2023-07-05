@@ -189,7 +189,8 @@ fun createPatientUser(httpClient: HttpClient,
 	)
 }
 
-fun createHcpUser(httpClient: HttpClient,
+fun createHcpUser(
+	httpClient: HttpClient,
 	apiUrl: String,
 	passwordEncoder: PasswordEncoder,
 ): UserCredentials {

@@ -48,6 +48,7 @@ import org.taktik.icure.asyncdao.samv2.VmpDAO
 import org.taktik.icure.asyncdao.samv2.VmpGroupDAO
 import org.taktik.icure.asynclogic.samv2.SamV2Logic
 import org.taktik.icure.db.PaginationOffset
+import org.taktik.icure.db.sanitize
 import org.taktik.icure.entities.samv2.Amp
 import org.taktik.icure.entities.samv2.Nmp
 import org.taktik.icure.entities.samv2.Paragraph
@@ -58,6 +59,7 @@ import org.taktik.icure.entities.samv2.Substance
 import org.taktik.icure.entities.samv2.Verse
 import org.taktik.icure.entities.samv2.Vmp
 import org.taktik.icure.entities.samv2.VmpGroup
+import org.taktik.icure.entities.samv2.embed.SamText
 import org.taktik.icure.utils.aggregateResults
 import org.taktik.icure.utils.bufferedChunks
 import org.taktik.icure.utils.distinct
@@ -179,10 +181,26 @@ class SamV2LogicImpl(
 				ids = ampIds,
 				limit = paginationOffset.limit,
 				supplier = { ids -> ampDAO.getEntities(ids) },
-				filter = { amp -> labelComponents.all { labelComponent -> amp.officialName?.contains(other = labelComponent, ignoreCase = true) ?: false }  },
+				filter = { amp -> labelComponents.all { labelComponent ->
+						listOfNotNull(
+							amp.officialName,
+							amp.abbreviatedName?.localized(language)?.sanitize(),
+							amp.prescriptionName?.localized(language)?.sanitize(),
+							amp.name?.localized(language)?.sanitize(),
+						).any { it.contains(other = labelComponent, ignoreCase = true) }
+					}
+				 },
 				startDocumentId = paginationOffset.startDocumentId,
 			).asFlow()
 		)
+	}
+
+	private fun SamText.localized(language: String?) = when (language) {
+		"fr" -> this.fr
+		"en" -> this.en
+		"de" -> this.de
+		"nl" -> this.nl
+		else -> null
 	}
 
 	override fun listAmpIdsByLabel(language: String?, label: String?): Flow<String> {
