@@ -135,7 +135,7 @@ class SamV2Controller(
 			rows = addProductIdsToAmps(result.take(realLimit).map(ampToAmpDto)),
 			nextKeyPair = if (result.size > realLimit) {
 				PaginatedDocumentKeyIdPair<AmpDto>(
-					startKeyDocId = result[realLimit + 1]!!.id,
+					startKeyDocId = result[realLimit].id,
 				)
 			}
 			else {
