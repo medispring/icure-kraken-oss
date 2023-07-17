@@ -7,10 +7,8 @@ import com.github.pozo.KotlinBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @KotlinBuilder
-data class FormTemplateLayout(
-	val form: String,
-	val actions : List<Action> = emptyList(),
-	val sections: List<Section> = emptyList(),
-	val description: String? = null,
-	val keywords: List<String>? = null,
+data class Action(
+	val launchers: List<Launcher>? = emptyList(),
+	val expression: String? = null,
+	val states : List<State>? = emptyList()
 )
