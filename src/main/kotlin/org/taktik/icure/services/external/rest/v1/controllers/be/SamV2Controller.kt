@@ -135,7 +135,7 @@ class SamV2Controller(
 			rows = addProductIdsToAmps(result.take(realLimit).map(ampToAmpDto)),
 			nextKeyPair = if (result.size > realLimit) {
 				PaginatedDocumentKeyIdPair<AmpDto>(
-					startKeyDocId = result[realLimit + 1]!!.id,
+					startKeyDocId = result[realLimit].id,
 				)
 			}
 			else {
@@ -323,6 +323,15 @@ class SamV2Controller(
 	fun findAmpsByDmppCode(
 		@Parameter(description = "dmppCode", required = true) @PathVariable dmppCode: String
 	) = addProductIdsToAmps(samV2Logic.findAmpsByDmppCode(dmppCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().map { ampMapper.map(it.doc) }).injectReactorContext()
+
+	@Operation(summary = "Finding AMPs by ampp code", description = "Returns a list of amps matched with given input. Paginantion is not supported")
+	@GetMapping("/amp/byAmpCode/{ampCode}")
+	fun findAmpsByAmpCode(
+		@Parameter(description = "ampCode", required = true) @PathVariable ampCode: String
+	): Flux<AmpDto> = flow {
+		val filterIsInstance = samV2Logic.findAmpsByAmpCode(ampCode).filterIsInstance<ViewRowWithDoc<String, String, Amp>>().toList()
+		addProductIdsToAmps(filterIsInstance.map { ampMapper.map(it.doc) }).forEach { emit(it) }
+	}.injectReactorContext()
 
 	@Operation(summary = "Finding VMP groups by language label with pagination.", description = "Returns a list of codes matched with given input. If several types are provided, paginantion is not supported")
 	@GetMapping("/vmpgroup")

@@ -20,7 +20,9 @@ package org.taktik.icure.asynclogic
 
 import kotlinx.coroutines.flow.Flow
 import org.taktik.couchdb.DocIdentifier
+import org.taktik.couchdb.ViewQueryResultEvent
 import org.taktik.icure.asyncdao.CalendarItemDAO
+import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.CalendarItem
 
 interface CalendarItemLogic : EntityPersister<CalendarItem, String> {
@@ -30,6 +32,7 @@ interface CalendarItemLogic : EntityPersister<CalendarItem, String> {
 	fun getCalendarItemByPeriodAndHcPartyId(startDate: Long, endDate: Long, hcPartyId: String): Flow<CalendarItem>
 	fun getCalendarItemByPeriodAndAgendaId(startDate: Long, endDate: Long, agendaId: String): Flow<CalendarItem>
 	fun listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>): Flow<CalendarItem>
+	fun findCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>, paginationOffset: PaginationOffset<List<Any>>): Flow<ViewQueryResultEvent>
 
 	suspend fun modifyCalendarItem(calendarItem: CalendarItem): CalendarItem?
 	fun getGenericDAO(): CalendarItemDAO

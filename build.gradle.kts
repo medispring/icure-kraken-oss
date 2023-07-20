@@ -312,6 +312,11 @@ dependencies {
 	testImplementation(group = "io.icure", name = "icure-e2e-test-setup", version = "0.0.7-gfed922635a")
 }
 
+tasks.withType<Test> {
+	minHeapSize = "512m"
+	maxHeapSize = "2048m"
+}
+
 val outputDir = "${project.buildDir}/reports/ktlint/"
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
 

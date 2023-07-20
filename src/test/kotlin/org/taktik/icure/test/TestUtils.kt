@@ -189,7 +189,8 @@ fun createPatientUser(httpClient: HttpClient,
 	)
 }
 
-fun createHcpUser(httpClient: HttpClient,
+fun createHcpUser(
+	httpClient: HttpClient,
 	apiUrl: String,
 	passwordEncoder: PasswordEncoder,
 ): UserCredentials {
@@ -323,3 +324,5 @@ data class UserCredentials(
 }
 
 fun uuid() = UUID.randomUUID().toString()
+
+fun String.urlEncode() = URLEncoder.encode(this, Charsets.UTF_8)

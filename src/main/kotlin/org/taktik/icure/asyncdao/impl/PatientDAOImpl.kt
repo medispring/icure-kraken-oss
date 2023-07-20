@@ -307,7 +307,7 @@ class PatientDAOImpl(
 
 	override fun findPatientIdsByHcParty(healthcarePartyId: String, pagination: PaginationOffset<ComplexKey>): Flow<ViewQueryResultEvent> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
-		val viewQuery = pagedViewQueryOfIds<Patient, ComplexKey>(client, "by_hcparty_name", pagination.startKey ?: ComplexKey.of(healthcarePartyId, null), ComplexKey.of(healthcarePartyId, ComplexKey.emptyObject()), pagination)
+		val viewQuery = pagedViewQueryOfIds<Patient, ComplexKey>(client, "by_hcparty_name", ComplexKey.of(healthcarePartyId, null), ComplexKey.of(healthcarePartyId, ComplexKey.emptyObject()), pagination)
 		emitAll(client.queryView(viewQuery, Array<String>::class.java, String::class.java, Any::class.java))
 	}
 

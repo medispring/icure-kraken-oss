@@ -21,20 +21,24 @@ package org.taktik.icure.asyncdao.impl
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flattenConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
+import org.taktik.couchdb.ViewRowWithDoc
 import org.taktik.couchdb.annotation.View
 import org.taktik.couchdb.entity.ComplexKey
 import org.taktik.couchdb.id.IDGenerator
 import org.taktik.couchdb.queryViewIncludeDocs
 import org.taktik.couchdb.queryViewIncludeDocsNoValue
 import org.taktik.icure.asyncdao.CalendarItemDAO
+import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.utils.FuzzyValues
@@ -155,11 +159,75 @@ class CalendarItemDAOImpl(
 	}
 
 	@View(name = "by_hcparty_patient", map = "classpath:js/calendarItem/by_hcparty_patient_map.js")
-	override fun listAccessLogsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>): Flow<CalendarItem> = flow {
+	override fun listCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>): Flow<CalendarItem> = flow {
 		val client = couchDbDispatcher.getClient(dbInstanceUrl)
 		val keys = secretPatientKeys.map { fk -> ComplexKey.of(hcPartyId, fk) }
 		val viewQuery = createQuery(client, "by_hcparty_patient").keys(keys).includeDocs(true)
 		emitAll(client.queryViewIncludeDocs<Array<String>, String, CalendarItem>(viewQuery).distinctBy { it.id }.map { it.doc })
+	}
+
+	@View(name = "by_hcparty_patient_start_time", map = "classpath:js/calendarItem/By_hcparty_patient_start_time_map.js")
+	override fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKey: String, pagination: PaginationOffset<ComplexKey>) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val viewQuery = pagedViewQuery<CalendarItem, ComplexKey>(client, "by_hcparty_patient_start_time", ComplexKey.of(hcPartyId, secretPatientKey, ComplexKey.emptyObject()), ComplexKey.of(hcPartyId, secretPatientKey, null), pagination, true)
+		emitAll(client.queryViewIncludeDocs<Array<Any>, String, CalendarItem>(viewQuery))
+	}
+
+	/** keys have to be sorted Couchdb way */
+	override fun findCalendarItemsByHcPartyAndPatient(hcPartyId: String, secretPatientKeys: List<String>, pagination: PaginationOffset<ComplexKey>) = flow {
+		val client = couchDbDispatcher.getClient(dbInstanceUrl)
+		val keys = secretPatientKeys.map { fk -> ComplexKey.of(hcPartyId, fk) }
+
+		val constrainedKeys = pagination.startKey?.let {
+			keys.indexOf(it).takeIf { idx -> idx >= 0 }?.let { start ->
+				keys.subList(start, keys.size)
+			} ?: emptyList()
+		} ?: keys
+
+		when {
+			constrainedKeys.isEmpty() -> {
+				//Do nothing
+			}
+
+			pagination.startDocumentId == null || constrainedKeys.size == 1 -> {
+				emitAll(
+					client.queryView(
+						createQuery(client, "by_hcparty_patient")
+							.keys(constrainedKeys)
+							.startDocId(pagination.startDocumentId)
+							.includeDocs(true)
+							.reduce(false)
+							.limit(pagination.limit),
+						Array<String>::class.java, String::class.java, CalendarItem::class.java
+					)
+				)
+			}
+
+			else -> {
+				val count = client.queryView(
+					createQuery(client, "by_hcparty_patient")
+						.key(constrainedKeys[0])
+						.startDocId(pagination.startDocumentId)
+						.includeDocs(true)
+						.reduce(false)
+						.limit(pagination.limit),
+					Array<String>::class.java, String::class.java, CalendarItem::class.java
+				).onEach { emit(it) }.count { it is ViewRowWithDoc<*,*,*> }
+
+				if (count < pagination.limit) {
+					emitAll(
+						client.queryView(
+							createQuery(client, "by_hcparty_patient")
+								.keys(constrainedKeys.subList(1, constrainedKeys.size))
+								.includeDocs(true)
+								.reduce(false)
+								.limit(pagination.limit - count),
+							Array<String>::class.java, String::class.java, CalendarItem::class.java
+						)
+					)
+				}
+			}
+		}
 	}
 
 	@View(name = "by_recurrence_id", map = "classpath:js/calendarItem/by_recurrence_id.js")

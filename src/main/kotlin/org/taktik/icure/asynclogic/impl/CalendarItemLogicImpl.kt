@@ -19,7 +19,6 @@ package org.taktik.icure.asynclogic.impl
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import org.springframework.stereotype.Service
@@ -27,8 +26,10 @@ import org.taktik.couchdb.DocIdentifier
 import org.taktik.icure.asyncdao.CalendarItemDAO
 import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.CalendarItemLogic
+import org.taktik.icure.db.PaginationOffset
 import org.taktik.icure.entities.CalendarItem
 import org.taktik.icure.exceptions.DeletionException
+import org.taktik.icure.utils.toComplexKeyPaginationOffset
 
 @ExperimentalCoroutinesApi
 @Service
@@ -66,7 +67,19 @@ class CalendarItemLogicImpl(
 	}
 
 	override fun listCalendarItemsByHCPartyAndSecretPatientKeys(hcPartyId: String, secretPatientKeys: List<String>) = flow {
-		emitAll(calendarItemDAO.listAccessLogsByHcPartyAndPatient(hcPartyId, secretPatientKeys))
+		emitAll(calendarItemDAO.listCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys))
+	}
+
+	override fun findCalendarItemsByHCPartyAndSecretPatientKeys(
+		hcPartyId: String,
+		secretPatientKeys: List<String>,
+		paginationOffset: PaginationOffset<List<Any>>,
+	) = flow {
+		if (secretPatientKeys.size == 1) {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.first(), paginationOffset.toComplexKeyPaginationOffset()))
+		} else {
+			emitAll(calendarItemDAO.findCalendarItemsByHcPartyAndPatient(hcPartyId, secretPatientKeys.sorted(), paginationOffset.toComplexKeyPaginationOffset()))
+		}
 	}
 
 	override fun getCalendarItems(ids: List<String>): Flow<CalendarItem> = flow {

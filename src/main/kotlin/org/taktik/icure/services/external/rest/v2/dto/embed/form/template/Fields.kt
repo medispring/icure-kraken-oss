@@ -8,7 +8,7 @@ import org.taktik.icure.handlers.JsonDiscriminated
 import org.taktik.icure.handlers.JsonPolymorphismRoot
 import org.taktik.icure.services.external.rest.v2.handlers.JacksonStructureElementDeserializer
 
-@JsonDeserialize(using = JacksonStructureElementDeserializer::class)
+@JsonDeserialize(using = org.taktik.icure.services.external.rest.v1.handlers.JacksonStructureElementDeserializer::class)
 interface StructureElement
 
 @JsonPolymorphismRoot(Field::class)
@@ -20,12 +20,21 @@ class TextField(
 	field: String,
 	shortLabel: String? = null,
 	rows: Int? = null,
+	columns: Int? = null,
 	grows: Boolean? = null,
+	multiline: Boolean? = null,
 	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.textfield, shortLabel, rows, null, grows, schema, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.textfield, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
 
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -35,10 +44,22 @@ class TextField(
 class MeasureField(
 	field: String,
 	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`measure-field`, shortLabel, null, null, null, null, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.`measure-field`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
 
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -48,10 +69,22 @@ class MeasureField(
 class NumberField(
 	field: String,
 	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`number-field`, shortLabel, null, null, null, null, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.`number-field`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
 
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -61,10 +94,22 @@ class NumberField(
 class DatePicker(
 	field: String,
 	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`date-picker`, shortLabel, null, null, null, null, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.`date-picker`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
 
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -74,23 +119,23 @@ class DatePicker(
 class TimePicker(
 	field: String,
 	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`time-picker`, shortLabel, null, null, null, null, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.`time-picker`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
 
-@JsonPolymorphismRoot(Field::class)
-@JsonDeserialize(using = JsonDeserializer.None::class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDiscriminated("date-time-picker")
-class DateTimePicker(
-	field: String,
-	shortLabel: String? = null,
-	tags: List<String>? = null,
-	codifications: List<String>? = null,
-	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`date-time-picker`, shortLabel, null, null, null, null, tags, codifications, options)
 
 @JsonPolymorphismRoot(Field::class)
 @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -100,7 +145,122 @@ class DateTimePicker(
 class MultipleChoice(
 	field: String,
 	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
 	tags: List<String>? = null,
 	codifications: List<String>? = null,
 	options: Map<String, Any>? = null,
-) : Field(field, FieldType.`multiple-choice`, shortLabel, null, null, null, null, tags, codifications, options)
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+): Field(field, FieldType.`multiple-choice`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
+
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("dropdown")
+class DropdownField(
+	field: String,
+	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
+	tags: List<String>? = null,
+	codifications: List<String>? = null,
+	options: Map<String, Any>? = null,
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+): Field(field, FieldType.dropdown, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("radio-button")
+class RadioButton(
+	field: String,
+	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
+	tags: List<String>? = null,
+	codifications: List<String>? = null,
+	options: Map<String, Any>? = null,
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+): Field(field, FieldType.`radio-button`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("checkbox")
+class CheckBox(
+	field: String,
+	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
+	tags: List<String>? = null,
+	codifications: List<String>? = null,
+	options: Map<String, Any>? = null,
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+): Field(field, FieldType.checkbox, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
+
+
+@JsonPolymorphismRoot(Field::class)
+@JsonDeserialize(using = JsonDeserializer.None::class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDiscriminated("date-time-picker")
+class DateTimePicker(
+	field: String,
+	shortLabel: String? = null,
+	rows: Int? = null,
+	columns: Int? = null,
+	grows: Boolean? = null,
+	multiline: Boolean? = null,
+	schema: String? = null,
+	tags: List<String>? = null,
+	codifications: List<String>? = null,
+	options: Map<String, Any>? = null,
+	labels: Map<String, Any>? = null,
+	value: String? = null,
+	unit: String? = null,
+	required: Boolean? = null,
+	hideCondition: String? = null,
+	now: Boolean? = null,
+	translate: Boolean? = null,
+) : Field(field, FieldType.`date-time-picker`, shortLabel, rows, columns, grows, schema, tags, codifications, options, hideCondition, required, multiline, value, labels, unit, now, translate)
+
