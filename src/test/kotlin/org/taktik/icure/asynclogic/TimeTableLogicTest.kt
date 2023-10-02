@@ -11,8 +11,6 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
@@ -30,7 +28,6 @@ import org.taktik.icure.test.fake.SessionMock
 import org.taktik.icure.test.newId
 import org.taktik.icure.test.randomUri
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class TimeTableLogicTest : StringSpec({
 	val hcpId = newId()
 	val uri = randomUri()
@@ -117,8 +114,12 @@ class TimeTableLogicTest : StringSpec({
 		days: List<String>?,
 		recurrenceTypes: List<String>?,
 		acceptsNewPatient: Boolean = true,
-		startHour:Long?  = 80000,
-		endHour:Long? = 170000,
+		hours: List<TimeTableHour> = listOf(
+			TimeTableHour(
+				startHour = 80000,
+				endHour = 170000,
+			)
+		)
 	) {
 		TimeTable(
 			id = newId(),
@@ -132,12 +133,7 @@ class TimeTableLogicTest : StringSpec({
 					rrule = rrule,
 					days = days ?: emptyList(),
 					recurrenceTypes = recurrenceTypes ?: emptyList(),
-					hours = listOf(
-						TimeTableHour(
-							startHour = startHour,
-							endHour = endHour,
-						)
-					),
+					hours = hours,
 					calendarItemTypeId = calendarItemTypeId,
 					publicTimeTableItem = true,
 				)
@@ -149,7 +145,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId = newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 20221016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result.size shouldBe 100
 			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
@@ -160,7 +156,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId = newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=SA,WE,TH,MO", 19991016L, null, null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result.size shouldBe 100
 			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
@@ -172,7 +168,7 @@ class TimeTableLogicTest : StringSpec({
 
 		makeTimeTable(calendarItemTypeId, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result.size shouldBe 100
 			result[0] shouldBe 20221017080000L
 			result shouldNotHaveElement { it % 1000000 < 80000 || it % 1000000 > 164500 }
@@ -187,8 +183,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId2, agendaId, null, null, listOf("1", "3", "4", "6"), listOf("EVERY_WEEK"))
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
-			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId2, null, false, true, hcpId).toList()
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, isNewPatient = false, true, hcpId).toList()
+			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId2, null, isNewPatient = false, true, hcpId).toList()
 			result1 shouldBe result2
 		}
 	}
@@ -202,8 +198,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId2, agendaId, null, null, listOf("1", "3", "4"), listOf("EVERY_WEEK"))
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId, 200).toList()
-			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId2, null, false, true, hcpId, 200).toList()
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, isNewPatient = false, true, hcpId, 200).toList()
+			val result2 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId2, null, isNewPatient = false, true, hcpId, 200).toList()
 			result1 shouldNotBe result2 // fail: results are identical
 		}
 	}
@@ -213,7 +209,7 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(calendarItemTypeId1, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=1999006170000;BYDAY=SA,WE,TH,MO",20221118L, null , null)
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, false, true, hcpId).toList()
+			val result1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, calendarItemTypeId1, null, isNewPatient = false, true, hcpId).toList()
 			result1 shouldBe listOf<Flow<Long>>()
 		}
 	}
@@ -226,8 +222,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(oneWeekLaterCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200107L, null , null)
 
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, calendarItemTypeId, null, false, true, hcpId).toList()
-			val oneMWeekLater = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, oneWeekLaterCalendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val oneMWeekLater = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101000000L, 20401118000000L, oneWeekLaterCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result[0] shouldBe 20200106080000L
 			oneMWeekLater[0] shouldBe 20200113080000L
 		}
@@ -237,7 +233,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106081500L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyWeek = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200106080000L, 20200106081500L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			everyWeek [0] shouldBe 20200106080000L
 			everyWeek.size shouldBe 1
 		}
@@ -247,7 +243,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;COUNT=3",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101080000L, 20300106080000L, calendarItemTypeId, null, false, true, hcpId, 200).toList()
+			val test = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200101080000L, 20300106080000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId, 200).toList()
 			test.size shouldBe 105 //9 hours / day * 4 quarters/hour * 3 days - 3 slots with existing cis
 		}
 	}
@@ -256,7 +252,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L)
 		}
 	}
@@ -265,7 +261,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, null,null, listOf("1", "2", "3", "4", "5", "6", "7" ) , listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(calendarItemTypeId, 20200102080000L, 20200102101500L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			result shouldBe listOf(20200102080000L,20200102083000L,20200102091500L,20200102093000L,20200102094500L,20200102100000L) //Fail:  Element 20200102080000L expected at index 0 but there were no further elements
 		}
 	}
@@ -274,7 +270,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, "SOME OTHER CALENDARITEMTYPE ID", null, false, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, "SOME OTHER CALENDARITEMTYPE ID", null, isNewPatient = false, true, hcpId).toList()
 			result.size shouldBe 0
 		}
 	}
@@ -283,7 +279,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null, false)
 		withAuthenticatedHcpContext(hcpId) {
-			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, calendarItemTypeId, null, true, true, hcpId).toList()
+			val result = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200102080000L, 20200102100000L, calendarItemTypeId, null, isNewPatient = true, true, hcpId).toList()
 			result.size shouldBe 0
 		}
 	}
@@ -292,7 +288,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200110080000L, 20200110100000L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200110080000L, 20200110100000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			everyDay.size shouldBe 0
 		}
 	}
@@ -302,7 +298,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080700L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080700L, 20200106080700L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			everyDay[0] shouldBe 20200105081500L
 		}
 	}
@@ -311,7 +307,7 @@ class TimeTableLogicTest : StringSpec({
 		val calendarItemTypeId= newId()
 		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null , null)
 		withAuthenticatedHcpContext(hcpId) {
-			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080800L, 20200106080700L, calendarItemTypeId, null, false, true, hcpId).toList()
+			val everyDay = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20200105080800L, 20200106080700L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			everyDay[0] shouldBe 20200105081500L
 		}
 	}
@@ -319,11 +315,12 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should return an empty array if the timeTableItem's startHour is equal or after the endHour" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,100000,80000)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,100000,80000)
+		val hours = listOf(TimeTableHour(100000, 80000))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (0)
 			rrule.size shouldBe (0)
 		}
@@ -332,11 +329,12 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should return an empty array if the timeTableItem's startHour is equal or after the endHour and the endHour is 0" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,100000,0)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,100000,0)
+		val hours = listOf(TimeTableHour(100000, 0))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (0)
 			rrule.size shouldBe (0)
 		}
@@ -348,8 +346,8 @@ class TimeTableLogicTest : StringSpec({
 		makeTimeTable(rruleAloneCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO", 20221016L, null, null)
 		makeTimeTable( rruleWithLegacyCalendarItemTypeId, agendaId, "FREQ=WEEKLY;INTERVAL=1;UNTIL=20321006170000;BYDAY=MO", 20221016L, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"))
 		withAuthenticatedHcpContext(hcpId) {
-			val rruleAlone = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleAloneCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rruleWithLegacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleWithLegacyCalendarItemTypeId, null, false, true, hcpId).toList()
+			val rruleAlone = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleAloneCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rruleWithLegacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20221016000000L, 20221118000000L, rruleWithLegacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			rruleAlone shouldBe rruleWithLegacy
 		}
 	}
@@ -357,11 +355,12 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should return an empty array if the time interval between timeTableItem's startHour and endHour is smaller than the requested duration" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,100000,101000)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,100000,101000)
+		val hours = listOf(TimeTableHour(100000, 101000))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120102441L, 20240120102441L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (0)
 			rrule.size shouldBe (0)
 		}
@@ -370,17 +369,19 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should return a slot when the available duration is shorter than the requested duration BUT the difference is less than 1 minute" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		val rruleDiffIsMorethanOneMinuteId = newId ()
-		val legacyDiffIsMorethanOneMinuteId = newId ()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, 164530, 170000)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, 164530, 170000)
-		makeTimeTable(rruleDiffIsMorethanOneMinuteId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, 164605, 170000)
-		makeTimeTable(legacyDiffIsMorethanOneMinuteId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, 164605, 170000)
+		val rruleDiffIsMoreThanOneMinuteId = newId()
+		val legacyDiffIsMoreThanOneMinuteId = newId()
+		val hours = listOf(TimeTableHour(164530, 170000))
+		val previousHours = listOf(TimeTableHour(164605, 170000))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
+		makeTimeTable(rruleDiffIsMoreThanOneMinuteId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, previousHours)
+		makeTimeTable(legacyDiffIsMoreThanOneMinuteId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, previousHours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			val legacyMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, legacyDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
-			val rruleMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, rruleDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val legacyMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, legacyDiffIsMoreThanOneMinuteId, null, isNewPatient = false, true, hcpId).toList()
+			val rruleMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120164000L, 20230120204030L, rruleDiffIsMoreThanOneMinuteId, null, isNewPatient = false, true, hcpId).toList()
 			legacy[0] shouldBe 20230120164530L
 			rrule[0] shouldBe 20230120164530L
 			legacyMoreThan1.size shouldBe 0
@@ -393,23 +394,23 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should return a slot when the available duration before an existing calendarItem is shorter than the requested duration BUT the difference is less than 1 minute" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		val rruleDiffIsMorethanOneMinuteId = newId ()
-		val legacyDiffIsMorethanOneMinuteId = newId ()
+		val rruleDiffIsMoreThanOneMinuteId = newId()
+		val legacyDiffIsMoreThanOneMinuteId = newId()
 
-		val START_DATE: Long = 20200102000000L
-		val END_DATE: Long = 20200102100000L
-		val START_HOUR: Long	= 80030L
-		val START_HOUR_MORE_THAN_1: Long	= 80105L
-		val END_HOUR: Long = 83000L
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, START_HOUR, END_HOUR)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,  START_HOUR, END_HOUR)
-		makeTimeTable(rruleDiffIsMorethanOneMinuteId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,   START_HOUR_MORE_THAN_1, END_HOUR)
-		makeTimeTable(legacyDiffIsMorethanOneMinuteId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,   START_HOUR_MORE_THAN_1, END_HOUR)
+		val hours = listOf(TimeTableHour(80030L, 83000L))
+		val hoursMoreThan1 = listOf(TimeTableHour(80105L, 80030L))
+
+		val startDate = 20200102000000L
+		val endDate = 20200102100000L
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,  hours)
+		makeTimeTable(rruleDiffIsMoreThanOneMinuteId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hoursMoreThan1)
+		makeTimeTable(legacyDiffIsMoreThanOneMinuteId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hoursMoreThan1)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
-			val legacyMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, legacyDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
-			val rruleMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), START_DATE, END_DATE, rruleDiffIsMorethanOneMinuteId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), startDate, endDate, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), startDate, endDate, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val legacyMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), startDate, endDate, legacyDiffIsMoreThanOneMinuteId, null, isNewPatient = false, true, hcpId).toList()
+			val rruleMoreThan1 = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), startDate, endDate, rruleDiffIsMoreThanOneMinuteId, null, isNewPatient = false, true, hcpId).toList()
 			legacy[0] shouldBe 20200102080030L
 			rrule[0] shouldBe 20200102080030L
 			legacyMoreThan1.size shouldBe 0
@@ -420,11 +421,12 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should consider startHour null as 0 and enHour null as 24:00" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,null,null)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,null,null)
+		val nullHours = listOf(TimeTableHour(null, null))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, nullHours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, nullHours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (96)
 			rrule.size shouldBe (96)
 		}
@@ -433,11 +435,12 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should consider enHour 0 as 0" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,null,0)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,null,0)
+		val hours = listOf(TimeTableHour(null, 0))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (0)
 			rrule.size shouldBe (0)
 		}
@@ -446,13 +449,33 @@ class TimeTableLogicTest : StringSpec({
 	"In legacy and rrule version, it should consider startHour 0 as 0" {
 		val legacyCalendarItemTypeId = newId()
 		val rruleCalendarItemTypeId = newId()
-		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true,0,10000)
-		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true,0,10000)
+		val hours = listOf(TimeTableHour(0, 10000))
+		makeTimeTable(legacyCalendarItemTypeId, agendaId, null, null, listOf("1", "2","3", "4","5","6", "7"), listOf("EVERY_WEEK"),true, hours)
+		makeTimeTable(rruleCalendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000",20200101L, null, null,true, hours)
 		withAuthenticatedHcpContext(hcpId) {
-			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, false, true, hcpId).toList()
-			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, false, true, hcpId).toList()
+			val legacy = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, legacyCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			val rrule = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, rruleCalendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
 			legacy.size shouldBe (4)
 			rrule.size shouldBe (4)
+		}
+	}
+
+	"It should return the correct availabilities when more than 1 TimeTableHour is provided" {
+		val calendarItemTypeId = newId()
+		val hours: List<TimeTableHour> = listOf(
+			TimeTableHour(
+				startHour = 80000,
+				endHour = 90000,
+			),
+			TimeTableHour(
+				startHour = 100000,
+				endHour = 102000,
+			)
+		)
+		makeTimeTable(calendarItemTypeId, agendaId, "FREQ=DAILY;INTERVAL=1;UNTIL=20321006170000", 20200101L, null, null, true, hours)
+		withAuthenticatedHcpContext(hcpId) {
+			val availabilities = timeTableLogic.getAvailabilitiesByPeriodAndCalendarItemTypeId(newId(), 20230120000000L, 20230121000000L, calendarItemTypeId, null, isNewPatient = false, true, hcpId).toList()
+			availabilities shouldBe listOf(20230120080000, 20230120081500, 20230120083000, 20230120084500, 20230120100000)
 		}
 	}
 
