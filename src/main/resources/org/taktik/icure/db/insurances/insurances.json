@@ -1506,27 +1506,23 @@
     }
   },
   {
-    "name": {"nl": "PARTENA - Onafhankelijk ziekenfonds "},
+    "name": {"nl": "Helan Onafhankelijk Ziekenfonds"},
     "_id": "000000000-0000-0000-0526-0000000000000",
     "code": "526",
     "parent": "000000000-0000-0000-0500-0000000000000",
     "address": {
       "addressType": "HQ",
-      "street": "Sluisweg 2",
-      "postalCode": 9000,
-      "city": "GENT",
+      "street": "Boomsesteenweg 5",
+      "postalCode": 2610,
+      "city": "ANTWERPEN / WILRIJK",
       "telecoms": [
         {
           "telecomType": "PHONE",
-          "telecomNumber": "(02) 201 42 42"
+          "telecomNumber": "(02) 218 22 22"
         },
         {
           "telecomType": "EMAIL",
           "telecomNumber": "-"
-        },
-        {
-          "telecomType": "FAX",
-          "telecomNumber": "(09) 269 85 48"
         }
       ]
     }
