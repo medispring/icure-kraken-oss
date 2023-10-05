@@ -4,6 +4,8 @@
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import com.github.jk1.license.render.CsvReportRenderer
+import com.github.jk1.license.render.ReportRenderer
 import com.google.devtools.ksp.gradle.KspTask
 import org.icure.task.CleanCouchDockerTask
 import org.icure.task.StartCouchDockerTask
@@ -24,7 +26,12 @@ plugins {
     kotlin("jvm") version "1.7.20"
     id("org.sonarqube") version "3.3"
     id("com.google.devtools.ksp") version "1.7.20-1.0.6"
+	id("com.github.jk1.dependency-license-report") version "2.0"
     `maven-publish`
+}
+
+licenseReport {
+	renderers = arrayOf<ReportRenderer>(CsvReportRenderer())
 }
 
 sonarqube {
