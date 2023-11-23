@@ -20004,4 +20004,12 @@
 		<REGIONS>be</REGIONS>
 		<REGIONS>fr</REGIONS>
 	</VALUE>
+	<VALUE>
+		<CODE>J07BX05</CODE>
+		<PARENT>JO7BX</PARENT>
+		<DESCRIPTION L="fr">vaccin contre le virus respiratoire syncytial</DESCRIPTION>
+		<DESCRIPTION L="nl">vaccin tegen respiratoir syncytieel virus</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
 </kmehr-cd>
