@@ -260,4 +260,12 @@
 		<REGIONS>be</REGIONS>
 		<REGIONS>fr</REGIONS>
 	</VALUE>
+	<VALUE>
+		<CODE>rsv</CODE>
+		<DESCRIPTION L="en">vaccine against respiratory syncytial virus</DESCRIPTION>
+		<DESCRIPTION L="nl">vaccin tegen respiratoir syncytieel virus</DESCRIPTION>
+		<DESCRIPTION L="fr">vaccin contre le virus respiratoire syncytial</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
 </kmehr-cd>
