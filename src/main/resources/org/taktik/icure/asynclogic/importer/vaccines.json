@@ -1073,4 +1073,16 @@
 			"covid19"
 		]
 	}
+,
+	{
+		"cnk": "3652112",
+		"codes": [
+			"diphteria",
+			"tetanus",
+			"pertussis",
+			"poliomyelitis",
+			"hib",
+			"hepatitisb"
+		]
+	}
 ]
