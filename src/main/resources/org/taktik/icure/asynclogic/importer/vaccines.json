@@ -1075,6 +1075,18 @@
 	}
 ,
 	{
+		"cnk": "3652112",
+		"codes": [
+			"diphteria",
+			"tetanus",
+			"pertussis",
+			"poliomyelitis",
+			"hib",
+			"hepatitisb"
+		]
+	}
+,
+	{
 		"cnk": "4710224",
 		"codes": [
 			"rsv"
