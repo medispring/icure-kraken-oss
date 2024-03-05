@@ -22,7 +22,6 @@ import kotlin.collections.set
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -551,7 +550,7 @@ class PatientDAOImpl(
 				.includeDocs(false)
 		).map { it.key to it.value }
 
-		return result.fold(emptyMap<String, Map<String, Map<String, String>>>()) { acc, (key, value) ->
+		return result.fold(emptyMap()) { acc, (key, value) ->
 			if (key != null && value != null) {
 				acc + (
 					value[0] to (acc[value[0]] ?: emptyMap()).let {
