@@ -306,6 +306,24 @@
 		]
 	},
 	{
+	"cnk": "4665212",
+	"codes": [
+		"seasonalinfluenza"
+	]
+	},
+	{
+	"cnk": "4670576",
+	"codes": [
+		"seasonalinfluenza"
+	]
+    },
+	{
+	"cnk": "4674438",
+	"codes": [
+		"seasonalinfluenza"
+	]
+},
+	{
 		"cnk": "2394070",
 		"codes": [
 			"seasonalinfluenza"
@@ -1029,5 +1047,64 @@
 		"codes": [
 			"seasonalinfluenza"
 		]
+	},
+	{
+		"cnk": "4740098",
+		"codes": [
+			"covid19"
+		]
+	},
+	{
+		"cnk": "4740106",
+		"codes": [
+			"covid19"
+		]
+	},
+	{
+		"cnk": "4741435",
+		"codes": [
+			"covid19"
+		]
 	}
+,
+	{
+		"cnk": "4651535",
+		"codes": [
+			"covid19"
+		]
+	}
+,
+	{
+		"cnk": "3652112",
+		"codes": [
+			"diphteria",
+			"tetanus",
+			"pertussis",
+			"poliomyelitis",
+			"hib",
+			"hepatitisb"
+		]
+	}
+,
+	{
+		"cnk": "4710224",
+		"codes": [
+			"rsv"
+		]
+	}
+,
+	{
+		"cnk": "4736807",
+		"codes": [
+			"rsv"
+		]
+	}
+,
+	{
+		"cnk": "4642039",
+		"codes": [
+			"dengue"
+		]
+	}
+
 ]

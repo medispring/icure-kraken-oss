@@ -15,6 +15,20 @@ class IteratorUtilsKtTest : FunSpec({
 		).sortedMerge().asSequence().toList() shouldBe listOf(1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 11, 12)
 	}
 
+	test("Edge case: one iterator has only one element that is the last one to be emitted") {
+		listOf(
+			listOf(1, 3, 5, 7).iterator(),
+			listOf(42).iterator()
+		).sortedMerge().asSequence().toList() shouldBe listOf(1, 3, 5, 7, 42)
+	}
+
+	test("Edge case: one iterator has only one element") {
+		listOf(
+			listOf(1, 3, 5, 42).iterator(),
+			listOf(7).iterator()
+		).sortedMerge().asSequence().toList() shouldBe listOf(1, 3, 5, 7, 42)
+	}
+
 	test("illegal inputs are discarded") {
 		val exception = shouldThrow<IllegalStateException> {
 			listOf(

@@ -168,7 +168,8 @@ class HealthOneLogicImpl(
 		if (labResults.size > 1) {
 			var lrl = labResults[0] as LaboResultLine
 			var comment: String
-			if (tryToGetValueAsNumber(lrl.value) != null) {
+			val laboResultLineValue = lrl.value!!.replace("<".toRegex(), "").replace(">".toRegex(), "")
+			if (tryToGetValueAsNumber(laboResultLineValue) != null) {
 				val lrl2 = labResults[1] as LaboResultLine
 				comment = lrl2.value ?: ""
 				for (i in 2 until labResults.size) {

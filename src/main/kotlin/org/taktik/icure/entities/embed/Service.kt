@@ -22,10 +22,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.github.pozo.KotlinBuilder
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.base.ICureDocument
 import org.taktik.icure.entities.base.LinkQualification
+import org.taktik.icure.serializers.ServiceQualifiedLinkDeserializer
 import org.taktik.icure.utils.DynamicInitializer
 import org.taktik.icure.utils.invoke
 import org.taktik.icure.validation.AutoFix
@@ -111,7 +113,7 @@ data class Service(
 	val status: Int? = null, //bit 0: active/inactive, bit 1: relevant/irrelevant, bit2 : present/absent, ex: 0 = active,relevant and present
 	val invoicingCodes: Set<String> = emptySet(),
 	val notes: List<Annotation> = emptyList(),
-	val qualifiedLinks: Map<LinkQualification, Map<String, String>> = emptyMap(), //Links towards related services (possibly in other contacts)
+	@JsonDeserialize(using = ServiceQualifiedLinkDeserializer::class) val qualifiedLinks: Map<LinkQualification, Map<String, String>> = emptyMap(), //Links towards related services (possibly in other contacts)
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val codes: Set<CodeStub> = emptySet(), //stub object of the Code used to qualify the content of the Service
 	@field:ValidCode(autoFix = AutoFix.NORMALIZECODE) override val tags: Set<CodeStub> = emptySet(), //stub object of the tag used to qualify the type of the Service
 	override val encryptedSelf: String? = null

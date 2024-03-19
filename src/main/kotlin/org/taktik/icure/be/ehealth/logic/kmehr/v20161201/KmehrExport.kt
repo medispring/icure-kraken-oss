@@ -135,6 +135,7 @@ import org.taktik.icure.entities.Patient
 import org.taktik.icure.entities.base.Code
 import org.taktik.icure.entities.base.CodeStub
 import org.taktik.icure.entities.embed.Address
+import org.taktik.icure.entities.embed.AddressType as iCureAddressType
 import org.taktik.icure.entities.embed.Content
 import org.taktik.icure.entities.embed.PlanOfAction
 import org.taktik.icure.entities.embed.Service
@@ -190,8 +191,10 @@ open class KmehrExport(
 				}
 			}
 
-			addresses.addAll(makeAddresses(m.addresses))
-			telecoms.addAll(makeTelecoms(m.addresses))
+			val addressesExcludingHome = m.addresses.filter { it.addressType != iCureAddressType.home }
+
+			addresses.addAll(makeAddresses(addressesExcludingHome))
+			telecoms.addAll(makeTelecoms(addressesExcludingHome))
 		}
 	}
 
