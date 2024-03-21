@@ -243,8 +243,12 @@ class MessageController(
 		@RequestParam(required = false) hcpId: String?
 	) = mono {
 		val realLimit = limit ?: DEFAULT_LIMIT
-		val startKeyElements = startKey?.takeIf { it.isNotEmpty() }
-			?.let { objectMapper.readValue<List<String>>(startKey, objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)) }
+		val startKeyElements = startKey?.takeIf { it.isNotEmpty() }?.let {
+			objectMapper.readValue<List<String>>(
+				startKey,
+				objectMapper.typeFactory.constructCollectionType(List::class.java, String::class.java)
+			)
+		}?.let { keys -> listOf(keys.getOrNull(0), keys.getOrNull(1), keys.getOrNull(2)?.toLong()) }
 		val paginationOffset = PaginationOffset<List<*>>(startKeyElements, startDocumentId, null, realLimit + 1)
 		val hcpId = hcpId ?: sessionLogic.getCurrentHealthcarePartyId()
 		messageLogic.findMessagesByToAddress(hcpId, toAddress, paginationOffset, reverse).paginatedList<Message, MessageDto>(messageToMessageDto, realLimit)
