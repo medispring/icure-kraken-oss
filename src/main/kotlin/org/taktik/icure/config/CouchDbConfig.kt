@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.icure.asyncjacksonhttpclient.net.web.WebClient
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -32,6 +34,7 @@ import org.taktik.couchdb.springramework.webclient.SpringWebfluxWebClient
 import org.taktik.icure.asyncdao.impl.CouchDbDispatcher
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.spring.asynccache.AsyncMapCacheManager
+import org.taktik.icure.spring.asynccache.AsyncNoopCacheManager
 import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
@@ -84,7 +87,16 @@ class CouchDbConfig(val couchDbProperties: CouchDbProperties) {
 	}
 
 	@Bean
+	@ConditionalOnProperty(
+		prefix = "icure",
+		value=["cache.enabled"],
+		havingValue = "true",
+		matchIfMissing = false)
 	fun asyncCacheManager() = AsyncMapCacheManager()
+
+	@Bean
+	@ConditionalOnMissingBean
+	fun asyncNoCacheManager() = AsyncNoopCacheManager()
 
 	@Bean
 	fun patientCouchDbDispatcher(httpClient: WebClient, objectMapper: ObjectMapper): CouchDbDispatcher {

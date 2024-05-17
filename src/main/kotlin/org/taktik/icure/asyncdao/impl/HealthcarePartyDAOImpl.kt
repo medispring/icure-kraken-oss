@@ -51,7 +51,7 @@ internal class HealthcarePartyDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<HealthcareParty>(HealthcareParty::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), HealthcarePartyDAO {
 
 	@View(name = "by_nihii", map = "function(doc) { if (doc.java_type == 'org.taktik.icure.entities.HealthcareParty' && !doc.deleted) emit(doc.nihii.substr(0,8), doc._id )}")

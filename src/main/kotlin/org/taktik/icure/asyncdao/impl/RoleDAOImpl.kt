@@ -36,7 +36,7 @@ class RoleDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("configCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<Role>(Role::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), RoleDAO {
 
 	@View(
