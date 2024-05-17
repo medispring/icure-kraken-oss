@@ -42,7 +42,7 @@ class EntityTemplateDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("healthdataCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<EntityTemplate>(EntityTemplate::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), EntityTemplateDAO {
 	@View(name = "by_user_type_descr", map = "classpath:js/entitytemplate/By_user_type_descr.js")
 	override fun listEntityTemplatesByUserIdTypeDescr(userId: String, type: String, searchString: String?, includeEntities: Boolean?): Flow<EntityTemplate> = flow {

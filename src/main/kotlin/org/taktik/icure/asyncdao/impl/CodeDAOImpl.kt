@@ -75,7 +75,7 @@ class CodeDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<Code>(Code::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), CodeDAO {
 
 	companion object {

@@ -36,7 +36,7 @@ class PropertyDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("configCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<Property>(Property::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), PropertyDAO {
 
 	@View(name = "by_identifier", map = "classpath:js/property/By_identifier_Map.js")
