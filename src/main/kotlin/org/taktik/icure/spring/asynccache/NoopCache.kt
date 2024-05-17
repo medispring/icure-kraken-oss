@@ -19,26 +19,12 @@
 package org.taktik.icure.spring.asynccache
 
 class NoopCache<K, V>(private val name: String) : Cache<K, V> {
-
-	override suspend fun getWrapper(key: K?): org.springframework.cache.Cache.ValueWrapper? {
-		return null
-	}
-
+	override suspend fun getWrapper(key: K?) = null
 	override suspend fun get(key: K): V? = null
-
 	override fun clear() {}
-
 	override fun invalidate() = false
-
 	override suspend fun evict(key: K?) {}
-
 	override suspend fun put(key: K, value: V) {}
-
-	override fun getNativeCache(): Any? {
-		return null
-	}
-
-	override fun getName(): String {
-		return name
-	}
+	override fun getNativeCache() = null
+	override fun getName() = name
 }
