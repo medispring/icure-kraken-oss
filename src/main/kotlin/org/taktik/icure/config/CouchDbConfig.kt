@@ -33,6 +33,7 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.taktik.couchdb.springramework.webclient.SpringWebfluxWebClient
 import org.taktik.icure.asyncdao.impl.CouchDbDispatcher
 import org.taktik.icure.properties.CouchDbProperties
+import org.taktik.icure.spring.asynccache.AsyncCacheManager
 import org.taktik.icure.spring.asynccache.AsyncMapCacheManager
 import org.taktik.icure.spring.asynccache.AsyncNoopCacheManager
 import reactor.core.publisher.Mono
@@ -92,11 +93,11 @@ class CouchDbConfig(val couchDbProperties: CouchDbProperties) {
 		value=["cache.enabled"],
 		havingValue = "true",
 		matchIfMissing = false)
-	fun asyncCacheManager() = AsyncMapCacheManager()
+	fun asyncCacheManager(): AsyncCacheManager = AsyncMapCacheManager()
 
 	@Bean
 	@ConditionalOnMissingBean
-	fun asyncNoCacheManager() = AsyncNoopCacheManager()
+	fun asyncNoCacheManager(): AsyncCacheManager = AsyncNoopCacheManager()
 
 	@Bean
 	fun patientCouchDbDispatcher(httpClient: WebClient, objectMapper: ObjectMapper): CouchDbDispatcher {
