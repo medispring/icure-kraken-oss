@@ -31,11 +31,11 @@ import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher
 import org.springframework.web.server.ServerWebExchange
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import org.taktik.icure.spring.asynccache.Cache
 import reactor.core.publisher.Mono
 
-class TokenWebExchangeMatcher(val asyncCacheManager: AsyncCacheManager) : ServerWebExchangeMatcher {
+class TokenWebExchangeMatcher(private val springSecurityTokenCache: Cache<String, SecurityToken>) : ServerWebExchangeMatcher {
 	val log: Logger = LoggerFactory.getLogger(javaClass)
-	val cache = asyncCacheManager.getCache<String, SecurityToken>("spring.security.tokens")
 
 	override fun matches(exchange: ServerWebExchange?): Mono<ServerWebExchangeMatcher.MatchResult> = mono {
 		val path = exchange?.request?.path?.toString()
@@ -45,8 +45,8 @@ class TokenWebExchangeMatcher(val asyncCacheManager: AsyncCacheManager) : Server
 				if (it.contains('=')) {
 					val (key, value) = it.split('=')
 					if (key == "tokenid") {
-						cache.get(value)?.let { restriction ->
-							cache.evict(value)
+						springSecurityTokenCache.get(value)?.let { restriction ->
+							springSecurityTokenCache.evict(value)
 							if (
 								exchange.request.method?.equals(restriction.method) == true &&
 								path.startsWith(restriction.path)

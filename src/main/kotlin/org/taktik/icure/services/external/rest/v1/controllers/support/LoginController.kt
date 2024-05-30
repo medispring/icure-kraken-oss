@@ -62,7 +62,7 @@ import org.taktik.icure.security.jwt.JwtResponse
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.services.external.rest.v1.dto.AuthenticationResponse
 import org.taktik.icure.services.external.rest.v1.dto.LoginCredentials
-import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import org.taktik.icure.spring.asynccache.Cache
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -74,11 +74,9 @@ class LoginController(
 	private val sessionLogic: AsyncSessionLogic,
 	private val jwtUtils: JwtUtils,
 	private val objectMapper: ObjectMapper,
-	asyncCacheManager: AsyncCacheManager
+	private val jwtRefreshMap: Cache<String, Boolean>,
+	private val springSecurityTokenCache: Cache<String, SecurityToken>
 ) {
-	val cache = asyncCacheManager.getCache<String, SecurityToken>("spring.security.tokens")
-	val refreshJwtCache = asyncCacheManager.getCache<String, Boolean>("org.taktik.icure.security.RefreshJWT")
-
 	@Value("\${spring.session.enabled}")
 	private val sessionEnabled: Boolean = false
 
@@ -181,8 +179,8 @@ class LoginController(
 				?: throw InvalidJwtException("Invalid refresh token")
 			val userId = claims["userId"] as String
 			val tokenId = claims["tokenId"] as String
-			if (refreshJwtCache.get("$userId:$tokenId") != true) throw throw InvalidJwtException("Invalid refresh token")
-			refreshJwtCache.evict("$userId:$tokenId")
+			if (jwtRefreshMap.get("$userId:$tokenId") != true) throw InvalidJwtException("Invalid refresh token")
+			jwtRefreshMap.evict("$userId:$tokenId")
 			response.statusCode = HttpStatus.OK
 			response.writeWith(Flux.just()).awaitFirstOrNull()
 		} catch (e: Exception) {
@@ -217,7 +215,7 @@ class LoginController(
 	@GetMapping("/token/{method}/{path}")
 	fun token(@PathVariable method: String, @PathVariable path: String) = mono {
 		val token = UUID.randomUUID().toString()
-		cache.put(token, SecurityToken(HttpMethod.valueOf(method), path, sessionLogic.getCurrentSessionContext().getAuthentication()))
+		this@LoginController.springSecurityTokenCache.put(token, SecurityToken(HttpMethod.valueOf(method), path, sessionLogic.getCurrentSessionContext().getAuthentication()))
 		token
 	}
 }

@@ -48,12 +48,14 @@ import org.taktik.icure.asynclogic.AsyncSessionLogic
 import org.taktik.icure.asynclogic.PermissionLogic
 import org.taktik.icure.properties.CouchDbProperties
 import org.taktik.icure.security.CustomAuthenticationManager
+import org.taktik.icure.security.SecurityToken
 import org.taktik.icure.security.TokenWebExchangeMatcher
 import org.taktik.icure.security.UnauthorizedEntryPoint
 import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
 import org.taktik.icure.security.jwt.EncodedJwtAuthenticationToken
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import org.taktik.icure.spring.asynccache.Cache
 import org.taktik.icure.spring.asynccache.MapCache
 import reactor.core.publisher.Mono
 
@@ -70,13 +72,19 @@ class SecurityConfig {
 	} // TODO SH later: might be ignored if not registered in the security config
 
 	@Bean
+	fun jwtRefreshMap() = MapCache<String, Boolean>("org.taktik.icure.security.RefreshJWT", HashMap())
+
+	@Bean
+	fun springSecurityTokenCache() = MapCache<String, SecurityToken>("spring.security.tokens", HashMap())
+
+	@Bean
 	fun authenticationManager(
 		couchDbProperties: CouchDbProperties,
 		userDAO: UserDAO,
 		permissionLogic: PermissionLogic,
 		passwordEncoder: PasswordEncoder,
 		jwtUtils: JwtUtils,
-		asyncCacheManager: AsyncCacheManager
+		jwtRefreshMap: Cache<String, Boolean>
 	) =
 		CustomAuthenticationManager(
 			couchDbProperties,
@@ -84,7 +92,7 @@ class SecurityConfig {
 			permissionLogic,
 			passwordEncoder,
 			jwtUtils = jwtUtils,
-			jwtRefreshMap = MapCache("org.taktik.icure.security.RefreshJWT", HashMap())
+			jwtRefreshMap = jwtRefreshMap
 		)
 }
 
@@ -104,7 +112,7 @@ class SecurityConfigAdapter(
 	val log: Logger = LoggerFactory.getLogger(javaClass)
 
 	@Bean
-	fun securityWebFilterChain(http: ServerHttpSecurity, asyncCacheManager: AsyncCacheManager): SecurityWebFilterChain {
+	fun securityWebFilterChain(http: ServerHttpSecurity, springSecurityTokenCache: Cache<String, SecurityToken>): SecurityWebFilterChain {
 		return http
 			.authorizeExchange()
 			.pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -126,7 +134,7 @@ class SecurityConfigAdapter(
 			.pathMatchers("/ping.json").permitAll()
 			.pathMatchers("/actuator/**").permitAll()
 			.matchers(
-				TokenWebExchangeMatcher(asyncCacheManager).paths(
+				TokenWebExchangeMatcher(springSecurityTokenCache).paths(
 					"/rest/*/document/*/attachment/*",
 					"/rest/*/form/template/*/attachment/*",
 					"/ws/**"
