@@ -18,6 +18,7 @@
 
 package org.taktik.icure.config
 
+import java.util.HashMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -53,6 +54,7 @@ import org.taktik.icure.security.database.ShaAndVerificationCodePasswordEncoder
 import org.taktik.icure.security.jwt.EncodedJwtAuthenticationToken
 import org.taktik.icure.security.jwt.JwtUtils
 import org.taktik.icure.spring.asynccache.AsyncCacheManager
+import org.taktik.icure.spring.asynccache.MapCache
 import reactor.core.publisher.Mono
 
 @ExperimentalCoroutinesApi
@@ -82,7 +84,7 @@ class SecurityConfig {
 			permissionLogic,
 			passwordEncoder,
 			jwtUtils = jwtUtils,
-			jwtRefreshMap = asyncCacheManager.getCache("org.taktik.icure.security.RefreshJWT")
+			jwtRefreshMap = MapCache("org.taktik.icure.security.RefreshJWT", HashMap())
 		)
 }
 

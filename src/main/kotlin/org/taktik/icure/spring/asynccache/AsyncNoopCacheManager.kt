@@ -18,6 +18,9 @@
 
 package org.taktik.icure.spring.asynccache
 
+import org.slf4j.LoggerFactory
+
 class AsyncNoopCacheManager : AsyncCacheManager {
+	private val log = LoggerFactory.getLogger(javaClass).also { logger -> logger.info("Creating Noop cache manager") }
 	override fun <K, V> getCache(name: String) = NoopCache<K, V>(name)
 }

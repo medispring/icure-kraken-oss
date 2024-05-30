@@ -20,9 +20,10 @@ package org.taktik.icure.spring.asynccache
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
+import org.slf4j.LoggerFactory
 
 class AsyncMapCacheManager : AsyncCacheManager {
-
+	private val log = LoggerFactory.getLogger(javaClass).also { logger -> logger.info("Creating AsyncMapCacheManager") }
 	private val caches: ConcurrentMap<String, Cache<Any, Any>> = ConcurrentHashMap()
 
 	override fun <K, V> getCache(name: String): Cache<K, V> {
