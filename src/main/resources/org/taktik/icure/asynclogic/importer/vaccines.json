@@ -1106,5 +1106,46 @@
 			"dengue"
 		]
 	}
-
+,
+	{
+		"cnk": "4855110",
+		"codes": [
+			"covid19"
+		]
+	}
+,
+	{
+		"cnk": "4855128",
+		"codes": [
+			"covid19"
+		]
+	}
+,
+	{
+		"cnk": "4790044",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	}
+,
+	{
+		"cnk": "4777082",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	}
+,
+	{
+		"cnk": "4782066",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	}
+,
+	{
+		"cnk": "4782058",
+		"codes": [
+			"seasonalinfluenza"
+		]
+	}
 ]
