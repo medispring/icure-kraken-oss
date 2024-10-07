@@ -48,7 +48,7 @@ class UserDAOImpl(
 	couchDbProperties: CouchDbProperties,
 	@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : CachedDAOImpl<User>(User::class.java, couchDbProperties, couchDbDispatcher, idGenerator, asyncCacheManager), UserDAO {
 	@View(name = "by_exp_date", map = "function(doc) {  if (doc.java_type == 'org.taktik.icure.entities.User' && !doc.deleted && doc.expirationDate) {emit(doc.expirationDate.epochSecond, doc._id)  }}")
 	override fun getExpiredUsers(fromExpirationInstant: Instant, toExpirationInstant: Instant): Flow<User> = flow {

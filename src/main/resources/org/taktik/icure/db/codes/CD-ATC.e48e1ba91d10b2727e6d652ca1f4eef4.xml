@@ -11611,8 +11611,8 @@
 	<VALUE>
 		<CODE>A10BX12</CODE>
 		<PARENT>A10BX</PARENT>
-		<DESCRIPTION L="fr">?</DESCRIPTION>
-		<DESCRIPTION L="nl">?</DESCRIPTION>
+		<DESCRIPTION L="fr">empagliflozine</DESCRIPTION>
+		<DESCRIPTION L="nl">empagliflozine</DESCRIPTION>
 		<REGIONS>be</REGIONS>
 		<REGIONS>fr</REGIONS>
 	</VALUE>
@@ -20001,6 +20001,14 @@
 		<PARENT>L02BX</PARENT>
 		<DESCRIPTION L="fr">abiratérone</DESCRIPTION>
 		<DESCRIPTION L="nl">abiraterone</DESCRIPTION>
+		<REGIONS>be</REGIONS>
+		<REGIONS>fr</REGIONS>
+	</VALUE>
+	<VALUE>
+		<CODE>J07BX05</CODE>
+		<PARENT>JO7BX</PARENT>
+		<DESCRIPTION L="fr">vaccin contre le virus respiratoire syncytial</DESCRIPTION>
+		<DESCRIPTION L="nl">vaccin tegen respiratoir syncytieel virus</DESCRIPTION>
 		<REGIONS>be</REGIONS>
 		<REGIONS>fr</REGIONS>
 	</VALUE>

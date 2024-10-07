@@ -53,7 +53,7 @@ internal class FormTemplateDAOImpl(
 	private val uuidGenerator: UUIDGenerator,
 	@Qualifier("baseCouchDbDispatcher") couchDbDispatcher: CouchDbDispatcher,
 	idGenerator: IDGenerator,
-	@Qualifier("asyncCacheManager") asyncCacheManager: AsyncCacheManager
+	asyncCacheManager: AsyncCacheManager
 ) : GenericDAOImpl<FormTemplate>(couchDbProperties, FormTemplate::class.java, couchDbDispatcher, idGenerator), FormTemplateDAO {
 
 	@View(name = "by_userId_and_guid", map = "function(doc) { if (doc.java_type == 'org.taktik.icure.entities.FormTemplate' && !doc.deleted && doc.author) emit([doc.author,doc.guid], null )}")

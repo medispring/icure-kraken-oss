@@ -326,7 +326,7 @@ class InvoiceLogicImpl(
 
 	override suspend fun getTarificationsCodesOccurences(hcPartyId: String, minOccurences: Long): List<LabelledOccurence> {
 		return invoiceDAO.listTarificationsFrequencies(hcPartyId)
-			.filter { v -> v.value != null && v.value!! >= minOccurences }
+			.filter { v -> v.value != null && v.value!! >= minOccurences && v.key != null && v.key!!.components.size > 1 && v.key!!.components[1] != null }
 			.map { v ->
 				LabelledOccurence(
 					v.key!!.components[1] as String,

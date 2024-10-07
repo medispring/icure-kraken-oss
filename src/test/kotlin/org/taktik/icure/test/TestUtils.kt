@@ -1,38 +1,27 @@
 package org.taktik.icure.test
 
-import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.KeyPairGenerator
 import java.util.UUID
-import kotlin.math.abs
 import kotlin.random.Random.Default.nextInt
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.SingletonSupport
-import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.junit.jupiter.api.Assertions
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.taktik.icure.asyncdao.UserDAO
-import kotlinx.coroutines.delay
 import org.taktik.icure.asyncdao.HealthcarePartyDAO
+import org.taktik.icure.asyncdao.UserDAO
 import org.taktik.icure.constants.Users
 import org.taktik.icure.entities.HealthcareParty
 import org.taktik.icure.entities.User
-import org.taktik.icure.entities.security.AlwaysPermissionItem
-import org.taktik.icure.entities.security.Permission
-import org.taktik.icure.entities.security.PermissionType
 import org.taktik.icure.services.external.rest.v1.dto.DeviceDto
-import org.taktik.icure.services.external.rest.v1.dto.HealthElementDto
 import org.taktik.icure.services.external.rest.v1.dto.HealthcarePartyDto
 import org.taktik.icure.services.external.rest.v1.dto.PatientDto
 import org.taktik.icure.services.external.rest.v1.dto.UserDto
-import org.taktik.icure.services.external.rest.v1.dto.security.PermissionDto
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import reactor.netty.ByteBufFlux
 import reactor.netty.http.client.HttpClient
 
@@ -189,8 +178,8 @@ fun createPatientUser(httpClient: HttpClient,
 	)
 }
 
-fun createHcpUser(
-	httpClient: HttpClient,
+@OptIn(ExperimentalUnsignedTypes::class)
+suspend fun createHcpUser(httpClient: HttpClient,
 	apiUrl: String,
 	passwordEncoder: PasswordEncoder,
 ): UserCredentials {

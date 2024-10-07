@@ -18,23 +18,9 @@
 
 package org.taktik.icure.spring.asynccache
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 import org.slf4j.LoggerFactory
 
-class AsyncMapCacheManager : AsyncCacheManager {
-	private val log = LoggerFactory.getLogger(javaClass).also { logger -> logger.info("Creating AsyncMapCacheManager") }
-	private val caches: ConcurrentMap<String, Cache<Any, Any>> = ConcurrentHashMap()
-
-	override fun <K, V> getCache(name: String): Cache<K, V> {
-		var cache = caches[name] as Cache<K, V>?
-		if (cache == null) {
-			cache = MapCache(name, HashMap<K, V>())
-			val currentCache = caches.putIfAbsent(name, (cache as Cache<Any, Any>))
-			if (currentCache != null) {
-				cache = currentCache as Cache<K, V>
-			}
-		}
-		return cache
-	}
+class AsyncNoopCacheManager : AsyncCacheManager {
+	private val log = LoggerFactory.getLogger(javaClass).also { logger -> logger.info("Creating Noop cache manager") }
+	override fun <K, V> getCache(name: String) = NoopCache<K, V>(name)
 }

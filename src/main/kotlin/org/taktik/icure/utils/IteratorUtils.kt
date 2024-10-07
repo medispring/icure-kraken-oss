@@ -14,7 +14,8 @@ fun <T: Comparable<T>> List<Iterator<T>>.sortedMerge(): Iterator<T> = object:Ite
 	val buffer: MutableList<T?> = this@sortedMerge.map { null }.toMutableList()
 	var previous: T? = null
 
-	override fun hasNext() = this@sortedMerge.any { it.hasNext() }
+	override fun hasNext() = this@sortedMerge.any { it.hasNext() } || buffer.any { it != null }
+
 	override fun next(): T {
 		//Drain the iterators
 		this@sortedMerge.forEachIndexed { idx, it ->
