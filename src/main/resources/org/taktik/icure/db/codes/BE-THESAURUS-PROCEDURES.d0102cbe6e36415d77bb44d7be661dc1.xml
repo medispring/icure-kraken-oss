@@ -105743,7 +105743,7 @@
 		<IBUI></IBUI>
 		<NIC></NIC>
 		<SNOMED>418891003 | Computed tomography of chest and abdomen (procedure) |</SNOMED>
-		<Label_FR> CT scanner thoracoabdominal</Label_FR>
+		<Label_FR>CT scanner thoracoabdominal</Label_FR>
 		<Label_NL>CT-scan van thorax en abdomen</Label_NL>
 		<Syn_Fr>thorax; abdomen</Syn_Fr>
 		<Syn_Nl>borstkas; buik</Syn_Nl>
@@ -106774,7 +106774,7 @@
 		<Label_FR>bilan cognitif</Label_FR>
 		<Label_NL>cognitief onderzoek</Label_NL>
 		<Syn_Fr>évaluation; interprétation; fonction; cérébrale; supérieure; test</Syn_Fr>
-		<Syn_Nl> evalueren; interpreteren; hogere; cerebrale; functie; test</Syn_Nl>
+		<Syn_Nl>evalueren; interpreteren; hogere; cerebrale; functie; test</Syn_Nl>
 		<Treatment></Treatment>
 		<Author>mbe</Author>
 		<deptgeneralpractice>1</deptgeneralpractice>
